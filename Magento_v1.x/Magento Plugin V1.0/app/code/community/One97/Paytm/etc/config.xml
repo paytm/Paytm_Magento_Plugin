@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+
+<config>
+    <modules>
+        <One97_paytm>
+            <version>0.1.0</version>
+        </One97_paytm>
+    </modules>
+	
+	
+	
+    <global>
+        <models>
+            <paytm>
+                <class>One97_paytm_Model</class>
+				<resourceModel>One97_paytm_mysql4</resourceModel>
+            </paytm>
+			<paytm_mysql4>
+				<class>One97_paytm_Model_Mysql4</class>
+					<entities>
+						<paytm>
+							<table>paytm</table>
+						</paytm>
+					</entities>
+			</paytm_mysql4>
+	    </models>
+		
+		
+		
+		
+		
+        <helpers>
+	      <paytm>
+            <class>One97_paytm_Helper</class>
+		  </paytm>
+	    </helpers>
+		
+		
+        <resources>
+            <paytm_setup>
+                <setup>
+                    <module>One97_paytm</module>
+					
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </paytm_setup>
+            <paytm_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </paytm_write>
+            <paytm_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </paytm_read>
+        </resources>
+		
+		
+		
+        <blocks>
+            <paytm><class>One97_paytm_Block</class></paytm>
+        </blocks>
+		
+		
+        
+    </global>
+	
+	
+	
+	
+	
+	
+    <frontend>
+        <secure_url>
+            <paytm_processing>/paytm/processing</paytm_processing>
+        </secure_url>
+        <routers>
+            <paytm>
+                <use>standard</use>
+                <args>
+                    <module>One97_paytm</module>
+                    <frontName>paytm</frontName>
+                </args>
+            </paytm>
+        </routers>
+        <layout>
+            <updates>
+                <paytm>
+                    <file>paytm.xml</file>
+                </paytm>
+            </updates>
+        </layout>
+    </frontend>
+	
+	
+	
+	
+	
+    <adminhtml>
+        <translate>
+            <modules>
+                <paytm>
+                    <files>
+                        <default>One97_paytm.csv</default>
+                    </files>
+                </paytm>
+            </modules>
+        </translate>
+    </adminhtml>
+	
+	
+	
+	<default>
+        <payment>        
+            <paytm_cc>
+                <active>0</active>
+                <model>paytm/cc</model>
+                <order_status>1</order_status>
+                <title>Paytm PG</title>  
+				
+            </paytm_cc>
+        </payment>
+    </default> 
+</config>

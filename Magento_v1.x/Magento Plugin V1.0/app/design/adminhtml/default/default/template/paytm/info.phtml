@@ -1,0 +1,9 @@
+
+<?php
+	echo $this->getMethod()->getTitle() . '<br/>';
+	if ($this->getInfo()->getLastTransId() == '') {
+		//echo Mage::helper('paytm')->__('Payment has not been processed yet.') . '<br/>';
+	} else {
+		echo Mage::helper('paytm')->__('paytm Transaction ID: %s', $this->htmlEscape($this->getInfo()->getLastTransId())) . '<br/>';
+	}
+?>

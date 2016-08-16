@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+  <modules>
+    <One97_paytm>
+      <active>true</active>
+      <codePool>community</codePool>
+    </One97_paytm>
+  </modules>
+</config>

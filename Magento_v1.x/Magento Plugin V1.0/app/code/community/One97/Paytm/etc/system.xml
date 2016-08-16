@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+
+<config>
+   <sections>
+        <payment>
+            <groups>
+                <paytm_cc translate="label" module="paytm">
+                    <label>Paytm PG</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <active translate="label">
+                            <label>Enable Plugin</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </active>
+                        <order_status translate="label">
+                            <label>New order status</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_order_status</source_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </order_status>
+                        
+                        <title translate="label">
+                            <label>Title</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </title>
+												
+                        
+						<inst_id translate="label">
+							<label>Merchant ID</label>
+                            <frontend_type>text</frontend_type>
+                            <backend_model>paytm/config_backend_instid</backend_model>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+						</inst_id>
+						
+						<inst_key translate="label">
+							<label>Merchant Key</label>
+                            <frontend_type>text</frontend_type>
+                            <backend_model>paytm/config_backend_instid</backend_model>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+						</inst_key>
+						<mode translate="label">
+                            <label>Select Mode</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>paytm/config_source_instid2</source_model>
+                            <sort_order>7</sort_order>
+							<show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </mode>
+                        <website translate="label">
+                            <label>Website Name</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>8</sort_order>
+							<show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </website>
+						<industrytype translate="label">
+                            <label>Industry Type (Retail,Entertainment etc.)</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>9</sort_order>
+							<show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </industrytype>
+                    </fields>
+					
+                </paytm_cc>
+            </groups>
+        </payment>
+    </sections>
+	
+</config>

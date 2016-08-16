@@ -1,0 +1,20 @@
+<?php
+
+?>
+<b><?php echo Mage::helper('paytm')->__('You will be redirected to Paytm Payment Gateway in a few seconds.'); ?></b>
+<form name="paytm_checkout" id="paytm_checkout" action="<?php echo $this->getFormAction();?>" method="POST">
+<?php $arr  = array();
+$arr = $this->getFormData();?>
+<?php if (is_array($arr)): ?>
+    <?php foreach ($arr as $name => $value): ?>
+        <input type="hidden" name="<?php echo $name; ?>" <?php if (!is_null($value)) { echo 'value="'. $value . '"'; } ?> />
+    <?php endforeach; ?>
+<?php endif; ?>
+</form>
+
+<script type="text/javascript">
+//<![CDATA[
+    var paymentform = document.getElementById('paytm_checkout');
+    window.onload = paymentform.submit();
+//]]>
+</script>
