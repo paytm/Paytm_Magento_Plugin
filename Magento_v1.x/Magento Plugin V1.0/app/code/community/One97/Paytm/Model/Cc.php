@@ -85,8 +85,8 @@ class One97_paytm_Model_Cc extends Mage_Payment_Model_Method_Abstract
 		$merid = Mage::helper('paytm')->decrypt_e($this->getConfigData('inst_id'),$const);
 		$website = $this->getConfigData('website');
 		$industry_type = $this->getConfigData('industrytype');
-		
-		
+		$is_callback = $this->getConfigData('callbackUrl');
+		$callbackUrl = rtrim(Mage::getUrl('paytm/processing/response',array('_nosid'=>true)),'/');
 		$lastOrderId = Mage::getSingleton('checkout/session')->getLastOrderId();
 		$order = Mage::getSingleton('sales/order');
 		$order->load($lastOrderId);
@@ -94,6 +94,7 @@ class One97_paytm_Model_Cc extends Mage_Payment_Model_Method_Abstract
 		$email = $_totalData['customer_email'];
 		$telephone = $order->getBillingAddress()->getTelephone();
 		//create array using which checksum is calculated
+		
     	$params = 	array(
 	    			'MID' =>	$merid,  				
 	    			'TXN_AMOUNT' =>	$price,
@@ -103,8 +104,12 @@ class One97_paytm_Model_Cc extends Mage_Payment_Model_Method_Abstract
 						'CUST_ID' => Mage::getSingleton('customer/session')->getCustomer()->getId(),
 						'ORDER_ID'	=>	$this->getOrder()->getRealOrderId(),   				    
 						'EMAIL'=> $email,
-						'MOBILE_NO' =>preg_replace('#[^0-9]{0,13}#is','',$telephone)
+						'MOBILE_NO' => preg_replace('#[^0-9]{0,13}#is','',$telephone)
+                                                
 					);
+                                        if($is_callback){
+                                            $params['CALLBACK_URL'] = $callbackUrl;
+                                        }
 					
 					//generate customer id in case this is a guest checkout
                                 if(empty($params['CUST_ID'])){
