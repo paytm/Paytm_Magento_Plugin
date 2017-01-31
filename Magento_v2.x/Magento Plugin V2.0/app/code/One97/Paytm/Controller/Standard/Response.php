@@ -28,12 +28,27 @@ class Response extends \One97\Paytm\Controller\Paytm
         //print_r($request);
         if($this->getPaytmModel()->validateResponse($request, $orderId))
         {
-			if($orderStatus == "TXN_SUCCESS" && $orderTotal == $orderTxnAmount){
-				$successFlag = true;
-				$comment .=  "Success ";
-				$order->setStatus($order::STATE_PROCESSING);
-				$order->setExtOrderId($orderId);
-				$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/success');
+			if($orderStatus == "TXN_SUCCESS" && $orderTotal == $orderTxnAmount){				
+				// Create an array having all required parameters for status query.				
+				$requestParamList = array("MID" => $_POST['MID'] , "ORDERID" => $orderId);
+				
+				// Call the PG's getTxnStatus() function for verifying the transaction status.
+				$check_status_url = $this->getPaytmModel()->getStatusQueryUrl(); 				
+				$responseParamList = $this->getPaytmHelper()->callAPI($check_status_url, $requestParamList);
+				if($responseParamList['STATUS']=='TXN_SUCCESS' && $responseParamList['TXNAMOUNT']==$_POST['TXNAMOUNT'])
+				{
+					$successFlag = true;
+					$comment .=  "Success ";
+					$order->setStatus($order::STATE_PROCESSING);
+					$order->setExtOrderId($orderId);
+					$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/success');
+				}
+				else{
+					$errorMsg = 'Paytm Transaction Failed ! Fraud has been detected';
+					$comment .=  "Fraud Detucted";
+					$order->setStatus($order::STATUS_FRAUD);
+					$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
+				}
 			}else{
 				if($resCode == "141" || $resCode == "8102" || $resCode == "8103" || $resCode == "14112"){
 					$errorMsg = 'Paytm Transaction Failed ! Transaction was cancelled.';

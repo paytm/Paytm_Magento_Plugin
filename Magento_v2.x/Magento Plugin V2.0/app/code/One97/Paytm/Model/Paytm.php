@@ -115,6 +115,16 @@ class Paytm extends \Magento\Payment\Model\Method\AbstractMethod
         }
         return $url;
     }
+    
+    public function getStatusQueryUrl()
+    {
+        if($this->getConfigData('debug')){
+            $url = $this->helper->STATUS_QUERY_URL_TEST;
+        }else{
+            $url = $this->helper->STATUS_QUERY_URL_PROD;
+        }
+        return $url;
+    }
 
     public function getReturnUrl()
     {
