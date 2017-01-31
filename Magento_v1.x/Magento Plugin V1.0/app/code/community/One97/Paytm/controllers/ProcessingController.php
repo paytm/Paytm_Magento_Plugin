@@ -88,6 +88,10 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
 			$const = (string)Mage::getConfig()->getNode('global/crypt/key');
 			$mer_decrypted= Mage::helper('paytm')->decrypt_e($mer_encrypted,$const);
 			
+			$merid_encrypted = Mage::getStoreConfig('payment/paytm_cc/inst_id');
+			$const = (string)Mage::getConfig()->getNode('global/crypt/key');
+			$merid_decrypted= Mage::helper('paytm')->decrypt_e($merid_encrypted,$const);
+			
 			//setting order status
             $order = Mage::getModel('sales/order');
 			
@@ -117,8 +121,19 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
 				$_testurl = Mage::helper('paytm/Data2')->STATUS_QUERY_URL_TEST;
 
 			if($txnstatus && $isValidChecksum){
-			
+				// Create an array having all required parameters for status query.
+				//echo "<pre>"; print_r($request);
+				$requestParamList = array("MID" => $merid_decrypted , "ORDERID" => $request['ORDERID']);
 				
+				// Call the PG's getTxnStatus() function for verifying the transaction status.
+				
+				$check_status_url = 'https://pguat.paytm.com/oltp/HANDLER_INTERNAL/TXNSTATUS';
+				if(Mage::getStoreConfig('payment/paytm_cc/mode') == '1')
+				{
+					$check_status_url = 'https://secure.paytm.in/oltp/HANDLER_INTERNAL/TXNSTATUS';
+				}
+				$responseParamList = Mage::helper('paytm')->callAPI($check_status_url, $requestParamList);
+				//echo "<pre>"; print_r($responseParamList); die;
 				$authStatus = true;
 				
 				if($authStatus == false)					
@@ -128,15 +143,22 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
 					}
 				else
 					{
-						$order->setState(Mage_Sales_Model_Order::STATE_PROCESSING,true)->save();
-						$this->_processSale($request);
-						$order_mail = new Mage_Sales_Model_Order();
-						$incrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
-						$order_mail->loadByIncrementId($incrementId);
-						try{
-							 $order_mail->sendNewOrderEmail();
-						   }    
-                        catch (Exception $ex) {  }
+						if($responseParamList['STATUS']=='TXN_SUCCESS' && $responseParamList['TXNAMOUNT']==$_POST['TXNAMOUNT'])
+						{
+							$order->setState(Mage_Sales_Model_Order::STATE_PROCESSING,true)->save();
+							$this->_processSale($request);
+							$order_mail = new Mage_Sales_Model_Order();
+							$incrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
+							$order_mail->loadByIncrementId($incrementId);
+							try{
+								 $order_mail->sendNewOrderEmail();
+							   }    
+							catch (Exception $ex) {  }
+						}
+						else
+						{
+							$this->_processFail($request);
+						}
 					}
             }
 			else
@@ -298,6 +320,9 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
             $this->_order->addStatusToHistory(Mage_Sales_Model_Order::STATUS_FRAUD, Mage::helper('paytm')->__('Payment failed'));
             $this->_order->save();
         }
+		$session = $this->_getCheckout();
+		$session->addError(Mage::helper('paytm')->__('The order has suspected fraud.'));
+        $this->_redirect('checkout/cart');
 
     }
 	
