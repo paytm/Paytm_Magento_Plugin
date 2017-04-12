@@ -125,14 +125,18 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
 				//echo "<pre>"; print_r($request);
 				$requestParamList = array("MID" => $merid_decrypted , "ORDERID" => $request['ORDERID']);
 				
+				$StatusCheckSum = Mage::helper('paytm')->getChecksumFromArray($requestParamList, $mer_decrypted);
+							
+				$requestParamList['CHECKSUMHASH'] = $StatusCheckSum;
+				
 				// Call the PG's getTxnStatus() function for verifying the transaction status.
 				
-				$check_status_url = 'https://pguat.paytm.com/oltp/HANDLER_INTERNAL/TXNSTATUS';
+				$check_status_url = 'https://pguat.paytm.com/oltp/HANDLER_INTERNAL/getTxnStatus';
 				if(Mage::getStoreConfig('payment/paytm_cc/mode') == '1')
 				{
-					$check_status_url = 'https://secure.paytm.in/oltp/HANDLER_INTERNAL/TXNSTATUS';
+					$check_status_url = 'https://secure.paytm.in/oltp/HANDLER_INTERNAL/getTxnStatus';
 				}
-				$responseParamList = Mage::helper('paytm')->callAPI($check_status_url, $requestParamList);
+				$responseParamList = Mage::helper('paytm')->callNewAPI($check_status_url, $requestParamList);
 				//echo "<pre>"; print_r($responseParamList); die;
 				$authStatus = true;
 				
