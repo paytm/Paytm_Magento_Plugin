@@ -105,6 +105,12 @@ class Paytm extends \Magento\Payment\Model\Method\AbstractMethod
         }
         return $result;
     }
+	
+    public function generateStatusChecksum($requestParamList)
+    {
+        $result = $this->helper->getChecksumFromArray($requestParamList,$this->getConfigData("merchant_key"));            
+        return $result;
+    }
 
     public function getRedirectUrl()
     {
@@ -122,6 +128,16 @@ class Paytm extends \Magento\Payment\Model\Method\AbstractMethod
             $url = $this->helper->STATUS_QUERY_URL_TEST;
         }else{
             $url = $this->helper->STATUS_QUERY_URL_PROD;
+        }
+        return $url;
+    }
+	
+    public function getNewStatusQueryUrl()
+    {
+        if($this->getConfigData('debug')){
+            $url = $this->helper->NEW_STATUS_QUERY_URL_TEST;
+        }else{
+            $url = $this->helper->NEW_STATUS_QUERY_URL_PROD;
         }
         return $url;
     }
