@@ -128,7 +128,7 @@ class Data extends AbstractHelper
 	return $validFlag;
     }
 
-    public function getArray2Str($arrayList) {
+    /*public function getArray2Str($arrayList) {
 	$paramStr = "";
 	$flag = 1;
 	foreach ($arrayList as $key => $value) {
@@ -138,6 +138,28 @@ class Data extends AbstractHelper
             } else {
                 $paramStr .= "|" . $this->checkString_e($value);
             }
+	}
+	return $paramStr;
+    }*/
+	
+    public function getArray2Str($arrayList) {
+	$findme   = 'REFUND';
+	$findmepipe = '|';
+	$paramStr = "";
+	$flag = 1;	
+	foreach ($arrayList as $key => $value) {
+		$pos = strpos($value, $findme);
+		$pospipe = strpos($value, $findmepipe);
+		if ($pos !== false || $pospipe !== false) 
+		{
+			continue;
+		}
+		if ($flag) {
+                	$paramStr .= $this->checkString_e($value);
+                	$flag = 0;
+		} else {
+			$paramStr .= "|" . $this->checkString_e($value);
+		}
 	}
 	return $paramStr;
     }
