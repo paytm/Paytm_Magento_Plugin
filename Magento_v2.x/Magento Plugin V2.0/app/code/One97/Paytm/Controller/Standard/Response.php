@@ -31,10 +31,12 @@ class Response extends \One97\Paytm\Controller\Paytm
 			if($orderStatus == "TXN_SUCCESS" && $orderTotal == $orderTxnAmount){				
 				// Create an array having all required parameters for status query.				
 				$requestParamList = array("MID" => $_POST['MID'] , "ORDERID" => $orderId);
+				$StatusCheckSum  =  $this->getPaytmModel()->generateStatusChecksum($requestParamList);
+				$requestParamList['CHECKSUMHASH'] = $StatusCheckSum;
 				
 				// Call the PG's getTxnStatus() function for verifying the transaction status.
-				$check_status_url = $this->getPaytmModel()->getStatusQueryUrl(); 				
-				$responseParamList = $this->getPaytmHelper()->callAPI($check_status_url, $requestParamList);
+				$check_status_url = $this->getPaytmModel()->getNewStatusQueryUrl(); 				
+				$responseParamList = $this->getPaytmHelper()->callNewAPI($check_status_url, $requestParamList);
 				if($responseParamList['STATUS']=='TXN_SUCCESS' && $responseParamList['TXNAMOUNT']==$_POST['TXNAMOUNT'])
 				{
 					$successFlag = true;
