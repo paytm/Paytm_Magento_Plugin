@@ -325,7 +325,7 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
             $this->_order->save();
         }
 		$session = $this->_getCheckout();
-		$session->addError(Mage::helper('paytm')->__('The order has suspected fraud.'));
+		$session->addError(Mage::helper('paytm')->__('It seems some issue in server to server communication. Kindly connect with administrator.'));
         $this->_redirect('checkout/cart');
 
     }
