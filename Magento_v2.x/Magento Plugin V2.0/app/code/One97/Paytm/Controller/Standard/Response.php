@@ -46,7 +46,7 @@ class Response extends \One97\Paytm\Controller\Paytm
 					$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/success');
 				}
 				else{
-					$errorMsg = 'Paytm Transaction Failed ! Fraud has been detected';
+					$errorMsg = 'It seems some issue in server to server communication. Kindly connect with administrator.';
 					$comment .=  "Fraud Detucted";
 					$order->setStatus($order::STATUS_FRAUD);
 					$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
