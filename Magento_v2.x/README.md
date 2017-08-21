@@ -19,6 +19,3 @@ Clear all Cache.
 
 Now you can collect payment via Paytm .
 
-
-
-In case of any issue Kindly write us at integration.dev@paytm.com
