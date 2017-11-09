@@ -95,7 +95,7 @@ function getChecksumFromArray($arrayList, $key) {
 function verifychecksum_e($arrayList, $key, $checksumvalue) {
 	$arrayList = Mage::helper('paytm')->removeCheckSumParam($arrayList);
 	ksort($arrayList);
-	$str = Mage::helper('paytm')->getArray2Str($arrayList);
+	$str = Mage::helper('paytm')->getArray2StrForVerify($arrayList);
 	$paytm_hash = Mage::helper('paytm')->decrypt_e($checksumvalue, $key);
 	$salt = substr($paytm_hash, -4);
 
@@ -113,7 +113,7 @@ function verifychecksum_e($arrayList, $key, $checksumvalue) {
 	return $validFlag;
 }
 
-/*function getArray2Str($arrayList) {
+function getArray2StrForVerify($arrayList) {
 	$paramStr = "";
 	$flag = 1;
 	foreach ($arrayList as $key => $value) {
@@ -125,7 +125,7 @@ function verifychecksum_e($arrayList, $key, $checksumvalue) {
 		}
 	}
 	return $paramStr;
-}*/
+}
 function getArray2Str($arrayList) {
 	$findme   = 'REFUND';
 	$findmepipe = '|';
