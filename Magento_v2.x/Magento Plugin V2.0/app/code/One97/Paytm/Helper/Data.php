@@ -113,7 +113,7 @@ class Data extends AbstractHelper
     public function verifychecksum_e($arrayList, $key, $checksumvalue) {
 	$arrayList = $this->removeCheckSumParam($arrayList);
 	ksort($arrayList);
-	$str = $this->getArray2Str($arrayList);
+	$str = $this->getArray2StrForVerify($arrayList);
 	$paytm_hash = $this->decrypt_e($checksumvalue, $key);
 	$salt = substr($paytm_hash, -4);
 	$finalString = $str . "|" . $salt;
@@ -128,7 +128,7 @@ class Data extends AbstractHelper
 	return $validFlag;
     }
 
-    /*public function getArray2Str($arrayList) {
+    public function getArray2StrForVerify($arrayList) {
 	$paramStr = "";
 	$flag = 1;
 	foreach ($arrayList as $key => $value) {
@@ -140,7 +140,7 @@ class Data extends AbstractHelper
             }
 	}
 	return $paramStr;
-    }*/
+    }
 	
     public function getArray2Str($arrayList) {
 	$findme   = 'REFUND';
