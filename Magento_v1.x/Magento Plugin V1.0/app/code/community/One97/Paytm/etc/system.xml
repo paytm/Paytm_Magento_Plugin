@@ -25,6 +25,7 @@
                             <label>New order status</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_order_status</source_model>
+                            <!-- <validate>validate-select</validate> -->
                             <sort_order>2</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -34,6 +35,7 @@
                         <title translate="label">
                             <label>Title</label>
                             <frontend_type>text</frontend_type>
+                            <!-- <validate>required-entry</validate> -->
                             <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -45,6 +47,7 @@
 							<label>Merchant ID</label>
                             <frontend_type>text</frontend_type>
                             <backend_model>paytm/config_backend_instid</backend_model>
+                            <!-- <validate>required-entry</validate> -->
                             <sort_order>4</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -55,20 +58,43 @@
 							<label>Merchant Key</label>
                             <frontend_type>text</frontend_type>
                             <backend_model>paytm/config_backend_instid</backend_model>
+                            <!-- <validate>required-entry</validate> -->
                             <sort_order>5</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
 						</inst_key>
-						<mode translate="label">
-                            <label>Select Mode</label>
-                            <frontend_type>select</frontend_type>
-							<source_model>paytm/config_source_instid2</source_model>
-                            <sort_order>7</sort_order>
-							<show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </mode>
+                        <!--  19751/19Jan2018 -->
+                            <!-- <mode translate="label">
+                                <label>Select Mode</label>
+                                <frontend_type>select</frontend_type>
+                                <source_model>paytm/config_source_instid2</sourcemodel>
+                                <sort_order>7</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>0</show_in_store>
+                            </mode> -->
+                            <transaction_url translate="label">
+                                <label>Transaction Url</label>
+                                <frontend_type>text</frontend_type>
+                                <backend_model>paytm/config_backend_instid</backend_model>
+                                <!-- <validate>required-entry validate-url</validate> -->
+                                <sort_order>6</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>0</show_in_store>
+                            </transaction_url>
+                            <transaction_status_url translate="label">
+                                <label>Transaction Status Url</label>
+                                <frontend_type>text</frontend_type>
+                                <backend_model>paytm/config_backend_instid</backend_model>
+                                <!-- <validate>required-entry validate-url</validate> -->
+                                <sort_order>7</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>0</show_in_store>
+                            </transaction_status_url>
+                        <!--  19751/19Jan2018 -->
                         
                         <callbackUrl translate="label">
                             <label>Calback Url</label>
@@ -82,6 +108,7 @@
                         <website translate="label">
                             <label>Website Name</label>
                             <frontend_type>text</frontend_type>
+                            <!-- <validate>required-entry</validate> -->
                             <sort_order>8</sort_order>
 							<show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -90,6 +117,7 @@
 						<industrytype translate="label">
                             <label>Industry Type (Retail,Entertainment etc.)</label>
                             <frontend_type>text</frontend_type>
+                            <!-- <validate>required-entry</validate> -->
                             <sort_order>9</sort_order>
 							<show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>

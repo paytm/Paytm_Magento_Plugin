@@ -56,10 +56,13 @@ class One97_paytm_Model_Cc extends Mage_Payment_Model_Method_Abstract
 
     public function getUrl()
     {
-    		if(Mage::getStoreConfig('payment/paytm_cc/mode')==1)
-			$this->_liveUrl = Mage::helper('paytm/Data2')->PAYTM_PAYMENT_URL_PROD;
+    		/*if(Mage::getStoreConfig('payment/paytm_cc/mode')==1)
+				$this->_liveUrl = Mage::helper('paytm/Data2')->PAYTM_PAYMENT_URL_PROD;
 			else
-			$this->_liveUrl = Mage::helper('paytm/Data2')->PAYTM_PAYMENT_URL_TEST;
+				$this->_liveUrl = Mage::helper('paytm/Data2')->PAYTM_PAYMENT_URL_TEST;*/
+			$transaction_url = Mage::getStoreConfig('payment/paytm_cc/transaction_url');
+			$const = (string)Mage::getConfig()->getNode('global/crypt/key');
+			$this->_liveUrl= Mage::helper('paytm')->decrypt_e($transaction_url,$const);
 			return $this->_liveUrl;
     }
 

@@ -9,13 +9,22 @@ use Magento\Framework\App\Helper\AbstractHelper;
 class Data extends AbstractHelper
 {
     protected $session;
-    public $PAYTM_PAYMENT_URL_PROD = "https://secure.paytm.in/oltp-web/processTransaction";
-    public $STATUS_QUERY_URL_PROD = "https://secure.paytm.in/oltp/HANDLER_INTERNAL/TXNSTATUS";
-    public $NEW_STATUS_QUERY_URL_PROD = "https://secure.paytm.in/oltp/HANDLER_INTERNAL/getTxnStatus";
-	
-    public $PAYTM_PAYMENT_URL_TEST = "https://pguat.paytm.com/oltp-web/processTransaction";
-    public $STATUS_QUERY_URL_TEST = "https://pguat.paytm.com/oltp/HANDLER_INTERNAL/TXNSTATUS";
-    public $NEW_STATUS_QUERY_URL_TEST = "https://pguat.paytm.com/oltp/HANDLER_INTERNAL/getTxnStatus";
+    /*	19751/17Jan2018	*/
+	    /*public $PAYTM_PAYMENT_URL_PROD = "https://secure.paytm.in/oltp-web/processTransaction";
+	    public $STATUS_QUERY_URL_PROD = "https://secure.paytm.in/oltp/HANDLER_INTERNAL/TXNSTATUS";
+	    public $NEW_STATUS_QUERY_URL_PROD = "https://secure.paytm.in/oltp/HANDLER_INTERNAL/getTxnStatus";
+	    public $PAYTM_PAYMENT_URL_TEST = "https://pguat.paytm.com/oltp-web/processTransaction";
+	    public $STATUS_QUERY_URL_TEST = "https://pguat.paytm.com/oltp/HANDLER_INTERNAL/TXNSTATUS";
+	    public $NEW_STATUS_QUERY_URL_TEST = "https://pguat.paytm.com/oltp/HANDLER_INTERNAL/getTxnStatus";*/
+
+	    /*public $PAYTM_PAYMENT_URL_PROD = "https://securegw.paytm.in/theia/processTransaction";
+	    public $STATUS_QUERY_URL_PROD = "https://securegw.paytm.in/merchant-status/getTxnStatus";
+	    public $NEW_STATUS_QUERY_URL_PROD = "https://securegw.paytm.in/merchant-status/getTxnStatus";
+		
+	    public $PAYTM_PAYMENT_URL_TEST = "https://securegw-stage.paytm.in/theia/processTransaction";
+	    public $STATUS_QUERY_URL_TEST = "https://securegw-stage.paytm.in/merchant-status/getTxnStatus";
+	    public $NEW_STATUS_QUERY_URL_TEST = "https://securegw-stage.paytm.in/merchant-status/getTxnStatus";*/
+    /*	19751/17Jan2018 end	*/
 
     public function __construct(Context $context, \Magento\Checkout\Model\Session $session) {
         $this->session = $session;
@@ -38,46 +47,20 @@ class Data extends AbstractHelper
     public function getUrl($route, $params = []) {
         return $this->_getUrl($route, $params);
     }
-    
-    public function pkcs5_pad_e($text, $blocksize) {
-	$pad = $blocksize - (strlen($text) % $blocksize);
-	return $text . str_repeat(chr($pad), $pad);
-    }
-	
+
     public function encrypt_e($input, $ky) {
-	$key = $ky;
-	$size = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, 'cbc');
-	$input = $this->pkcs5_pad_e($input, $size);
-	$td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', 'cbc', '');
-	$iv = "@@@@&&&&####$$$$";
-	mcrypt_generic_init($td, $key, $iv);
-	$data = mcrypt_generic($td, $input);
-	mcrypt_generic_deinit($td);
-	mcrypt_module_close($td);
-	$data = base64_encode($data);
-	return $data;
-    }
-    
-    public function pkcs5_unpad_e($text) {
-	$pad = ord($text{strlen($text) - 1});
-	if ($pad > strlen($text))
-		return false;
-	return substr($text, 0, -1 * $pad);
-    }	
-	
-    public function decrypt_e($crypt, $ky) {
-	$crypt = base64_decode($crypt);
-	$key = $ky;
-	$td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', 'cbc', '');
-	$iv = "@@@@&&&&####$$$$";
-	mcrypt_generic_init($td, $key, $iv);
-	$decrypted_data = mdecrypt_generic($td, $crypt);
-	mcrypt_generic_deinit($td);
-	mcrypt_module_close($td);
-	$decrypted_data = $this->pkcs5_unpad_e($decrypted_data);
-	$decrypted_data = rtrim($decrypted_data);
-	return $decrypted_data;
-    }
+		$key   = html_entity_decode($ky);
+		$iv = "@@@@&&&&####$$$$";
+		$data = openssl_encrypt ( $input , "AES-128-CBC" , $key, 0, $iv );
+		return $data;
+	}
+
+	public function decrypt_e($crypt, $ky) {
+		$key   = html_entity_decode($ky);
+		$iv = "@@@@&&&&####$$$$";
+		$data = openssl_decrypt ( $crypt , "AES-128-CBC" , $key, 0, $iv );
+		return $data;
+	}
 
     public function generateSalt_e($length) {
 	$random = "";

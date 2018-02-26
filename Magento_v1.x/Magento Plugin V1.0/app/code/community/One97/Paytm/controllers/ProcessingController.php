@@ -115,10 +115,13 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
 			}
 			
 			$_testurl = NULL;
-			if(Mage::getStoreConfig('payment/paytm_cc/mode')==1)
+			/*if(Mage::getStoreConfig('payment/paytm_cc/mode')==1)
 				$_testurl = Mage::helper('paytm/Data2')->STATUS_QUERY_URL_PROD;
 			else
-				$_testurl = Mage::helper('paytm/Data2')->STATUS_QUERY_URL_TEST;
+                $_testurl = Mage::helper('paytm/Data2')->STATUS_QUERY_URL_TEST;*/
+			$transaction_status_url = Mage::getStoreConfig('payment/paytm_cc/transaction_status_url');
+            $const = (string)Mage::getConfig()->getNode('global/crypt/key');
+            $_testurl= Mage::helper('paytm')->decrypt_e($transaction_status_url,$const);
 
 			if($txnstatus && $isValidChecksum){
 				// Create an array having all required parameters for status query.
@@ -131,11 +134,22 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
 				
 				// Call the PG's getTxnStatus() function for verifying the transaction status.
 				
-				$check_status_url = 'https://pguat.paytm.com/oltp/HANDLER_INTERNAL/getTxnStatus';
-				if(Mage::getStoreConfig('payment/paytm_cc/mode') == '1')
-				{
-					$check_status_url = 'https://secure.paytm.in/oltp/HANDLER_INTERNAL/getTxnStatus';
-				}
+                /*  19751/17Jan2018 */
+                    /*$check_status_url = 'https://pguat.paytm.com/oltp/HANDLER_INTERNAL/getTxnStatus';
+                    if(Mage::getStoreConfig('payment/paytm_cc/mode') == '1')
+                    {
+                        $check_status_url = 'https://secure.paytm.in/oltp/HANDLER_INTERNAL/getTxnStatus';
+                    }*/
+                    
+                    /*$check_status_url = Mage::helper('paytm/Data2')->STATUS_QUERY_URL_TEST;
+                    if(Mage::getStoreConfig('payment/paytm_cc/mode')=='1'){
+                        $check_status_url = Mage::helper('paytm/Data2')->STATUS_QUERY_URL_PROD;
+                    }*/
+                    $transaction_status_url = Mage::getStoreConfig('payment/paytm_cc/transaction_status_url');
+                    $const = (string)Mage::getConfig()->getNode('global/crypt/key');
+                    $check_status_url= Mage::helper('paytm')->decrypt_e($transaction_status_url,$const);
+                /*  19751/17Jan2018 end */
+
 				$responseParamList = Mage::helper('paytm')->callNewAPI($check_status_url, $requestParamList);
 				//echo "<pre>"; print_r($responseParamList); die;
 				$authStatus = true;

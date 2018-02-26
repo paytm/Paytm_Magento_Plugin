@@ -81,11 +81,12 @@ class Paytm extends \Magento\Payment\Model\Method\AbstractMethod
         
         $params['CHECKSUMHASH'] = str_replace("+","%2b",$checksum);
 		
-        if($this->getConfigData('debug')){
+        /*if($this->getConfigData('debug')){
             $url = $this->helper->PAYTM_PAYMENT_URL_TEST."?";
         }else{
             $url = $this->helper->PAYTM_PAYMENT_URL_PROD."?";
-        }
+        }*/
+        $url = $this->getConfigData('transaction_url')."?";
         $urlparam = "";
 		foreach($params as $key => $val){
 			$urlparam = $urlparam.$key."=".$val."&";
@@ -114,31 +115,34 @@ class Paytm extends \Magento\Payment\Model\Method\AbstractMethod
 
     public function getRedirectUrl()
     {
-        if($this->getConfigData('debug')){
+        /*if($this->getConfigData('debug')){
             $url = $this->helper->PAYTM_PAYMENT_URL_TEST;
         }else{
             $url = $this->helper->PAYTM_PAYMENT_URL_PROD;
-        }
+        }*/
+        $url = $this->getConfigData('transaction_url');
         return $url;
     }
     
     public function getStatusQueryUrl()
     {
-        if($this->getConfigData('debug')){
+        /*if($this->getConfigData('debug')){
             $url = $this->helper->STATUS_QUERY_URL_TEST;
         }else{
             $url = $this->helper->STATUS_QUERY_URL_PROD;
-        }
+        }*/
+        $url = $this->getConfigData('transaction_status_url');
         return $url;
     }
 	
     public function getNewStatusQueryUrl()
     {
-        if($this->getConfigData('debug')){
-            $url = $this->helper->NEW_STATUS_QUERY_URL_TEST;
+        /*if($this->getConfigData('debug')){
+            $url = $this->helper->STATUS_QUERY_URL_TEST;
         }else{
-            $url = $this->helper->NEW_STATUS_QUERY_URL_PROD;
-        }
+            $url = $this->helper->STATUS_QUERY_URL_PROD;
+        }*/
+        $url = $this->getConfigData('transaction_status_url');
         return $url;
     }
 
