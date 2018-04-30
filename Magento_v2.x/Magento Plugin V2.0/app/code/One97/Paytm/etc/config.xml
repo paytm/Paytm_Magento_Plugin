@@ -10,6 +10,10 @@
                 <order_status>processing</order_status>
                 <MID>MID</MID>
                 <merchant_key>merchant_key</merchant_key>
+                <custom_callbackurl>0</custom_callbackurl>
+                <callback_url></callback_url>
+                <transaction_url></transaction_url>
+                <transaction_status_url></transaction_status_url>
                 <Industry_id>Industry_id</Industry_id>
                 <Channel_Id>WEB</Channel_Id>
                 <Website>Website</Website>

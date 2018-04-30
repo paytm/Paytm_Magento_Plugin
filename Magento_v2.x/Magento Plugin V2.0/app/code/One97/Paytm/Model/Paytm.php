@@ -67,6 +67,10 @@ class Paytm extends \Magento\Payment\Model\Method\AbstractMethod
 
     public function buildPaytmRequest($order)
     {
+        $callBackUrl=$this->urlBuilder->getUrl('paytm/Standard/Response', ['_secure' => true]);
+        if($this->getConfigData("custom_callbackurl")=='1'){
+            $callBackUrl=$this->getConfigData("callback_url")!=''?$this->getConfigData("callback_url"):$callBackUrl;
+        }
         $params = array('MID' => $this->getConfigData("MID"),  				
                         'TXN_AMOUNT' => round($order->getGrandTotal(), 2),
                         'CHANNEL_ID' => $this->getConfigData("Channel_Id"),
@@ -75,17 +79,12 @@ class Paytm extends \Magento\Payment\Model\Method\AbstractMethod
                         'CUST_ID' => $order->getCustomerEmail(),
                         'ORDER_ID' => $order->getRealOrderId(),   				    
                         'EMAIL' => $order->getCustomerEmail(),
-                        'CALLBACK_URL' => $this->urlBuilder->getUrl('paytm/Standard/Response', ['_secure' => true]));    
+                        'CALLBACK_URL' => $callBackUrl);    
         
         $checksum = $this->helper->getChecksumFromArray($params, $this->getConfigData("merchant_key"));
         
         $params['CHECKSUMHASH'] = str_replace("+","%2b",$checksum);
 		
-        /*if($this->getConfigData('debug')){
-            $url = $this->helper->PAYTM_PAYMENT_URL_TEST."?";
-        }else{
-            $url = $this->helper->PAYTM_PAYMENT_URL_PROD."?";
-        }*/
         $url = $this->getConfigData('transaction_url')."?";
         $urlparam = "";
 		foreach($params as $key => $val){
@@ -115,33 +114,18 @@ class Paytm extends \Magento\Payment\Model\Method\AbstractMethod
 
     public function getRedirectUrl()
     {
-        /*if($this->getConfigData('debug')){
-            $url = $this->helper->PAYTM_PAYMENT_URL_TEST;
-        }else{
-            $url = $this->helper->PAYTM_PAYMENT_URL_PROD;
-        }*/
         $url = $this->getConfigData('transaction_url');
         return $url;
     }
     
     public function getStatusQueryUrl()
     {
-        /*if($this->getConfigData('debug')){
-            $url = $this->helper->STATUS_QUERY_URL_TEST;
-        }else{
-            $url = $this->helper->STATUS_QUERY_URL_PROD;
-        }*/
         $url = $this->getConfigData('transaction_status_url');
         return $url;
     }
 	
     public function getNewStatusQueryUrl()
     {
-        /*if($this->getConfigData('debug')){
-            $url = $this->helper->STATUS_QUERY_URL_TEST;
-        }else{
-            $url = $this->helper->STATUS_QUERY_URL_PROD;
-        }*/
         $url = $this->getConfigData('transaction_status_url');
         return $url;
     }

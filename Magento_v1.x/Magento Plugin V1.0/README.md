@@ -3,7 +3,7 @@ Magento Plugin
 
 Version :
 Paytm Plugin version V1.0
-Magento supported version 1.5.x â€“ 1.9.x
+Magento supported version 1.5.x – 1.9.x
 
 Installation and Configuration:
 Use Magento connect to install the Plugin in your Magento Website OR extract the zip and paste the app folder into your root folder. When prompted overwrite files,click yes.
@@ -14,12 +14,3 @@ Choose if you wish to enable checksum check and configure sending of customer's 
 5.	Click 'Save Config' to configure the Plugin. The Paytm Payment Gateway is now shown as a payment method on the Checkout page.
 6.	If you have a linux server make sure the Folder permission are set to 755 and file permission to 644.
 7.	After you have installed plugin,logout from admin and clear magento cache as well.
-
-# Paytm PG URL Details
-	staging	
-		Transaction URL             => https://securegw-stage.paytm.in/theia/processTransaction
-		Transaction Status Url      => https://securegw-stage.paytm.in/merchant-status/getTxnStatus
-
-	Production
-		Transaction URL             => https://securegw.paytm.in/theia/processTransaction
-		Transaction Status Url      => https://securegw.paytm.in/merchant-status/getTxnStatus

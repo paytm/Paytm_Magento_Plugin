@@ -38,7 +38,6 @@ define(
                 return false;
             },
             afterPlaceOrder: function () {
-                //alert("hii");
                 $.mage.redirect(window.checkoutConfig.payment.paytm.redirectUrl);
             }
         });

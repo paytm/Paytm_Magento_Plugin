@@ -98,21 +98,21 @@ class One97_paytm_Model_Cc extends Mage_Payment_Model_Method_Abstract
 		$telephone = $order->getBillingAddress()->getTelephone();
 		//create array using which checksum is calculated
 		
-    	$params = 	array(
-	    			'MID' =>	$merid,  				
-	    			'TXN_AMOUNT' =>	$price,
-    				'CHANNEL_ID' => "WEB",
-						'INDUSTRY_TYPE_ID' => $industry_type,
-						'WEBSITE' => $website,
-						'CUST_ID' => Mage::getSingleton('customer/session')->getCustomer()->getId(),
-						'ORDER_ID'	=>	$this->getOrder()->getRealOrderId(),   				    
-						'EMAIL'=> $email,
-						'MOBILE_NO' => preg_replace('#[^0-9]{0,13}#is','',$telephone)
-                                                
-					);
-                                        if($is_callback){
-                                            $params['CALLBACK_URL'] = $callbackUrl;
-                                        }
+		$params = 	array(
+			'MID' =>	$merid,  				
+			'TXN_AMOUNT' =>	$price,
+			'CHANNEL_ID' => "WEB",
+			'INDUSTRY_TYPE_ID' => $industry_type,
+			'WEBSITE' => $website,
+			'CUST_ID' => Mage::getSingleton('customer/session')->getCustomer()->getId(),
+			'ORDER_ID'	=>	$this->getOrder()->getRealOrderId(),   				    
+			'EMAIL'=> $email,
+			'MOBILE_NO' => preg_replace('#[^0-9]{0,13}#is','',$telephone)
+		);
+		if($is_callback=='1'){
+			$callbackUrl=$this->getConfigData('callback_url')!=''?$this->getConfigData('callback_url'):$callbackUrl;
+		}
+		$params['CALLBACK_URL'] = $callbackUrl;
 					
 					//generate customer id in case this is a guest checkout
                                 if(empty($params['CUST_ID'])){

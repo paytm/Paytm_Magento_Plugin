@@ -120,7 +120,14 @@
                 <model>paytm/cc</model>
                 <order_status>1</order_status>
                 <title>Paytm PG</title>  
-				
+                <inst_id></inst_id>
+                <inst_key></inst_key>
+                <custom_callbackurl>0</custom_callbackurl>
+                <callback_url></callback_url>
+                <transaction_url></transaction_url>
+                <transaction_status_url></transaction_status_url>
+                <website></website>
+                <industrytype></industrytype>
             </paytm_cc>
         </payment>
     </default> 
