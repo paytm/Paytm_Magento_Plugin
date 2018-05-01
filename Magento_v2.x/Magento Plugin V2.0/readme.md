@@ -12,23 +12,27 @@
   6. Enable Paytm option from Payment Methods
   7. Go to the Paytm PG Configuration and save below configuration
 
-      Enable                  - Yes
-      Title                   - Paytm PG
-      Merchant ID             - Staging/Production MID provided by Paytm
-      Merchant Key            - Staging Key provided by Paytm
-      Transaction URL         - Staging     - https://securegw-stage.paytm.in/theia/processTransaction
-                                Production  - https://securegw.paytm.in/theia/processTransaction
-      Transaction Status URL  - Staging     - https://securegw-stage.paytm.in/merchant-status/getTxnStatus
-                                Production  - https://securegw.paytm.in/merchant-status/getTxnStatus
-      Website Name            - Webstag for Staging
-                                Webprod for Production
-      Custom Callback Url     - No
-      Callback Url            - customized callback url(this is visible when Custom Callback Url is yes)
-      Industry Type           - Retail for staging 
-                                Industry type for Production will be provided by Paytm
-      Channel ID              - WEB/WAP
-      Sort Order              - 2
-      Applicable Country      - All allowed country
+      * Enable                  - Yes
+      * Title                   - Paytm PG
+      * Merchant ID             - Staging/Production MID provided by Paytm
+      * Merchant Key            - Staging Key provided by Paytm
+      * Transaction URL         
+        * Staging     - https://securegw-stage.paytm.in/theia/processTransaction
+        * Production  - https://securegw.paytm.in/theia/processTransaction
+      * Transaction Status URL  
+        * Staging     - https://securegw-stage.paytm.in/merchant-status/getTxnStatus
+        * Production  - https://securegw.paytm.in/merchant-status/getTxnStatus
+      * Website Name            
+        * Webstag for Staging
+        * Webprod for Production
+      * Custom Callback Url     - No
+      * Callback Url            - customized callback url(this is visible when Custom Callback Url is yes)
+      * Industry Type           
+        * Retail for staging 
+        * Industry type for Production will be provided by Paytm
+      * Channel ID              - WEB/WAP
+      * Sort Order              - 2
+      * Applicable Country      - All allowed country
 
   8. Please note if you have Linux server, please make sure folder permission are set to 755 & file permission to 644.
   9. Once plugin is installed, please logout from the admin panel and clear the cache of the Magento.
