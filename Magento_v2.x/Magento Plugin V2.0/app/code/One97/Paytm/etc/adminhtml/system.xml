@@ -36,7 +36,7 @@
                     </field>
                     <field id="callback_url" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Callback Url</label>
-                        <comment>Provided By Merchant</comment>
+                        <comment>Provided By Merchant (hint: https://domainName/paytm/Standard/Response)</comment>
                         <config_path>payment/paytm/callback_url</config_path>
                         <!-- <validate>required-entry validate-url</validate> -->
                         <depends>

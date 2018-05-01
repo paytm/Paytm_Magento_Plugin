@@ -1,16 +1,31 @@
-Magento Plugin
+# Magento 1.X:- 
+  
+  1. Download the plugin.
+  2. Extract the files from the downloaded folder.
+  3. Copy App and Skin folder from the required Magento version and place them into the root folder. If prompted to overwrite the files, click yes.
+  4. Login to Magento Admin Panel and choose Payments Methods
+      System- > Configuration - > Payment Methods
+  5. Enable Paytm option from Payment Methods
+  6. Go to the Paytm PG Configuration and save below configuration
 
+      Enable Plugin           - Yes
+      New Order Status        - Processing
+      Title                   - Paytm PG
+      Merchant ID             - Staging/Production MID provided by Paytm
+      Merchant Key            - Staging Key provided by Paytm
+      Transaction URL         - Staging     - https://securegw-stage.paytm.in/theia/processTransaction
+                                Production  - https://securegw.paytm.in/theia/processTransaction
+      Transaction Status URL  - Staging     - https://securegw-stage.paytm.in/merchant-status/getTxnStatus
+                                Production  - https://securegw.paytm.in/merchant-status/getTxnStatus
+      Website Name            - Webstag for Staging
+                                Webprod for Production
+      Custom Callback Url     - No
+      Callback Url            - customized callback url(this is visible when Custom Callback Url is yes)
+      Industry Type           - Retail for staging 
+                                Industry type for Production will be provided by Paytm
 
-Version :
-Paytm Plugin version V1.0
-Magento supported version 1.5.x – 1.9.x
+  7. Please note if you have Linux server, please make sure folder permission are set to 755 & file permission to 644.
+  8. Once plugin is installed, please logout from the admin panel and clear the cache of the Magento.
+  9. Your plug-in is installed now, you can now make payment with Paytm.
 
-Installation and Configuration:
-Use Magento connect to install the Plugin in your Magento Website OR extract the zip and paste the app folder into your root folder. When prompted overwrite files,click yes.
-Log in to your admin panel. Click on System->Configuration on the dashboard. On the left side,click on Sales->Payment Methods.
-Paytm PG is shown as one of the Payment Methods.
-Select 'Yes' to enable Plugin. Choose your Order status, Plugin Title(shown on checkout page). Enter your Merchant ID,Merchant Key,Website name and Industry Type. Select whether you wish to check your transaction status when the Callback is called.
-Choose if you wish to enable checksum check and configure sending of customer's mobile number and email id.
-5.	Click 'Save Config' to configure the Plugin. The Paytm Payment Gateway is now shown as a payment method on the Checkout page.
-6.	If you have a linux server make sure the Folder permission are set to 755 and file permission to 644.
-7.	After you have installed plugin,logout from admin and clear magento cache as well.
+# In case of any query, please contact to Paytm.

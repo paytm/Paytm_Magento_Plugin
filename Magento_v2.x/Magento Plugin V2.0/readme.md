@@ -1,26 +1,37 @@
-Supported Versions
+# Magento 2.0:- 
+  
+  1. Download the plugin.
+  2. Extract the files from the downloaded folder.
+  3. Copy App folder from the required Magento version and place them into the root folder. If prompted to overwrite the files, click yes.
+  4. Run below command:
+      php bin/magento module:enable One97_Paytm
+      php bin/magento setup:upgrade
+      php bin/magento setup:static-content:deploy
+  5. Login to Magento Admin Panel and choose Payments Methods
+      System- > Configuration - > Payment Methods
+  6. Enable Paytm option from Payment Methods
+  7. Go to the Paytm PG Configuration and save below configuration
 
-Paytm Plugin version V1.0 Magento supported version 2.0.X onward
+      Enable                  - Yes
+      Title                   - Paytm PG
+      Merchant ID             - Staging/Production MID provided by Paytm
+      Merchant Key            - Staging Key provided by Paytm
+      Transaction URL         - Staging     - https://securegw-stage.paytm.in/theia/processTransaction
+                                Production  - https://securegw.paytm.in/theia/processTransaction
+      Transaction Status URL  - Staging     - https://securegw-stage.paytm.in/merchant-status/getTxnStatus
+                                Production  - https://securegw.paytm.in/merchant-status/getTxnStatus
+      Website Name            - Webstag for Staging
+                                Webprod for Production
+      Custom Callback Url     - No
+      Callback Url            - customized callback url(this is visible when Custom Callback Url is yes)
+      Industry Type           - Retail for staging 
+                                Industry type for Production will be provided by Paytm
+      Channel ID              - WEB/WAP
+      Sort Order              - 2
+      Applicable Country      - All allowed country
 
+  8. Please note if you have Linux server, please make sure folder permission are set to 755 & file permission to 644.
+  9. Once plugin is installed, please logout from the admin panel and clear the cache of the Magento.
+  10. Your plug-in is installed now, you can now make payment with Paytm.
 
-
-Installation and Configuration
-
-upload app/code/One97 (all files and folder) at you server end.
-
-Run below command:
-php bin/magento module:enable One97_Paytm
-php bin/magento setup:upgrade
-php bin/magento setup:static-content:deploy
-
-goto Admin->Store->Configuration->Sales->Payment Method->Paytm
-fill details here and save them.
-
-goto Admin->System->Cache Management
-Clear all Cache.
-
-Now you can collect payment via Paytm .
-
-
-
-In case of any issue Kindly write us at integration.dev@paytm.com
+# In case of any query, please contact to Paytm.
