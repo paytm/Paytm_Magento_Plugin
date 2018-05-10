@@ -75,7 +75,8 @@ class Response extends \One97\Paytm\Controller\Paytm
             $order->setStatus($order::STATUS_FRAUD);
             $returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
         }
-		$this->addOrderHistory($order,$comment);
+		// $this->addOrderHistory($order,$comment);
+        $order->addStatusToHistory($order->getStatus(), $comment);
         $order->save();
 		if($successFlag){
 			$this->messageManager->addSuccess( __('Paytm transaction has been successful.') );
