@@ -35,7 +35,7 @@ class Response extends \One97\Paytm\Controller\Paytm
 				$check_status_url = $this->getPaytmModel()->getNewStatusQueryUrl(); 				
 				$responseParamList = $this->getPaytmHelper()->callNewAPI($check_status_url, $requestParamList);
 				if($responseParamList['STATUS'] == "PENDING"){
-					$errorMsg = 'Paytm Transaction Pending ! '.$resMessage;
+					$errorMsg = 'Paytm Transaction Pending !';
 					$comment .=  "Pending";
 					
 					$order->setState("pending_payment")->setStatus("pending_payment");
