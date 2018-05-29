@@ -4,7 +4,7 @@
 <?php 
 	echo $this->getMethod()->getTitle() . '<br/>';
 	if ($this->getInfo()->getLastTransId() == '') {
-		echo '<em>' . Mage::helper('paytm')->__('You will be redirected to Paytm Payment Gateway when you place an order.') . '</em>';
+		// echo '<em>' . Mage::helper('paytm')->__('You will be redirected to Paytm Payment Gateway when you place an order.') . '</em>';
 	} else {
 		echo Mage::helper('paytm')->__('paytm Transaction ID: %s', $this->htmlEscape($this->getInfo()->getLastTransId())) . '<br/>';
 	}
