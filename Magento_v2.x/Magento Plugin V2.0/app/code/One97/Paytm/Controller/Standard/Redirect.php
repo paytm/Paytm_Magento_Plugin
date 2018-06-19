@@ -6,6 +6,12 @@ class Redirect extends \One97\Paytm\Controller\Paytm
 {
     public function execute()
     {
+        $promo='';
+        if(isset($_GET['promo'])){
+            if(trim($_GET['promo'])!=''){
+                $promo=$_GET['promo'];
+            }
+        }
         $order = $this->getOrder();
         if ($order->getBillingAddress())
         {
@@ -13,6 +19,9 @@ class Redirect extends \One97\Paytm\Controller\Paytm
             $order->addStatusToHistory($order->getStatus(), "Customer was redirected to paytm.");
             $order->save();
             
+            if($promo!=''){
+                $order->paytmPromoCode=$promo;
+            }
             $this->getResponse()->setRedirect(
                 $this->getPaytmModel()->buildPaytmRequest($order)
             );

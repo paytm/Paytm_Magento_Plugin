@@ -119,6 +119,14 @@ class One97_paytm_Model_Cc extends Mage_Payment_Model_Method_Abstract
                                         $params['CUST_ID'] = $email;
                                 }
 				
+		if(Mage::getSingleton('core/session')->getPROMO_CAMP_ID()){
+			$params['PROMO_CAMP_ID'] = Mage::getSingleton('core/session')->getPROMO_CAMP_ID();
+
+			// unset Promo Code form session
+			Mage::getSingleton('core/session')->unsPROMO_CAMP_ID();
+		}
+
+
 			$checksum = Mage::helper('paytm')->getChecksumFromArray($params, $mer);//generate checksum
 			$params['CHECKSUMHASH'] = $checksum;
 		  return $params;

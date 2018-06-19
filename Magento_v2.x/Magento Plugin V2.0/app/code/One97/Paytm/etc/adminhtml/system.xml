@@ -84,7 +84,7 @@
                     <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
                     <config_path>payment/paytm/order_status</config_path>
                     <!-- <validate>validate-select</validate> -->
-                </field>   
+                </field>
                           
                 <field id="sort_order" translate="label" type="text" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Sort Order</label>
@@ -103,6 +103,25 @@
                     <label>Payment from Specific Countries</label>
                     <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                     <config_path>payment/paytm/specificcountry</config_path>
+                </field>
+                
+
+                <field id="hide_promo_field" translate="label" type="select" sortOrder="16" showInDefault="1" showInWebsite="1" showInStore="0" >
+                    <label>Promo Code Status</label>
+                    <comment>Selecting yes, will show Promo Code field at Checkout.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="promo_code_local_validation" translate="label" type="select" sortOrder="17" showInDefault="1" showInWebsite="1" showInStore="0" >
+                    <label>Local Validation</label>
+                    <comment>Validate applied Promo Code before proceeding to Paytm payment page. Transaction will be failed in case of Promo Code failure at Paytm's end.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="promo_code" translate="label" type="text" sortOrder="18" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Promo Codes</label>
+                    <comment>These promo codes must be configured with your Paytm MID. Use comma ( , ) to separate multiple codes i.e. FB50,CASHBACK10 etc.</comment>
+                    <config_path>payment/paytm/promo_code</config_path>
                 </field>
             </group>
         </section>

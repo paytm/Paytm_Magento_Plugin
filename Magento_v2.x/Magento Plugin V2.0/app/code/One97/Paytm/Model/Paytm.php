@@ -80,6 +80,9 @@ class Paytm extends \Magento\Payment\Model\Method\AbstractMethod
                         'ORDER_ID' => $order->getRealOrderId(),   				    
                         'EMAIL' => $order->getCustomerEmail(),
                         'CALLBACK_URL' => $callBackUrl);    
+        if(isset($order->paytmPromoCode)){
+            $params['PROMO_CAMP_ID']=$order->paytmPromoCode;
+        }
         
         $checksum = $this->helper->getChecksumFromArray($params, $this->getConfigData("merchant_key"));
         

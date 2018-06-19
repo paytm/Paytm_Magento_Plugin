@@ -21,10 +21,16 @@ class PaytmConfigProvider implements ConfigProviderInterface
 
     public function getConfig()
     {
+        $promo=$this->method->getConfigData("promo_code");
+        $hide_promo_field=$this->method->getConfigData("hide_promo_field");
+        $promo_code_local_validation=$this->method->getConfigData("promo_code_local_validation");
         return $this->method->isAvailable() ? [
             'payment' => [
                 'paytm' => [
-                    'redirectUrl' => $this->urlBuilder->getUrl('paytm/Standard/Redirect', ['_secure' => true])
+                    'redirectUrl' => $this->urlBuilder->getUrl('paytm/Standard/Redirect', ['_secure' => true]),
+                    'promoCode'=>$promo,
+                    'hide_promo_field'=>$hide_promo_field,
+                    'promo_code_local_validation'=>$promo_code_local_validation
                 ]
             ]
         ] : [];

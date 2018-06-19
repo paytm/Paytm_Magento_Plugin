@@ -15,6 +15,14 @@
             <!-- ko template: getTemplate() --><!-- /ko -->
             <!--/ko-->
         </div>
+        <div class="customDiv" style="padding: 5px 0;display: none;">
+            <p style="margin-bottom: 0;">Have Promo Code?</p>
+            <div>
+                <input type="text" name="promo_code" style="width: 30%;" class="promoCodeField" placeholder="Please enter promo code">
+                <input type="button" value="Apply" class="promoApplyBtn action primary" style="vertical-align:0;">
+            </div>
+            <p class="errP"></p>
+        </div>
         <div class="actions-toolbar">
             <div class="primary">
                 <button class="action primary checkout"
@@ -26,7 +34,7 @@
                         enable: (getCode() == isChecked())
                         "
                         disabled>
-						
+                        
                     <span data-bind="i18n: 'Pay with Paytm'"></span>
                 </button>
             </div>

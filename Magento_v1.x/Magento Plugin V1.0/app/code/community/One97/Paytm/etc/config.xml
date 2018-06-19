@@ -6,41 +6,41 @@
             <version>0.1.0</version>
         </One97_paytm>
     </modules>
-	
-	
-	
+    
+    
+    
     <global>
         <models>
             <paytm>
                 <class>One97_paytm_Model</class>
-				<resourceModel>One97_paytm_mysql4</resourceModel>
+                <resourceModel>One97_paytm_mysql4</resourceModel>
             </paytm>
-			<paytm_mysql4>
-				<class>One97_paytm_Model_Mysql4</class>
-					<entities>
-						<paytm>
-							<table>paytm</table>
-						</paytm>
-					</entities>
-			</paytm_mysql4>
-	    </models>
-		
-		
-		
-		
-		
+            <paytm_mysql4>
+                <class>One97_paytm_Model_Mysql4</class>
+                    <entities>
+                        <paytm>
+                            <table>paytm</table>
+                        </paytm>
+                    </entities>
+            </paytm_mysql4>
+        </models>
+        
+        
+        
+        
+        
         <helpers>
-	      <paytm>
+          <paytm>
             <class>One97_paytm_Helper</class>
-		  </paytm>
-	    </helpers>
-		
-		
+          </paytm>
+        </helpers>
+        
+        
         <resources>
             <paytm_setup>
                 <setup>
                     <module>One97_paytm</module>
-					
+                    
                 </setup>
                 <connection>
                     <use>core_setup</use>
@@ -57,22 +57,22 @@
                 </connection>
             </paytm_read>
         </resources>
-		
-		
-		
+        
+        
+        
         <blocks>
             <paytm><class>One97_paytm_Block</class></paytm>
         </blocks>
-		
-		
+        
+        
         
     </global>
-	
-	
-	
-	
-	
-	
+    
+    
+    
+    
+    
+    
     <frontend>
         <secure_url>
             <paytm_processing>/paytm/processing</paytm_processing>
@@ -94,11 +94,11 @@
             </updates>
         </layout>
     </frontend>
-	
-	
-	
-	
-	
+    
+    
+    
+    
+    
     <adminhtml>
         <translate>
             <modules>
@@ -110,10 +110,10 @@
             </modules>
         </translate>
     </adminhtml>
-	
-	
-	
-	<default>
+    
+    
+    
+    <default>
         <payment>        
             <paytm_cc>
                 <active>0</active>
@@ -128,6 +128,9 @@
                 <transaction_status_url></transaction_status_url>
                 <website></website>
                 <industrytype></industrytype>
+                <promo_code_status>0</promo_code_status>
+                <promo_code_local_validation>0</promo_code_local_validation>
+                <promo_codes></promo_codes>
             </paytm_cc>
         </payment>
     </default> 

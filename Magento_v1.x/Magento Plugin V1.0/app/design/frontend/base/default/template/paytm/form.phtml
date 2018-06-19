@@ -1,15 +1,92 @@
-<?php
-
-?>
+<style type="text/css">
+	.removePromoCode, .removePromoCode:hover{
+		background: red !important;
+	}
+</style>
 <script>
 var $j = jQuery.noConflict();
 $j('label[for="p_method_paytm_cc"]').prepend('<span style="display: inline-block;"><img style="margin:0px 5px -4px 0px" src="<?php echo $this->getSkinUrl('images/paytm.png'); ?>" alt=""></span>');
 </script>
 <fieldset class="form-list">
     <?php $_code=$this->getMethodCode() ?>
-    <ul id="payment_form_<?php echo $_code ?>" style="display:none">
-        <li>
-            <?php echo Mage::helper('paytm')->__('You will be redirected to Paytm Payment Gateway when you place an order.') ?>
-        </li>
-    </ul>
-</fieldset>
+    <div id="payment_form_<?php echo $_code ?>" style="display:none">
+        
+		<?php 
+
+		if(Mage::getStoreConfig('payment/paytm_cc/promo_code_status')=='1') {
+			if((Mage::getStoreConfig('payment/paytm_cc/promo_code_local_validation')=='1' && trim(Mage::getStoreConfig('payment/paytm_cc/promo_codes'))!='') || Mage::getStoreConfig('payment/paytm_cc/promo_code_local_validation')!='1'){ 
+
+		// unset Promo Code form session so no earlier Promo Could apply again
+		?>
+		<div id="promo-code-section">
+        <label for="promo_code">Have Promo Code?</label>
+        <div class="input-box">
+            <input type="text" placeholder="Please enter Promo Code" class="input-text" id="promo_code" name="promo_code" value="" autocomplete="off">
+        	<button id="btn_promo_code" class="btn btn-primary button" type="button" style="vertical-align:0;">Apply</button>
+        </div>
+      </div>
+		<script>
+		/*
+		* Promo Code functionality starts here
+		*/
+
+		// magento keeps these input and button disabled on load, make them enable
+		setTimeout(function(){$j("#promo_code, #btn_promo_code").prop("disabled", false);}, 0);
+		
+		$j("#btn_promo_code").click(function(){
+
+			// remove earlier validation error
+			$j("#promo-code-section .validation-advice, #promo-code-section .text-success").remove();
+
+			// if some promo code already applied and now user requests to remove it
+			if($j(this).hasClass("removePromoCode")){
+
+				$j.ajax({
+					url: '<?php echo $this->getUrl('paytm/processing/ajax');?>?remove=true',
+					type: 'post',
+					dataType: 'json',
+					data: {},
+					success: function(res){
+						if(res.success == true){
+							// enable input to allow user to enter promo code
+							$j("#promo_code").prop("disabled", false).val("").removeClass('validation-failed');
+							$j("#btn_promo_code").addClass("btn-primary").removeClass("btn-danger").removeClass("removePromoCode").text("Apply");
+						}
+					}
+				});
+
+			} else {
+
+				if($j("#promo_code").val().trim() == "") {
+					$j("#promo_code").addClass("validation-failed");
+					return;
+				};
+
+				$j.ajax({
+					url: '<?php echo $this->getUrl('paytm/processing/ajax');?>',
+					type: 'post',
+					dataType: 'json',
+					data: {"promo_code": $j("#promo_code").val()},
+					success: function(res){
+						if(res.success == true){
+
+							$j("#promo-code-section .input-box").append("<div class=\"text-success\">"+ res.message +"</div>");
+
+							$j("#promo_code").prop("disabled", true).removeClass('validation-failed');
+							$j("#btn_promo_code").removeClass("btn-primary").addClass("btn-danger").addClass("removePromoCode").text("Remove");
+						} else {
+							$j("#promo_code").addClass("validation-failed");
+							$j("#promo-code-section .input-box").append("<div class=\"validation-advice\">"+ res.message +"</div>");
+						}
+					}
+				});
+			}
+		});
+		/*
+		* Promo Code functionality ends here
+		*/
+		</script>
+		<?php } } ?>
+
+     	<p><?php echo Mage::helper('paytm')->__('You will be redirected to Paytm Payment Gateway when you place an order.') ?></p>
+    </div>

@@ -9,7 +9,7 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
 
     protected $_order = NULL;
     protected $_paymentInst = NULL;
-	public $isvalid;
+    public $isvalid;
     
      //Get singleton of Checkout Session Model
      
@@ -25,13 +25,13 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
     {
         try {
             $session = $this->_getCheckout();
-			//get order singleton
+            //get order singleton
             $order = Mage::getModel('sales/order');
             $order->loadByIncrementId($session->getLastRealOrderId());
             if (!$order->getId()) {
                 Mage::throwException('No order for processing found');
             }
-			//set order status
+            //set order status
             if ($order->getState() != Mage_Sales_Model_Order::STATE_PENDING_PAYMENT) {
                 $order->setState(
                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
@@ -39,15 +39,15 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
                     Mage::helper('paytm')->__('Customer was redirected to paytm.')
                 )->save();
             }
-			//save order and quote ids
-			 if ($session->getQuoteId() && $session->getLastSuccessQuoteId()) {
+            //save order and quote ids
+             if ($session->getQuoteId() && $session->getLastSuccessQuoteId()) {
                 $session->setpaytmQuoteId($session->getQuoteId());
                 $session->setpaytmSuccessQuoteId($session->getLastSuccessQuoteId());
                 $session->setpaytmRealOrderId($session->getLastRealOrderId());
                 $session->getQuote()->setIsActive(false)->save();
                 $session->clear();
             }
-			//load basic blank page
+            //load basic blank page
             $this->loadLayout();
             $this->renderLayout();
             return;
@@ -58,76 +58,76 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
         }
         $this->_redirect('checkout/cart');
     }
-	
-	//handle callback values and takes appropriate action
+    
+    //handle callback values and takes appropriate action
     public function responseAction()
     {
-			$session = $this->_getCheckout();
+            $session = $this->_getCheckout();
             $order = Mage::getModel('sales/order');
-			
-			$request = $this->_checkReturnedPost();
+            
+            $request = $this->_checkReturnedPost();
         try {
             
-			Mage::log($request);
-			$parameters = array();
-			foreach($request as $key=>$value)
-			{
-			$parameters[$key] = $request[$key];
-			}
-			$session = $this->_getCheckout();
-			$isValidChecksum = false;
-			$txnstatus = false;
-			$authStatus = false;
-			$mer_encrypted = Mage::getStoreConfig('payment/paytm_cc/inst_key');
-			$const = (string)Mage::getConfig()->getNode('global/crypt/key');
-			$mer_decrypted= Mage::helper('paytm')->decrypt_e($mer_encrypted,$const);
-			
-			$merid_encrypted = Mage::getStoreConfig('payment/paytm_cc/inst_id');
-			$const = (string)Mage::getConfig()->getNode('global/crypt/key');
-			$merid_decrypted= Mage::helper('paytm')->decrypt_e($merid_encrypted,$const);
-			
-			//setting order status
+            Mage::log($request);
+            $parameters = array();
+            foreach($request as $key=>$value)
+            {
+            $parameters[$key] = $request[$key];
+            }
+            $session = $this->_getCheckout();
+            $isValidChecksum = false;
+            $txnstatus = false;
+            $authStatus = false;
+            $mer_encrypted = Mage::getStoreConfig('payment/paytm_cc/inst_key');
+            $const = (string)Mage::getConfig()->getNode('global/crypt/key');
+            $mer_decrypted= Mage::helper('paytm')->decrypt_e($mer_encrypted,$const);
+            
+            $merid_encrypted = Mage::getStoreConfig('payment/paytm_cc/inst_id');
+            $const = (string)Mage::getConfig()->getNode('global/crypt/key');
+            $merid_decrypted= Mage::helper('paytm')->decrypt_e($merid_encrypted,$const);
+            
+            //setting order status
             $order = Mage::getModel('sales/order');
-			
+            
             $order->loadByIncrementId($request['ORDERID']);
             if (!$order->getId()) {
                 Mage::log('No order for processing found');
             }
-			
-			
-			//check returned checksum
-			if(isset($request['CHECKSUMHASH']))
-			{
-				$return = Mage::helper('paytm')->verifychecksum_e($parameters, $mer_decrypted, $request['CHECKSUMHASH']);
-				if($return == "TRUE")
-				$isValidChecksum = true;
-				
-			}
-			
-			if($request['STATUS'] == "TXN_SUCCESS"){
-				$txnstatus = true;
-			}
-			
-			$_testurl = NULL;
-			/*if(Mage::getStoreConfig('payment/paytm_cc/mode')==1)
-				$_testurl = Mage::helper('paytm/Data2')->STATUS_QUERY_URL_PROD;
-			else
+            
+            
+            //check returned checksum
+            if(isset($request['CHECKSUMHASH']))
+            {
+                $return = Mage::helper('paytm')->verifychecksum_e($parameters, $mer_decrypted, $request['CHECKSUMHASH']);
+                if($return == "TRUE")
+                $isValidChecksum = true;
+                
+            }
+            
+            if($request['STATUS'] == "TXN_SUCCESS"){
+                $txnstatus = true;
+            }
+            
+            $_testurl = NULL;
+            /*if(Mage::getStoreConfig('payment/paytm_cc/mode')==1)
+                $_testurl = Mage::helper('paytm/Data2')->STATUS_QUERY_URL_PROD;
+            else
                 $_testurl = Mage::helper('paytm/Data2')->STATUS_QUERY_URL_TEST;*/
-			$transaction_status_url = Mage::getStoreConfig('payment/paytm_cc/transaction_status_url');
+            $transaction_status_url = Mage::getStoreConfig('payment/paytm_cc/transaction_status_url');
             $const = (string)Mage::getConfig()->getNode('global/crypt/key');
             $_testurl= Mage::helper('paytm')->decrypt_e($transaction_status_url,$const);
 
-			if($txnstatus && $isValidChecksum){
-				// Create an array having all required parameters for status query.
-				//echo "<pre>"; print_r($request);
-				$requestParamList = array("MID" => $merid_decrypted , "ORDERID" => $request['ORDERID']);
-				
-				$StatusCheckSum = Mage::helper('paytm')->getChecksumFromArray($requestParamList, $mer_decrypted);
-							
-				$requestParamList['CHECKSUMHASH'] = $StatusCheckSum;
-				
-				// Call the PG's getTxnStatus() function for verifying the transaction status.
-				
+            if($txnstatus && $isValidChecksum){
+                // Create an array having all required parameters for status query.
+                //echo "<pre>"; print_r($request);
+                $requestParamList = array("MID" => $merid_decrypted , "ORDERID" => $request['ORDERID']);
+                
+                $StatusCheckSum = Mage::helper('paytm')->getChecksumFromArray($requestParamList, $mer_decrypted);
+                            
+                $requestParamList['CHECKSUMHASH'] = $StatusCheckSum;
+                
+                // Call the PG's getTxnStatus() function for verifying the transaction status.
+                
                 /*  19751/17Jan2018 */
                     /*$check_status_url = 'https://pguat.paytm.com/oltp/HANDLER_INTERNAL/getTxnStatus';
                     if(Mage::getStoreConfig('payment/paytm_cc/mode') == '1')
@@ -144,39 +144,39 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
                     $check_status_url= Mage::helper('paytm')->decrypt_e($transaction_status_url,$const);
                 /*  19751/17Jan2018 end */
 
-				$responseParamList = Mage::helper('paytm')->callNewAPI($check_status_url, $requestParamList);
-				//echo "<pre>"; print_r($responseParamList); die;
-				$authStatus = true;
-				
-				if($authStatus == false)					
-					{
-						$this->_processCancel($request);
-						
-					}
-				else
-					{
-						if($responseParamList['STATUS']=='TXN_SUCCESS' && $responseParamList['TXNAMOUNT']==$_POST['TXNAMOUNT'])
-						{
-							$order->setState(Mage_Sales_Model_Order::STATE_PROCESSING,true)->save();
-							$this->_processSale($request);
-							$order_mail = new Mage_Sales_Model_Order();
-							$incrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
-							$order_mail->loadByIncrementId($incrementId);
-							try{
-								 $order_mail->sendNewOrderEmail();
-							   }    
-							catch (Exception $ex) {  }
-						}
-						else
-						{
-							$this->_processFail($request);
-						}
-					}
+                $responseParamList = Mage::helper('paytm')->callNewAPI($check_status_url, $requestParamList);
+                //echo "<pre>"; print_r($responseParamList); die;
+                $authStatus = true;
+                
+                if($authStatus == false)                    
+                    {
+                        $this->_processCancel($request);
+                        
+                    }
+                else
+                    {
+                        if($responseParamList['STATUS']=='TXN_SUCCESS' && $responseParamList['TXNAMOUNT']==$_POST['TXNAMOUNT'])
+                        {
+                            $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING,true)->save();
+                            $this->_processSale($request);
+                            $order_mail = new Mage_Sales_Model_Order();
+                            $incrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
+                            $order_mail->loadByIncrementId($incrementId);
+                            try{
+                                 $order_mail->sendNewOrderEmail();
+                               }    
+                            catch (Exception $ex) {  }
+                        }
+                        else
+                        {
+                            $this->_processFail($request);
+                        }
+                    }
             }
-			else
-				$this->_processCancel($request);
-				
-			
+            else
+                $this->_processCancel($request);
+                
+            
         } catch (Mage_Core_Exception $e) {
             $this->getResponse()->setBody(
                 $this->getLayout()
@@ -184,16 +184,16 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
                     ->setOrder($this->_order)
                     ->toHtml()
             );
-			
-			$this->_processFail($request);
-			
+            
+            $this->_processFail($request);
+            
         }
     }
 
     //runs on success of payment
     public function successAction()
     {
-		try {
+        try {
             $session = $this->_getCheckout();
             $session->unspaytmRealOrderId();
             $session->setQuoteId($session->getpaytmQuoteId(true));
@@ -207,13 +207,13 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
             Mage::logException($e);
         }
         $this->_redirect('checkout/cart');
-		
+        
     }
-	
-	public function failAction()
+    
+    public function failAction()
     {
         // set quote to active
-        $session = $this->_getCheckout();		
+        $session = $this->_getCheckout();       
         if ($quoteId = $session->getpaytmQuoteId()) {
             $quote = Mage::getModel('sales/quote')->load($quoteId);
             if ($quote->getId()) {
@@ -221,25 +221,25 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
                 $session->setQuoteId($quoteId);
             }
         }
-		Mage::log("failed");
+        Mage::log("failed");
         $session->addError(Mage::helper('paytm')->__('The order has failed.'));
         $this->_redirect('checkout/cart');
-		
+        
     }
-	
-	//runs on cancel action
+    
+    //runs on cancel action
     public function cancelAction()
     {
         // set quote to active
         $session = $this->_getCheckout();
-		$order = Mage::getModel('sales/order');
-		$order->loadByIncrementId($session->getLastRealOrderId());
-		if (!$order->getId()) {
-		Mage::throwException('No order for processing found');
-		}
-		$order->setState(
-		Mage_Sales_Model_Order::STATE_CANCELED,true)->save();
-		
+        $order = Mage::getModel('sales/order');
+        $order->loadByIncrementId($session->getLastRealOrderId());
+        if (!$order->getId()) {
+        Mage::throwException('No order for processing found');
+        }
+        $order->setState(
+        Mage_Sales_Model_Order::STATE_CANCELED,true)->save();
+        
         if ($quoteId = $session->getpaytmQuoteId()) {
             $quote = Mage::getModel('sales/quote')->load($quoteId);
             if ($quote->getId()) {
@@ -247,10 +247,10 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
                 $session->setQuoteId($quoteId);
             }
         }
-		Mage::log("cancel");
+        Mage::log("cancel");
         $session->addError(Mage::helper('paytm')->__('The order has been canceled.'));
         $this->_redirect('checkout/cart');
-		
+        
     }
 
     // Checking POST variables.
@@ -265,8 +265,8 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
         $request = $this->getRequest()->getPost();
         if (empty($request))
             Mage::throwException('Request doesn\'t contain POST elements.');
-		
-		Mage::log($request);
+        
+        Mage::log($request);
 
             // check order id
         if (empty($request['ORDERID']) )
@@ -284,22 +284,22 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
     //if success process sale
     protected function _processSale($request)
     {
-		$session = $this->_getCheckout();
-		$order = Mage::getModel('sales/order');
-		$order->loadByIncrementId($request['ORDERID']);
+        $session = $this->_getCheckout();
+        $order = Mage::getModel('sales/order');
+        $order->loadByIncrementId($request['ORDERID']);
         //save transaction information
-		$invoice = $order->prepareInvoice();
-		$invoice->register()->capture();
-		Mage::getModel('core/resource_transaction')
-					->addObject($invoice)
-					->addObject($invoice->getOrder())
-					->save();
-		
+        $invoice = $order->prepareInvoice();
+        $invoice->register()->capture();
+        Mage::getModel('core/resource_transaction')
+                    ->addObject($invoice)
+                    ->addObject($invoice->getOrder())
+                    ->save();
         
-		$order->addStatusToHistory(Mage::getStoreConfig('payment/paytm_cc/order_status'),Mage::helper('paytm')->__('Payment successful through Paytm PG'));
-		$order->save();
-		
-		
+        
+        $order->addStatusToHistory(Mage::getStoreConfig('payment/paytm_cc/order_status'),Mage::helper('paytm')->__('Payment successful through Paytm PG'));
+        $order->save();
+        
+        
         $this->getResponse()->setBody(
             $this->getLayout()
                 ->createBlock($this->_successBlockType)
@@ -308,29 +308,29 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
         );
     }
 
-	//cancel order if failure
+    //cancel order if failure
     protected function _processFail($request)
     {
         // cancel order
-		$request = $this->getRequest()->getPost();
+        $request = $this->getRequest()->getPost();
         $this->_order = Mage::getModel('sales/order')->loadByIncrementId($request['ORDERID']);
-		if ($this->_order->canCancel()) {
+        if ($this->_order->canCancel()) {
             $this->_order->cancel();
             $this->_order->addStatusToHistory(Mage_Sales_Model_Order::STATUS_FRAUD, Mage::helper('paytm')->__('Payment failed'));
             $this->_order->save();
         }
-		$session = $this->_getCheckout();
-		$session->addError(Mage::helper('paytm')->__('It seems some issue in server to server communication. Kindly connect with administrator.'));
+        $session = $this->_getCheckout();
+        $session->addError(Mage::helper('paytm')->__('It seems some issue in server to server communication. Kindly connect with administrator.'));
         $this->_redirect('checkout/cart');
 
     }
-	
+    
     //cancel order if failure
     protected function _processCancel($request)
     {
         // cancel order
         $this->_order = Mage::getModel('sales/order')->loadByIncrementId($request['ORDERID']);
-		if ($this->_order->canCancel()) {
+        if ($this->_order->canCancel()) {
             $this->_order->cancel();
             $this->_order->addStatusToHistory(Mage_Sales_Model_Order::STATE_CANCELED, Mage::helper('paytm')->__('Payment was canceled'));
             $this->_order->save();
@@ -357,24 +357,19 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
         }else{ 
             // this site homepage URL
             $testing_urls=array();
+
             if(!empty($_GET)){
                 foreach ($_GET as $key => $value) {
                     $testing_urls[]=$value;
                 }
             }else{
-                $currentPath = $_SERVER['PHP_SELF'];
-                $pathInfo = pathinfo($currentPath); 
-                $hostName = $_SERVER['HTTP_HOST']; 
-                $protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"],0,5))=='https://'?'https://':'http://';
-
                 $testing_urls = array(
-                    $protocol.$hostName.$pathInfo['dirname']."/",
+                    Mage::getBaseUrl(),
                     "www.google.co.in",
                     "https://pguat.paytm.com/oltp/HANDLER_INTERNAL/getTxnStatus"
                 );
             }
-            /*echo "<pre>";print_r($testing_urls);
-            echo "<hr/>";*/
+            
             // loop over all URLs, maintain debug log for each response received
             foreach($testing_urls as $key=>$url){
 
@@ -411,6 +406,53 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
             echo "<hr/>";
         }
         die;
+    }
+
+    public function ajaxAction() {
+
+        $json = array();
+
+        if(isset($_POST["promo_code"]) && trim($_POST["promo_code"]) != "") {
+
+            // if promo code local validation enabled
+            // if(Mage::getStoreConfig('payment/paytm_cc/Paytm_PROMO_CODE_VALIDATION')) {
+            if(Mage::getStoreConfig('payment/paytm_cc/promo_code_local_validation')=='1') {
+
+                // $promo_codes = explode(",", Mage::getStoreConfig('payment/paytm_cc/Paytm_PROMO_CODE_VALIDATION'));
+                $promocode=Mage::getStoreConfig('payment/paytm_cc/promo_codes');
+                $promo_codes = explode(",", $promocode);
+
+                $promo_code_found = false;
+
+                foreach($promo_codes as $key=>$val){
+                    // entered promo code should matched
+                    if(trim($val) == trim($_POST["promo_code"])) {
+                        $promo_code_found = true;
+                        break;
+                    }
+                }
+
+            } else {
+                $promo_code_found = true;
+            }
+
+            if($promo_code_found){
+                $json = array("success" => true, "message" => "Applied Successfully");
+                Mage::getSingleton('core/session')->setPROMO_CAMP_ID($_POST["promo_code"]);
+            } else {
+                $json = array("success" => false, "message" => "Incorrect Promo Code");
+            }
+        } else {
+
+            // unset promo code from session if ajax request made to remove
+            if(Mage::getSingleton('core/session')->unsPROMO_CAMP_ID($_POST["promo_code"])){
+                Mage::getSingleton('core/session')->unsPROMO_CAMP_ID($_POST["promo_code"]);
+                $json = array("success" => true, "message" => "Removed Successfully");
+            }
+        }
+
+        $this->getResponse()->setHeader('Content-type', 'application/json');
+        $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($json));
     }
   
 }
