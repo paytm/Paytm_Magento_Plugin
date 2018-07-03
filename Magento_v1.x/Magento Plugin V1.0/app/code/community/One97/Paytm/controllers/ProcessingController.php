@@ -197,7 +197,8 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
             $session = $this->_getCheckout();
             $session->unspaytmRealOrderId();
             $session->setQuoteId($session->getpaytmQuoteId(true));
-            $session->setLastSuccessQuoteId($session->getpaytmSuccessQuoteId(true));
+            // $session->setLastSuccessQuoteId($session->getpaytmSuccessQuoteId(true));
+            $session->setLastSuccessQuoteId($session->getLastQuoteId());
             $this->_redirect('checkout/onepage/success');
             return;
         } catch (Mage_Core_Exception $e) {
