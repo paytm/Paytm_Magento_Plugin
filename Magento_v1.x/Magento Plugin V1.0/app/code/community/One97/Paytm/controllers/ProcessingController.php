@@ -109,17 +109,12 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
             }
             
             $_testurl = NULL;
-            /*if(Mage::getStoreConfig('payment/paytm_cc/mode')==1)
-                $_testurl = Mage::helper('paytm/Data2')->STATUS_QUERY_URL_PROD;
-            else
-                $_testurl = Mage::helper('paytm/Data2')->STATUS_QUERY_URL_TEST;*/
             $transaction_status_url = Mage::getStoreConfig('payment/paytm_cc/transaction_status_url');
             $const = (string)Mage::getConfig()->getNode('global/crypt/key');
             $_testurl= Mage::helper('paytm')->decrypt_e($transaction_status_url,$const);
 
             if($txnstatus && $isValidChecksum){
                 // Create an array having all required parameters for status query.
-                //echo "<pre>"; print_r($request);
                 $requestParamList = array("MID" => $merid_decrypted , "ORDERID" => $request['ORDERID']);
                 
                 $StatusCheckSum = Mage::helper('paytm')->getChecksumFromArray($requestParamList, $mer_decrypted);
@@ -127,54 +122,37 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
                 $requestParamList['CHECKSUMHASH'] = $StatusCheckSum;
                 
                 // Call the PG's getTxnStatus() function for verifying the transaction status.
-                
-                /*  19751/17Jan2018 */
-                    /*$check_status_url = 'https://pguat.paytm.com/oltp/HANDLER_INTERNAL/getTxnStatus';
-                    if(Mage::getStoreConfig('payment/paytm_cc/mode') == '1')
-                    {
-                        $check_status_url = 'https://secure.paytm.in/oltp/HANDLER_INTERNAL/getTxnStatus';
-                    }*/
-                    
-                    /*$check_status_url = Mage::helper('paytm/Data2')->STATUS_QUERY_URL_TEST;
-                    if(Mage::getStoreConfig('payment/paytm_cc/mode')=='1'){
-                        $check_status_url = Mage::helper('paytm/Data2')->STATUS_QUERY_URL_PROD;
-                    }*/
-                    $transaction_status_url = Mage::getStoreConfig('payment/paytm_cc/transaction_status_url');
-                    $const = (string)Mage::getConfig()->getNode('global/crypt/key');
-                    $check_status_url= Mage::helper('paytm')->decrypt_e($transaction_status_url,$const);
-                /*  19751/17Jan2018 end */
-
+                $transaction_status_url = Mage::getStoreConfig('payment/paytm_cc/transaction_status_url');
+                $const = (string)Mage::getConfig()->getNode('global/crypt/key');
+                $check_status_url= Mage::helper('paytm')->decrypt_e($transaction_status_url,$const);
                 $responseParamList = Mage::helper('paytm')->callNewAPI($check_status_url, $requestParamList);
-                //echo "<pre>"; print_r($responseParamList); die;
                 $authStatus = true;
-                
-                if($authStatus == false)                    
-                    {
-                        $this->_processCancel($request);
-                        
-                    }
-                else
-                    {
-                        if($responseParamList['STATUS']=='TXN_SUCCESS' && $responseParamList['TXNAMOUNT']==$_POST['TXNAMOUNT'])
-                        {
-                            $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING,true)->save();
-                            $this->_processSale($request);
-                            $order_mail = new Mage_Sales_Model_Order();
-                            $incrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
-                            $order_mail->loadByIncrementId($incrementId);
+                if($authStatus == false) {
+                    $this->_processCancel($request); 
+                } else {
+                    if($responseParamList['STATUS']=='TXN_SUCCESS' && $responseParamList['TXNAMOUNT']==$_POST['TXNAMOUNT']) {
+                        $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING,true)->save();
+                        $this->_processSale($request);
+                        $order_mail = new Mage_Sales_Model_Order();
+                        $incrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
+                        $order_mail->loadByIncrementId($incrementId);
+                        $i = Mage::getVersion();
+                        $updatedVersion=false;
+                        if(strpos($i,"1.9")===0){
+                            $updatedVersion=true;
+                        }
+                        if(!$updatedVersion){   // above 1.9.0 version not support sendNewOrderEmail() fumction 
                             try{
-                                 $order_mail->sendNewOrderEmail();
-                               }    
-                            catch (Exception $ex) {  }
+                                $order_mail->sendNewOrderEmail(); 
+                            } catch (Exception $ex) {  }
                         }
-                        else
-                        {
-                            $this->_processFail($request);
-                        }
+                    } else {
+                        $this->_processFail($request);
                     }
-            }
-            else
+                } 
+            } else{
                 $this->_processCancel($request);
+            }
                 
             
         } catch (Mage_Core_Exception $e) {
@@ -402,8 +380,6 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
                 echo "<li>".$info."</li>";
             }
             echo "</ul>";
-
-            // echo "<div style='display:none;'>" . $v["content"] . "</div>";
             echo "<hr/>";
         }
         die;
@@ -416,10 +392,8 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
         if(isset($_POST["promo_code"]) && trim($_POST["promo_code"]) != "") {
 
             // if promo code local validation enabled
-            // if(Mage::getStoreConfig('payment/paytm_cc/Paytm_PROMO_CODE_VALIDATION')) {
             if(Mage::getStoreConfig('payment/paytm_cc/promo_code_local_validation')=='1') {
 
-                // $promo_codes = explode(",", Mage::getStoreConfig('payment/paytm_cc/Paytm_PROMO_CODE_VALIDATION'));
                 $promocode=Mage::getStoreConfig('payment/paytm_cc/promo_codes');
                 $promo_codes = explode(",", $promocode);
 
