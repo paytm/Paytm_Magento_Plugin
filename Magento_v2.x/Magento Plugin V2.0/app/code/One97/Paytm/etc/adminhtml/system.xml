@@ -16,6 +16,11 @@
                     <config_path>payment/paytm/title</config_path>
                     <!-- <validate>required-entry</validate> -->
                 </field>
+                <field id="payment_action" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Generate Invoice Automatically</label>
+                    <source_model>One97\Paytm\Model\PaymentAction</source_model>
+                    <config_path>payment/paytm/payment_action</config_path>
+                </field>
                 <field id="MID" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Merchant Id</label>
                     <comment>Provided By Paytm</comment>
