@@ -15,6 +15,11 @@
             <!-- ko template: getTemplate() --><!-- /ko -->
             <!--/ko-->
         </div>
+        <div class="checkout-agreements-block">
+            <!-- ko foreach: $parent.getRegion('before-place-order') -->
+                <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+        </div>
         <div class="customDiv" style="padding: 5px 0;display: none;">
             <p style="margin-bottom: 0;">Have Promo Code?</p>
             <div>
