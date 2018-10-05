@@ -9,23 +9,7 @@ use Magento\Framework\App\Helper\AbstractHelper;
 class Data extends AbstractHelper
 {
     protected $session;
-    /*	19751/17Jan2018	*/
-	    /*public $PAYTM_PAYMENT_URL_PROD = "https://secure.paytm.in/oltp-web/processTransaction";
-	    public $STATUS_QUERY_URL_PROD = "https://secure.paytm.in/oltp/HANDLER_INTERNAL/TXNSTATUS";
-	    public $NEW_STATUS_QUERY_URL_PROD = "https://secure.paytm.in/oltp/HANDLER_INTERNAL/getTxnStatus";
-	    public $PAYTM_PAYMENT_URL_TEST = "https://pguat.paytm.com/oltp-web/processTransaction";
-	    public $STATUS_QUERY_URL_TEST = "https://pguat.paytm.com/oltp/HANDLER_INTERNAL/TXNSTATUS";
-	    public $NEW_STATUS_QUERY_URL_TEST = "https://pguat.paytm.com/oltp/HANDLER_INTERNAL/getTxnStatus";*/
-
-	    /*public $PAYTM_PAYMENT_URL_PROD = "https://securegw.paytm.in/theia/processTransaction";
-	    public $STATUS_QUERY_URL_PROD = "https://securegw.paytm.in/merchant-status/getTxnStatus";
-	    public $NEW_STATUS_QUERY_URL_PROD = "https://securegw.paytm.in/merchant-status/getTxnStatus";
-		
-	    public $PAYTM_PAYMENT_URL_TEST = "https://securegw-stage.paytm.in/theia/processTransaction";
-	    public $STATUS_QUERY_URL_TEST = "https://securegw-stage.paytm.in/merchant-status/getTxnStatus";
-	    public $NEW_STATUS_QUERY_URL_TEST = "https://securegw-stage.paytm.in/merchant-status/getTxnStatus";*/
-    /*	19751/17Jan2018 end	*/
-
+	
     public function __construct(Context $context, \Magento\Checkout\Model\Session $session) {
         $this->session = $session;
         parent::__construct($context);
