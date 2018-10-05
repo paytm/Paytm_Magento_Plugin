@@ -11,8 +11,8 @@
       * Enable Plugin          - Yes
       * New Order Status       - Processing
       * Title                  - Paytm PG
-      * Merchant ID            - Staging/Production MID provided by Paytm
-      * Merchant Key           - Staging Key provided by Paytm
+      * Merchant ID            - MID provided by Paytm
+      * Merchant Key           - Key provided by Paytm
       * Transaction URL 
         * Staging     - https://securegw-stage.paytm.in/theia/processTransaction
         * Production  - https://securegw.paytm.in/theia/processTransaction
