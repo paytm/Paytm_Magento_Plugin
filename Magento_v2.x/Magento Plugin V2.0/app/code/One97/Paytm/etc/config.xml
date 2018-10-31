@@ -7,7 +7,7 @@
                 <title>Paytm  Wallet</title>
                 <payment_action>authorize_capture</payment_action>
                 <active>0</active>
-                <order_status>processing</order_status>
+                <order_status>pending_payment</order_status>
                 <MID>MID</MID>
                 <merchant_key>merchant_key</merchant_key>
                 <custom_callbackurl>0</custom_callbackurl>

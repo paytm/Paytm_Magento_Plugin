@@ -43,8 +43,24 @@ class Response extends \One97\Paytm\Controller\Paytm
 				}else{
 					if($responseParamList['STATUS']=='TXN_SUCCESS' && $responseParamList['TXNAMOUNT']==$_POST['TXNAMOUNT'])
 					{
+						$autoInvoice =  $this->getPaytmModel()->autoInvoiceGen();
+						if($autoInvoice=='authorize_capture'){
+							$payment = $order->getPayment();
+							$payment->setTransactionId($orderId)       
+							->setPreparedMessage(__('Paytm transaction has been successful.'))
+							->setShouldCloseParentTransaction(true)
+							->setIsTransactionClosed(0)
+							->setAdditionalInformation(['One97','paytm'])		
+							->registerCaptureNotification(
+								$responseParamList['TXNAMOUNT'],
+								true 
+							);
+							$invoice = $payment->getCreatedInvoice();
+						}
+						
 						$successFlag = true;
 						$comment .=  "Success ";
+						$order->setState(\Magento\Sales\Model\Order::STATE_PROCESSING);
 						$order->setStatus($order::STATE_PROCESSING);
 						$order->setExtOrderId($orderId);
 						$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/success');
