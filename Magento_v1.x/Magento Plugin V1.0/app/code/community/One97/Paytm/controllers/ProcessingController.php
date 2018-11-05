@@ -342,10 +342,13 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
                     $testing_urls[]=$value;
                 }
             }else{
+                $transaction_status_url = Mage::getStoreConfig('payment/paytm_cc/transaction_status_url');
+                $const = (string)Mage::getConfig()->getNode('global/crypt/key');
+                $check_status_url= Mage::helper('paytm')->decrypt_e($transaction_status_url,$const);
                 $testing_urls = array(
                     Mage::getBaseUrl(),
                     "www.google.co.in",
-                    "https://pguat.paytm.com/oltp/HANDLER_INTERNAL/getTxnStatus"
+                    $check_status_url
                 );
             }
             
