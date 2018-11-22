@@ -19,3 +19,4 @@ Clear all Cache.
 
 Now you can collect payment via Paytm .
 
+See Video : https://www.youtube.com/watch?v=bR18KwhY4V8

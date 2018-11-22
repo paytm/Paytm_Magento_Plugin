@@ -38,4 +38,6 @@
   9. Once plugin is installed, please logout from the admin panel and clear the cache of the Magento.
   10. Your plug-in is installed now, you can now make payment with Paytm.
 
+See Video : https://www.youtube.com/watch?v=bR18KwhY4V8
+
 # In case of any query, please contact to Paytm.
