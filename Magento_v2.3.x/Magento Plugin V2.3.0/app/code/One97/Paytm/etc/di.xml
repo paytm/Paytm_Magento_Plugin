@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- for override magento default Transport class with our custom module model-->
+    <!-- <preference for="\Magento\Framework\Mail\Transport" type="NameSpace\ModuleName\Model\Transport"/>
+    <type name="Magento\Sales\Model\Order\Email\Container\OrderIdentity">
+        <plugin name="change_is_enable_method" type="\One97\Paytm\Plugin\Sales\Order\Email\Container\OrderIdentityPlugin"/>
+    </type> -->
+</config>

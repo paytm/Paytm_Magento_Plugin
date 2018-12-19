@@ -1,0 +1,134 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="payment">
+            <group id="paytm" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Paytm </label>
+                <comment>
+                    <![CDATA[<a href="http://paywithpaytm.com/contactus/" target="_blank">Click here to sign up for Paytm account</a>]]>
+                </comment>
+                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>payment/paytm/active</config_path>
+                </field>
+                <field id="title" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title</label>
+                    <config_path>payment/paytm/title</config_path>
+                    <!-- <validate>required-entry</validate> -->
+                </field>
+                <field id="payment_action" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Generate Invoice Automatically</label>
+                    <source_model>One97\Paytm\Model\PaymentAction</source_model>
+                    <config_path>payment/paytm/payment_action</config_path>
+                </field>
+                <field id="MID" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Merchant Id</label>
+                    <comment>Provided By Paytm</comment>
+                    <config_path>payment/paytm/MID</config_path>
+                    <!-- <validate>required-entry</validate> -->
+                </field>
+                <field id="merchant_key" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Merchant Key</label>
+                    <comment>Provided By Paytm</comment>
+                    <config_path>payment/paytm/merchant_key</config_path>
+                    <!-- <validate>required-entry</validate> -->
+                </field>
+                <!-- 19751/19Jan2018 -->
+                    
+                    <field id="custom_callbackurl" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="0" >
+                        <label>Custom Callback Url</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    </field>
+                    <field id="callback_url" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Callback Url</label>
+                        <comment>Provided By Merchant (hint: https://domainName/paytm/Standard/Response)</comment>
+                        <config_path>payment/paytm/callback_url</config_path>
+                        <!-- <validate>required-entry validate-url</validate> -->
+                        <depends>
+                            <field id="custom_callbackurl">1</field>
+                        </depends>
+                    </field>
+
+                    <field id="transaction_url" translate="label" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Transaction Url</label>
+                        <comment>Provided By Paytm</comment>
+                        <config_path>payment/paytm/transaction_url</config_path>
+                        <!-- <validate>required-entry validate-url</validate> -->
+                    </field>
+                    <field id="transaction_status_url" translate="label" type="text" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Transaction Status Url</label>
+                        <comment>Provided By Paytm</comment>
+                        <config_path>payment/paytm/transaction_status_url</config_path>
+                        <!-- <validate>required-entry validate-url</validate> -->
+                    </field>               
+                <!-- 19751/19Jan2018 end -->
+                
+                <field id="Industry_id" translate="label" type="text" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Industry Type Id</label>
+                    <comment>Provided By Paytm</comment>
+                    <config_path>payment/paytm/Industry_id</config_path>
+                    <!-- <validate>required-entry</validate> -->
+                </field>
+                
+                <field id="Channel_Id" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Channel Id</label>
+                    <comment>Provided By Paytm</comment>
+                    <config_path>payment/paytm/Channel_Id</config_path>
+                    <!-- <validate>required-entry</validate> -->
+                </field>
+                
+                <field id="Website" translate="label" type="text" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Website</label>
+                    <comment>Provided By Paytm</comment>
+                    <config_path>payment/paytm/Website</config_path>
+                    <!-- <validate>required-entry</validate> -->
+                </field>
+                
+                <field id="order_status" translate="label" type="select" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>New Order Status</label>
+                    <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
+                    <config_path>payment/paytm/order_status</config_path>
+                    <!-- <validate>validate-select</validate> -->
+                </field>
+                          
+                <field id="sort_order" translate="label" type="text" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Sort Order</label>
+                    <frontend_class>validate-number</frontend_class>
+                    <config_path>payment/paytm/sort_order</config_path>
+                    <!-- <validate>validate-number</validate> -->
+                </field>
+                
+                <field id="allowspecific" translate="label" type="allowspecific" sortOrder="14" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Payment from Applicable Countries</label>
+                    <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                    <config_path>payment/paytm/allowspecific</config_path>
+                </field>
+                
+                <field id="specificcountry" translate="label" type="multiselect" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Payment from Specific Countries</label>
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                    <config_path>payment/paytm/specificcountry</config_path>
+                </field>
+                
+
+                <field id="hide_promo_field" translate="label" type="select" sortOrder="16" showInDefault="1" showInWebsite="1" showInStore="0" >
+                    <label>Promo Code Status</label>
+                    <comment>Selecting yes, will show Promo Code field at Checkout.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="promo_code_local_validation" translate="label" type="select" sortOrder="17" showInDefault="1" showInWebsite="1" showInStore="0" >
+                    <label>Local Validation</label>
+                    <comment>Validate applied Promo Code before proceeding to Paytm payment page. Transaction will be failed in case of Promo Code failure at Paytm's end.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="promo_code" translate="label" type="text" sortOrder="18" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Promo Codes</label>
+                    <comment>These promo codes must be configured with your Paytm MID. Use comma ( , ) to separate multiple codes i.e. FB50,CASHBACK10 etc.</comment>
+                    <config_path>payment/paytm/promo_code</config_path>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

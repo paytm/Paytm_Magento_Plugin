@@ -20,8 +20,8 @@
         * Staging     - https://securegw-stage.paytm.in/merchant-status/getTxnStatus
         * Production  - https://securegw.paytm.in/merchant-status/getTxnStatus
       * Website Name 
-        * Webstag for Staging
-        * Webprod for Production
+        * WEBSTAGING for Staging
+        * WEBPROD for Production
       * Custom Callback Url    - No
       * Callback Url           - customized callback url(this is visible when Custom Callback Url is yes)
       * Industry Type 

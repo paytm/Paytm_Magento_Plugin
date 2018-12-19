@@ -1,4 +1,4 @@
-# Magento 2.0:- 
+# Magento 2.3.0:- 
   
   1. Download the plugin.
   2. Extract the files from the downloaded folder.
@@ -6,7 +6,8 @@
   4. Run below command:
       php bin/magento module:enable One97_Paytm
       php bin/magento setup:upgrade
-      php bin/magento setup:static-content:deploy
+      php bin/magento setup:static-content:deploy -f
+      php bin/magento setup:upgrade
   5. Login to Magento Admin Panel and choose Payments Methods
       System- > Configuration - > Payment Methods
   6. Enable Paytm option from Payment Methods
