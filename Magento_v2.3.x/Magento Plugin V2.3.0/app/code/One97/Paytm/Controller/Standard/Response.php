@@ -38,6 +38,7 @@ class Response extends \One97\Paytm\Controller\Paytm implements CsrfAwareActionI
         $orderStatus = $this->getRequest()->getParam('STATUS');
 		$resCode = $this->getRequest()->getParam('RESPCODE');
         $orderTxnAmount = $this->getRequest()->getParam('TXNAMOUNT');
+        $orderTXNID = $this->getRequest()->getParam('TXNID');
         //print_r($request);
         if($this->getPaytmModel()->validateResponse($request, $orderId))
         {
@@ -62,7 +63,7 @@ class Response extends \One97\Paytm\Controller\Paytm implements CsrfAwareActionI
 						$autoInvoice =  $this->getPaytmModel()->autoInvoiceGen();
 						if($autoInvoice=='authorize_capture'){
 							$payment = $order->getPayment();
-							$payment->setTransactionId($orderId)       
+							$payment->setTransactionId($orderTXNID)       
 							->setPreparedMessage(__('Paytm transaction has been successful.'))
 							->setShouldCloseParentTransaction(true)
 							->setIsTransactionClosed(0)
