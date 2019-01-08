@@ -15,104 +15,107 @@ class Response extends \One97\Paytm\Controller\Paytm
 		}
 		$errorMsg = '';
 		$successFlag = false;
-		$resMessage = $_POST['RESPMSG'];
-        $orderId = $this->getRequest()->getParam('ORDERID');
-        $order = $this->getOrderById($orderId);
-        $orderTotal = round($order->getGrandTotal(), 2);
-        $orderStatus = $this->getRequest()->getParam('STATUS');
-		$resCode = $this->getRequest()->getParam('RESPCODE');
-        $orderTxnAmount = $this->getRequest()->getParam('TXNAMOUNT');
-        $orderTXNID = $this->getRequest()->getParam('TXNID');
-        //print_r($request);
-        if($this->getPaytmModel()->validateResponse($request, $orderId))
-        {
-			if($orderStatus == "TXN_SUCCESS" && $orderTotal == $orderTxnAmount){				
-				// Create an array having all required parameters for status query.				
-				$requestParamList = array("MID" => $_POST['MID'] , "ORDERID" => $orderId);
-				$StatusCheckSum  =  $this->getPaytmModel()->generateStatusChecksum($requestParamList);
-				$requestParamList['CHECKSUMHASH'] = $StatusCheckSum;
-				
-				// Call the PG's getTxnStatus() function for verifying the transaction status.
-				$check_status_url = $this->getPaytmModel()->getNewStatusQueryUrl(); 				
-				$responseParamList = $this->getPaytmHelper()->callNewAPI($check_status_url, $requestParamList);
-				if($responseParamList['STATUS'] == "PENDING"){
-					$errorMsg = 'Paytm Transaction Pending !';
-					$comment .=  "Pending";
-					
-					$order->setState("pending_payment")->setStatus("pending_payment");
-					$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
-				}else{
-					if($responseParamList['STATUS']=='TXN_SUCCESS' && $responseParamList['TXNAMOUNT']==$_POST['TXNAMOUNT'])
-					{
-						$autoInvoice =  $this->getPaytmModel()->autoInvoiceGen();
-						if($autoInvoice=='authorize_capture'){
-							$payment = $order->getPayment();
-							$payment->setTransactionId($orderTXNID)       
-							->setPreparedMessage(__('Paytm transaction has been successful.'))
-							->setShouldCloseParentTransaction(true)
-							->setIsTransactionClosed(0)
-							->setAdditionalInformation(['One97','paytm'])		
-							->registerCaptureNotification(
-								$responseParamList['TXNAMOUNT'],
-								true 
-							);
-							$invoice = $payment->getCreatedInvoice();
-						}
-						
-						$successFlag = true;
-						$comment .=  "Success ";
-						$order->setState(\Magento\Sales\Model\Order::STATE_PROCESSING);
-						$order->setStatus($order::STATE_PROCESSING);
-						$order->setExtOrderId($orderId);
-						$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/success');
-					}
-					else{
-						$errorMsg = 'It seems some issue in server to server communication. Kindly connect with administrator.';
-						$comment .=  "Fraud Detucted";
-						$order->setStatus($order::STATUS_FRAUD);
-						$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
-					}
-				}
-			}else{
-				if($orderStatus == "PENDING"){
-					$errorMsg = 'Paytm Transaction Pending ! '.$resMessage;
-					$comment .=  "Pending";
-					
-					$order->setState("pending_payment")->setStatus("pending_payment");
-					$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
-				}else{
-					if($resCode == "141" || $resCode == "8102" || $resCode == "8103" || $resCode == "14112"){
-						$errorMsg = 'Paytm Transaction Failed ! Transaction was cancelled.';
-						$comment .=  "Payment cancelled by user";
-						$order->setStatus($order::STATE_CANCELED);
-						$this->_cancelPayment("Payment cancelled by user");
-						//$order->save();
-						$returnUrl = $this->getPaytmHelper()->getUrl('checkout/cart');
-					}else{
-						$errorMsg = 'Paytm Transaction Failed ! '.$resMessage;
-						$comment .=  "Failed";
-						
-						$order->setStatus($order::STATE_PAYMENT_REVIEW);
-						$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
-					}
-				}
-			}            
-        }
-        else
-        {
-			$errorMsg = 'Paytm Transaction Failed ! Fraud has been detected';
-			$comment .=  "Fraud Detucted";
-            $order->setStatus($order::STATUS_FRAUD);
-            $returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
-        }
-		// $this->addOrderHistory($order,$comment);
-        $order->addStatusToHistory($order->getStatus(), $comment);
-        $order->save();
-		if($successFlag){
-			$this->messageManager->addSuccess( __('Paytm transaction has been successful.') );
-		}else{
-			$this->messageManager->addError( __($errorMsg) );
+		$resMessage=$this->getRequest()->getParam('RESPMSG');
+		$globalErrMass="Your payment has been failed!";
+		if(trim($resMessage)!=''){
+			$globalErrMass.=" Reason: ".$resMessage;
 		}
-        $this->getResponse()->setRedirect($returnUrl);
-    }
+		$returnUrl = $this->getPaytmHelper()->getUrl('/');
+	    $orderMID = $this->getRequest()->getParam('MID');
+        $orderId = $this->getRequest()->getParam('ORDERID');
+        $orderTXNID = $this->getRequest()->getParam('TXNID');
+        if(trim($orderId)!='' && trim($orderMID)!=''){
+	        $order = $this->getOrderById($orderId);
+	        $orderTotal = round($order->getGrandTotal(), 2);
+	        
+	        $orderStatus = $this->getRequest()->getParam('STATUS');
+			$resCode = $this->getRequest()->getParam('RESPCODE');
+	        $orderTxnAmount = $this->getRequest()->getParam('TXNAMOUNT');
+
+		    if($this->getPaytmModel()->validateResponse($request, $orderId)) {
+				if($orderStatus == "TXN_SUCCESS" && $orderTotal == $orderTxnAmount){				
+					// Create an array having all required parameters for status query.				
+					$requestParamList = array("MID" => $orderMID , "ORDERID" => $orderId);
+					$StatusCheckSum  =  $this->getPaytmModel()->generateStatusChecksum($requestParamList);
+					$requestParamList['CHECKSUMHASH'] = $StatusCheckSum;
+					
+					// Call the PG's getTxnStatus() function for verifying the transaction status.
+					$check_status_url = $this->getPaytmModel()->getNewStatusQueryUrl(); 				
+					$responseParamList = $this->getPaytmHelper()->callNewAPI($check_status_url, $requestParamList);
+					if($responseParamList['STATUS'] == "PENDING"){
+						$errorMsg = 'Paytm Transaction Pending!';
+						if(trim($resMessage)==''){
+							$errorMsg.=" Reason: ".$resMessage;
+						}
+						$comment .=  "Pending";
+						$order->setState("pending_payment")->setStatus("pending_payment");
+						// $this->_cancelPayment($errorMsg);
+						$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
+					}else{
+						if($responseParamList['STATUS']=='TXN_SUCCESS' && $responseParamList['TXNAMOUNT']==$orderTxnAmount)
+						{
+							$autoInvoice =  $this->getPaytmModel()->autoInvoiceGen();
+							if($autoInvoice=='authorize_capture'){
+								$payment = $order->getPayment();
+								$payment->setTransactionId($orderTXNID)       
+								->setPreparedMessage(__('Paytm transaction has been successful.'))
+								->setShouldCloseParentTransaction(true)
+								->setIsTransactionClosed(0)
+								->setAdditionalInformation(['One97','paytm'])		
+								->registerCaptureNotification(
+									$responseParamList['TXNAMOUNT'],
+									true 
+								);
+								$invoice = $payment->getCreatedInvoice();
+							}
+							
+							$successFlag = true;
+							$comment .=  "Success ";
+							$order->setState(\Magento\Sales\Model\Order::STATE_PROCESSING);
+							$order->setStatus($order::STATE_PROCESSING);
+							$order->setExtOrderId($orderId);
+							$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/success');
+						} else{
+							$errorMsg = 'It seems some issue in server to server communication. Kindly connect with administrator.';
+							$comment .=  "Fraud Detucted";
+							$order->setStatus($order::STATUS_FRAUD);
+							// $this->_cancelPayment($errorMsg);
+							$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
+						}
+					}
+				}else{
+					if($orderStatus == "PENDING"){
+						$errorMsg = 'Paytm Transaction Pending!';
+						if(trim($resMessage)==''){
+							$errorMsg.=" Reason: ".$resMessage;
+						}
+						$comment .=  "Pending";
+						// $this->_cancelPayment($errorMsg);
+						$order->setState("pending_payment")->setStatus("pending_payment");
+					}else{
+						$errorMsg = $globalErrMass;
+						$comment .=  $globalErrMass;
+						$order->setStatus($order::STATE_CANCELED);
+						// $this->_cancelPayment($globalErrMass);
+					}
+					$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
+				}            
+	        } else {
+				$errorMsg = $globalErrMass." Reason: Checksum Mismatch.";
+				$comment .=  "Fraud Detucted";
+	            $order->setStatus($order::STATUS_FRAUD);
+				// $this->_cancelPayment("Fraud Detucted");
+	            $returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
+	        }
+			// $this->addOrderHistory($order,$comment);
+	        $order->addStatusToHistory($order->getStatus(), $comment);
+	        $order->save();
+			if($successFlag){
+				$this->messageManager->addSuccess( __('Paytm transaction has been successful.') );
+			}else{
+				$this->messageManager->addError( __($errorMsg) );
+			}
+        }
+		$this->getResponse()->setRedirect($returnUrl);        
+	}
 }
