@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+    	<script src="One97_Paytm::js/view/payment/redirectForm.js"/>
+    </head>
+    <referenceContainer name="content">
+        <block class="One97\Paytm\Block\Form\Paytm" name="paytm_standard_redirect" template="form/paytm.phtml" cacheable="false" />
+    </referenceContainer>
+</page>

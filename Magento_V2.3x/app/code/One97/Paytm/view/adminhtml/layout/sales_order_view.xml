@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <script src="One97_Paytm::js/tab/view/fetchstatus.js"/>
+    </head>
+    <body>
+        <referenceBlock name="sales_order_tabs">
+            <action method="addTab">
+                <argument name="name" xsi:type="string">custom_tabs</argument>
+                <argument name="block" xsi:type="string">
+                	One97\Paytm\Block\Adminhtml\OrderEdit\Tab\View
+                </argument>
+            </action>
+        </referenceBlock>
+    </body>
+</page>

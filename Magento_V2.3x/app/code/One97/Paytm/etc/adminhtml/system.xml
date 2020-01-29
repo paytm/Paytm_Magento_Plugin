@@ -1,0 +1,84 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="payment">
+            <group id="paytm" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Paytm </label>
+                <comment>
+                    <![CDATA[
+                        <a href="https://developer.paytm.com/docs/eCommerce-plugin/magento#v2-3x" target="_blank">Developer Docs</a>
+                        <br>
+                        <span id="phpCurlVersion" style="margin-bottom: 0;"></span>| 
+                        <span id="magentoVersion" style="margin-bottom: 0;"></span>| 
+                        <span id="paytmPluginVersion" style="margin-bottom: 0;"></span>| 
+                        <span id="paytmLastUpdate"></span>
+                    ]]>
+                </comment>
+                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" >
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>payment/paytm/active</config_path>
+                    <frontend_class>paytmEnbDrpDwn</frontend_class>
+                </field>
+                <field id="title" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title</label>
+                    <config_path>payment/paytm/title</config_path>
+                </field>
+                <field id="payment_action" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Generate Invoice Automatically</label>
+                    <source_model>One97\Paytm\Model\PaymentAction</source_model>
+                    <config_path>payment/paytm/payment_action</config_path>
+                </field>
+                <field id="debug" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Environment Mode</label>
+                    <source_model>One97\Paytm\Model\EnvAction</source_model>
+                    <config_path>payment/paytm/environment</config_path>
+                </field>
+                <field id="MID" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Merchant Id</label>
+                    <comment>Provided By Paytm</comment>
+                    <config_path>payment/paytm/MID</config_path>
+                </field>
+                <field id="merchant_key" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Merchant Key</label>
+                    <comment>Provided By Paytm</comment>
+                    <config_path>payment/paytm/merchant_key</config_path>
+                </field>
+                <field id="Industry_id" translate="label" type="text" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Industry Type Id</label>
+                    <comment>Provided By Paytm</comment>
+                    <config_path>payment/paytm/Industry_id</config_path>
+                </field>
+                <field id="Website" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Website</label>
+                    <comment>Provided By Paytm</comment>
+                    <config_path>payment/paytm/Website</config_path>
+                </field>
+                <field id="success_order_status" translate="label" type="select" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Success Order Status</label>
+                    <source_model>One97\Paytm\Model\SuccessFailStatus</source_model>
+                    <config_path>payment/paytm/success_order_status</config_path>
+                </field>
+                <field id="fail_order_status" translate="label" type="select" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Fail Order Status</label>
+                    <source_model>One97\Paytm\Model\SuccessFailStatus</source_model>
+                    <config_path>payment/paytm/fail_order_status</config_path>
+                </field>
+                <field id="sort_order" translate="label" type="text" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Sort Order</label>
+                    <frontend_class>validate-number</frontend_class>
+                    <config_path>payment/paytm/sort_order</config_path>
+                </field>
+                <field id="allowspecific" translate="label" type="allowspecific" sortOrder="14" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Payment from Applicable Countries</label>
+                    <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                    <config_path>payment/paytm/allowspecific</config_path>
+                </field>
+                <field id="specificcountry" translate="label" type="multiselect" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Payment from Specific Countries</label>
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                    <config_path>payment/paytm/specificcountry</config_path>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

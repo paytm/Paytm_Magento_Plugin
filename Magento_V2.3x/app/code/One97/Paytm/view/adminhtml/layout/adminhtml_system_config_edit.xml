@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+    	<script src="One97_Paytm::js/system/config/adminConfig.js"/>
+    </head>
+    <body>
+        <referenceContainer name="js">
+            <block class="One97\Paytm\Block\Info\Paytm" 
+                   template="One97_Paytm::system/config/custom_js.phtml" cacheable="false" />
+        </referenceContainer>
+    </body>
+</page>

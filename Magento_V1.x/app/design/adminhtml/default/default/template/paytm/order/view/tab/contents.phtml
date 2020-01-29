@@ -1,0 +1,47 @@
+<?php 
+	$className = Mage::getConfig()->getBlockClassName('One97_Paytm_Block_Adminhtml_Order_View_Tab_Contents');
+	$block = new $className();  
+	$dealerRespnce = $block->paytmResponse();
+	$setchButton = $block->paytmResponse(true);
+?>
+<div class="entry-edit" bis_skin_checked="1">
+	<div class="entry-edit-head" bis_skin_checked="1">
+		<h4>Paytm Response</h4>
+		<?php echo $setchButton; ?>
+	</div>
+	<fieldset class="np">
+		<div class="grid np" bis_skin_checked="1">
+			<table cellspacing="0" style="border:0;" id="lastOrdersGrid_table">
+				<thead>
+					<tr class="headings">
+						<th class=" no-link" style="width: 30%; "><span class="nobr">Key</span></th>
+						<th class=" no-link"><span class="nobr">Values</span></th>
+					</tr>
+				</thead>
+				<tbody id="paytmTableResponseTBody">
+					<?php echo $dealerRespnce; ?>
+				</tbody>
+			</table>
+		</div>
+		<script type="text/javascript">
+			function fetchStatus(){
+				var paytmResponseId=document.getElementsByClassName("paytmResponseId")[0].value;
+				url = "<?php echo $this->getUrl('paytm/processing/statsucheck');?>";
+				new Ajax.Request(url, {
+					parameters: {isAjax: 1, method: 'POST', paytmResponseId:paytmResponseId},
+					onSuccess: function(transport) {
+						var ajaxRespoane=transport.responseJSON;
+						if(ajaxRespoane.tableBody!="success"){
+							var mydiv = document.getElementById("paytmTableResponseTBody");
+							mydiv.innerHTML = ajaxRespoane.tableBody;
+						}
+						if(ajaxRespoane.response=="success"){
+							var mydiv = document.getElementById("fetchStatusBtn");
+							mydiv.parentNode.removeChild(mydiv);
+						}
+					}
+				});
+			}
+		</script>
+	</fieldset>
+</div>

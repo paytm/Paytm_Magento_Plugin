@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<layout>
+    <adminhtml_sales_order_view>
+        <reference name="sales_order_tabs">
+            <action method="addTab">
+                <name>one97_paytm_order_view_tab</name>
+                 <block>paytm/adminhtml_order_view_tab_contents</block>
+            </action>
+        </reference>
+	</adminhtml_sales_order_view>
+	<default>
+        <reference name="head">
+            <action  method="addItem">
+            	<type>js</type>
+            	<name>paytm/adminhtml/paytm.js</name>
+            </action>
+        </reference>
+    </default>
+</layout>  

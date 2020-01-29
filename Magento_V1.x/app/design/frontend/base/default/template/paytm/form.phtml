@@ -1,0 +1,10 @@
+<script>
+var $j = jQuery.noConflict();
+$j('label[for="p_method_paytm_cc"]').prepend('<span style="display: inline-block;"><img style="margin:0px 5px -4px 0px" src="<?php echo $this->getSkinUrl('images/paytm.png'); ?>" alt=""></span>');
+</script>
+<fieldset class="form-list">
+    <?php $_code=$this->getMethodCode() ?>
+    <div id="payment_form_<?php echo $_code ?>" style="display:none">
+		<p><?php echo Mage::helper('paytm')->__('You will be redirected to Paytm Payment Gateway when you place an order.') ?></p>
+    </div>
+</fieldset>

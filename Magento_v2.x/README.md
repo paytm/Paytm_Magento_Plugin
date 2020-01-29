@@ -1,22 +1,2 @@
-# Paytm_Magento_v2.x_Kit
-
-Supported Versions
-Paytm Plugin version V1.0 Magento supported version 2.0.X onward
-
-Installation and Configuration
-upload app/code/One97 (all files and folder) at you server end.
-
-Run below command:
-php bin/magento module:enable One97_Paytm
-php bin/magento setup:upgrade
-php bin/magento setup:static-content:deploy
-
-goto Admin->Store->Configuration->Sales->Payment Method->Paytm
-fill details here and save them.
-
-goto Admin->System->Cache Management
-Clear all Cache.
-
-Now you can collect payment via Paytm .
-
-See Video : https://www.youtube.com/watch?v=bR18KwhY4V8
+# Paytm Payment plugin for Magento version 2.x
+* Developer Docs: https://developer.paytm.com/docs/eCommerce-plugin/magento/#v2-x

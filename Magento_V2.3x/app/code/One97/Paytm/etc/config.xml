@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <paytm>                
+                <model>One97\Paytm\Model\Paytm</model>                
+                <active>0</active>
+                <title>Paytm  Wallet</title>
+                <payment_action>authorize_capture</payment_action>
+                <MID>MID</MID>
+                <merchant_key>merchant_key</merchant_key>
+                <custom_callbackurl>0</custom_callbackurl>
+                <callback_url></callback_url>
+                <environment></environment>
+                <Industry_id>Industry_id</Industry_id>
+                <Website>Website</Website>
+                <success_order_status>processing</success_order_status>
+                <fail_order_status>canceled</fail_order_status>
+                <allowspecific>0</allowspecific>
+                <hide_promo_field>0</hide_promo_field>
+                <promo_code_local_validation>0</promo_code_local_validation>
+                <promo_code></promo_code>
+            </paytm>
+        </payment>
+    </default>
+</config>

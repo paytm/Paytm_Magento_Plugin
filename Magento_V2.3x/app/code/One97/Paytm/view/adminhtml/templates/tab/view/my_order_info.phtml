@@ -1,0 +1,11 @@
+<div class="fieldset-wrapper order-information">
+    <div class="fieldset-wrapper-title">
+        <span class="title"><?php echo __('Paytm given response') ?></span>
+        <?php echo $block->getPaytmResponseHtml(true); ?>
+    </div>
+    <table class="admin__table-secondary">
+        <tbody class="paytmResponseTBody">
+            <?php echo $block->getPaytmResponseHtml(); ?>
+        </tbody>
+    </table>
+</div>
