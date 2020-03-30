@@ -101,7 +101,7 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
                     
                     $transactionEnvironment = Mage::getStoreConfig('payment/paytm_cc/transaction_environment');
                     $const = (string)Mage::getConfig()->getNode('global/crypt/key');
-                    $check_status_url=Mage::helper('paytm')->getTransactionStatusURL(Mage::helper('paytm')->decrypt($transactionEnvironment,$const));
+                    $check_status_url=Mage::helper('paytm')->getTransactionStatusURL($transactionEnvironment);
                     $responseParamList=array();
                     $retry = Mage::helper('paytm')::MAX_RETRY_COUNT;
                     do{
@@ -426,7 +426,7 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
                     $const = (string)Mage::getConfig()->getNode('global/crypt/key');
                     $mid= Mage::helper('paytm')->decrypt($merchantID,$const);
                     $mKey= Mage::helper('paytm')->decrypt($merchantKey,$const);
-                    $check_status_url=Mage::helper('paytm')->getTransactionStatusURL(Mage::helper('paytm')->decrypt($transactionEnvironment,$const));
+                    $check_status_url=Mage::helper('paytm')->getTransactionStatusURL($transactionEnvironment);
                     $requestParamList = array("MID" => $mid , "ORDERID" => $results[0]['paytm_order_id']);
                     $StatusCheckSum = Mage::helper('paytm')->generateSignature($requestParamList, $mKey);
                     $requestParamList['CHECKSUMHASH'] = $StatusCheckSum;
