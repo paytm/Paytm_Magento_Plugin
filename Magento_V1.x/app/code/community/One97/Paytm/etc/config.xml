@@ -91,18 +91,14 @@
     <default>
         <payment>        
             <paytm_cc>
-                <active>0</active>
                 <model>paytm/cc</model>
-                <success_transaction_status>1</success_transaction_status>
-                <cancel_transaction_status>1</cancel_transaction_status>
+                <active>0</active>
                 <title>Paytm PG</title>  
-                <inst_id></inst_id>
-                <inst_key></inst_key>
-                <custom_callbackurl>0</custom_callbackurl>
-                <callback_url></callback_url>
                 <transaction_environment>0</transaction_environment>
-                <website></website>
-                <industrytype></industrytype>
+                <order_status>pending</order_status>
+                <success_transaction_status>processing</success_transaction_status>
+                <cancel_transaction_status>closed</cancel_transaction_status>
+                <auto_invoice>1</auto_invoice>
             </paytm_cc>
         </payment>
     </default> 

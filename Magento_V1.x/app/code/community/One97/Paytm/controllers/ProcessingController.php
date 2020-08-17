@@ -16,6 +16,7 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
     //when customer selects paytm payment method
     public function redirectAction() {
         try {
+            Mage::log("Request getting from Magento for Paytm",null,'paytmDebugLogFile.log',true);
             $session = $this->_getCheckout();
             //get order singleton
             $order = Mage::getModel('sales/order');
@@ -61,6 +62,8 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
             Mage::log('No order for processing found');
         }
         $request = $this->_checkReturnedPost();
+        Mage::log("Response getting from Paytm",null,'paytmDebugLogFile.log',true);
+        Mage::log($request,null,'paytmDebugLogFile.log',true);
         $orderIdArr=explode('_', $request['ORDERID']);
         $orderIdMagento=$orderIdArr[0];
         try {
@@ -222,13 +225,16 @@ class One97_paytm_ProcessingController extends Mage_Core_Controller_Front_Action
         $order = Mage::getModel('sales/order');
         $order->loadByIncrementId($request['ORDERID']);
         
-        //save transaction information
-        $invoice = $order->prepareInvoice();
-        $invoice->register()->capture();
-        Mage::getModel('core/resource_transaction')
-                    ->addObject($invoice)
-                    ->addObject($invoice->getOrder())
-                    ->save();
+        Mage::log("This transaction success by Paytm plugin",null,'paytmDebugLogFile.log',true);
+        if(Mage::getStoreConfig('payment/paytm_cc/auto_invoice')){
+            //save transaction information
+            $invoice = $order->prepareInvoice();
+            $invoice->register()->capture();
+            Mage::getModel('core/resource_transaction')
+                        ->addObject($invoice)
+                        ->addObject($invoice->getOrder())
+                        ->save();
+        }
 
         $order->addStatusToHistory(Mage::getStoreConfig('payment/paytm_cc/success_transaction_status'),Mage::helper('paytm')->__('Payment successful through Paytm PG'));
         $order->save();
