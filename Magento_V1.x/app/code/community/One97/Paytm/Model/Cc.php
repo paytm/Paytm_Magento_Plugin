@@ -60,7 +60,27 @@ class One97_paytm_Model_Cc extends Mage_Payment_Model_Method_Abstract
 
     
 
+	public function executecUrl($apiURL, $postData) {
+		
+		$ch = curl_init($apiURL);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, Mage::helper('paytm')::CONNECT_TIMEOUT);
+		curl_setopt($ch, CURLOPT_TIMEOUT, Mage::helper('paytm')::TIMEOUT);
 
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+			'Content-Type: application/json', 
+			'Content-Length: ' . strlen($postData))
+		);
+		$jsonResponse = curl_exec($ch);   
+		//return $jsonResponse;
+		 if (!curl_errno($ch)) {
+			return json_decode($jsonResponse, true);
+		} else {
+			 return false; 
+		}  
+	}
     
     //prepare params array to send it to gateway page via POST
     public function getFormFields()
@@ -108,30 +128,41 @@ class One97_paytm_Model_Cc extends Mage_Payment_Model_Method_Abstract
 			$query = "INSERT INTO ".$tableName." (`order_id`, `paytm_order_id`, `date_added`, `date_modified`) VALUES ('".$oldOrderId."', '".$orderId."', '".date('Y-m-d H:i:s')."', '".date('Y-m-d H:i:s')."')";
 			$connection->query($query);
 		}
-		$params = 	array(
-			'MID' =>	trim($merid),  				
-			'TXN_AMOUNT' =>	trim($price),
-			'CHANNEL_ID' => Mage::helper('paytm')::CHANNEL_ID,
-			'INDUSTRY_TYPE_ID' => trim($industry_type),
-			'WEBSITE' => trim($website),
-			'CUST_ID' => Mage::getSingleton('customer/session')->getCustomer()->getId(),
-			'ORDER_ID'	=>	$orderId,   				    
-			'EMAIL'=> trim($email),
-			'MOBILE_NO' => preg_replace('#[^0-9]{0,13}#is','',$telephone)
-		);
 		if($is_callback=='1'){
 			$callbackUrl=$this->getConfigData('callback_url')!=''?$this->getConfigData('callback_url'):$callbackUrl;
 		}
-		$params['CALLBACK_URL'] = trim($callbackUrl);
+		$paytmParams = array();
+		$paytmParams["body"] = array(
+			"requestType"   => "Payment",
+			"mid"           => trim($merid),
+			"websiteName"   => trim($website),
+			"orderId"       => $orderId,
+			"callbackUrl"   => trim($callbackUrl),
+			"txnAmount"     => array(
+				"value"     => trim($price),
+				"currency"  => "INR",
+			),
+			"userInfo"      => array(
+				"custId"    => Mage::getSingleton('customer/session')->getCustomer()->getId()?Mage::getSingleton('customer/session')->getCustomer()->getId():trim($email),
+			),
+		);
+
+
+		$checksum = Mage::helper('paytm')->generateSignature(json_encode($paytmParams["body"], JSON_UNESCAPED_SLASHES), $mer);//generate checksum
+		$paytmParams["head"] = array(
+			"signature"	=> $checksum
+		);
+		$postData = json_encode($paytmParams, JSON_UNESCAPED_SLASHES);
+		$apiURL = Mage::helper('paytm')->getPaytmURL(Mage::helper('paytm')::INITIATE_TRANSACTION_URL,Mage::getStoreConfig('payment/paytm_cc/transaction_environment')).'?mid='.trim($merid).'&orderId='.$orderId;
+		$result = $this->executecUrl($apiURL, $postData);
 		
-		//generate customer id in case this is a guest checkout
-		if(empty($params['CUST_ID'])){
-			$params['CUST_ID'] = trim($email);
-		}
-		$checksum = Mage::helper('paytm')->generateSignature($params, $mer);//generate checksum
-		$params['CHECKSUMHASH'] = $checksum;
-		$params['X-REQUEST-ID']=Mage::helper('paytm')::X_REQUEST_ID.Mage::getVersion()."_".date("d-F-Y", strtotime(Mage::helper('paytm')::LAST_UPDATED));
-	  return $params;
+		$data['scripturl']=  str_replace('MID',trim($merid), Mage::helper('paytm')->getPaytmURL(Mage::helper('paytm')::CHECKOUT_JS_URL,Mage::getStoreConfig('payment/paytm_cc/transaction_environment')));
+		$data['txntoken']= $result['body']['txnToken'];
+		$data['orderid']= $orderId;
+		$data['amount']= trim($price);
+
+	  /* return $params; */
+	  return $data;
     }
 
     protected function _debug($debugData)

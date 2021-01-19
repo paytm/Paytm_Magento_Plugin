@@ -9,6 +9,12 @@ class One97_paytm_Helper_Data extends Mage_Payment_Helper_Data {
 	CONST TRANSACTION_URL_STAGING 				="https://securegw-stage.paytm.in/order/process";
 	CONST TRANSACTION_STATUS_URL_STAGING		= "https://securegw-stage.paytm.in/order/status";
 
+	CONST STAGING_HOST 							= "https://securegw-stage.paytm.in/";
+	CONST PRODUCTION_HOST						= "https://securegw.paytm.in/";
+
+	CONST INITIATE_TRANSACTION_URL				= "theia/api/v1/initiateTransaction";
+	CONST CHECKOUT_JS_URL						= "merchantpgpui/checkoutjs/merchants/MID.js";
+
 	CONST SAVE_PAYTM_RESPONSE 					= true;
 	CONST CHANNEL_ID							= "WEB";
 	CONST APPEND_TIMESTAMP						= false;
@@ -168,7 +174,14 @@ class One97_paytm_Helper_Data extends Mage_Payment_Helper_Data {
 			return One97_paytm_Helper_Data::TRANSACTION_STATUS_URL_STAGING;			
 		}
 	}
-
+	public static function getPaytmURL($url = false, $isProduction = 0){
+		if(!$url) return false; 
+		if($isProduction == 1){
+			return One97_paytm_Helper_Data::PRODUCTION_HOST . $url;
+		}else{
+			return One97_paytm_Helper_Data::STAGING_HOST . $url;			
+		}
+	}
 	public static function getcURLversion(){    
 		if(function_exists('curl_version')){
 			$curl_version = curl_version();

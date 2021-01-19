@@ -1,20 +1,150 @@
-<?php
+<div id="paytm-pg-spinner" class="paytm-woopg-loader"><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div><div class="bounce4"></div><div class="bounce5"></div><p class="loading-paytm">Loading Paytm...</p></div><div class="paytm-overlay paytm-woopg-loader"></div>
+<h2><?php echo Mage::helper('paytm')->__('Paytm is Loading. Please Wait...'); ?></h2>
+<br />
+<br />
+<a href="<?php echo Mage::helper('checkout/url')->getCheckoutUrl(); ?>" class="button btn">Go Back</a>
 
+<?php 
+$data= $this->getFormData();
+$txntoken=$data['txntoken'];
+$orderid=$data['orderid'];
+$amount=$data['amount'];
 ?>
-<b><?php echo Mage::helper('paytm')->__('You will be redirected to Paytm Payment Gateway in a few seconds.'); ?></b>
-<form name="paytm_checkout" id="paytm_checkout" action="<?php echo $this->getFormAction();?>" method="POST">
-<?php $arr  = array();
-$arr = $this->getFormData();?>
-<?php if (is_array($arr)): ?>
-    <?php foreach ($arr as $name => $value): ?>
-        <input type="hidden" name="<?php echo $name; ?>" <?php if (!is_null($value)) { echo 'value="'. $value . '"'; } ?> />
-    <?php endforeach; ?>
-<?php endif; ?>
-</form>
 
 <script type="text/javascript">
+ 
+        function openBlinkCheckoutPopup(orderId, txnToken, amount)
+         {
+         	var config = {
+         		"root": "",
+         		"flow": "DEFAULT",
+         		"data": {
+         			"orderId": orderId, 
+         			"token": txnToken,   
+         			"tokenType": "TXN_TOKEN",
+         			"amount": amount 
+				 },
+         		"handler": {
+         		"notifyMerchant": function(eventName,data){
+         			/* console.log("notifyMerchant handler function called");
+         			console.log("eventName => ",eventName);
+                     console.log("data => ",data); */
+                     if(eventName=='APP_CLOSED')
+                     {
+                         location.href= "<?php echo Mage::helper('checkout/url')->getCheckoutUrl(); ?>";
+                     }
+                     else
+                     {
+                        location.reload();
+                     }
+         		} 
+         		}
+         	};
+			if(window.Paytm && window.Paytm.CheckoutJS){
+			window.Paytm.CheckoutJS.onLoad(function excecuteAfterCompleteLoad() {
+				// initialze configuration using init method 
+				window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
+					// after successfully updating configuration, invoke JS Checkout
+					window.Paytm.CheckoutJS.invoke();
+				}).catch(function onError(error){
+					console.log("error => ",error);
+				});
+			});
+			} 
+        }
+      </script>
+<script type="application/javascript" src="<?php echo $data['scripturl']; ?>" onload="openBlinkCheckoutPopup('<?php echo $orderid; ?>','<?php echo $txntoken; ?>','<?php echo $amount; ?>');" crossorigin="anonymous"></script>
+<script type="text/javascript">
 //<![CDATA[
-    var paymentform = document.getElementById('paytm_checkout');
-    window.onload = paymentform.submit();
+    //var paymentform = document.getElementById('paytm_checkout');
+    //window.onload = paymentform.submit();
 //]]>
 </script>
+<style >
+#paytm-pg-spinner {
+    width: 70px;
+    text-align: center;
+    z-index: 999999;
+    position: fixed;
+    top: 25%;
+    left: 50%;
+}
+
+#paytm-pg-spinner>div {
+    width: 10px;
+    height: 10px;
+    background-color: #012b71;
+    border-radius: 100%;
+    display: inline-block;
+    -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+#paytm-pg-spinner .bounce1 {
+    -webkit-animation-delay: -0.64s;
+    animation-delay: -0.64s;
+}
+
+#paytm-pg-spinner .bounce2 {
+    -webkit-animation-delay: -0.48s;
+    animation-delay: -0.48s;
+}
+
+#paytm-pg-spinner .bounce3 {
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s;
+}
+
+#paytm-pg-spinner .bounce4 {
+    -webkit-animation-delay: -0.16s;
+    animation-delay: -0.16s;
+}
+
+#paytm-pg-spinner .bounce4,
+#paytm-pg-spinner .bounce5 {
+    background-color: #48baf5;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+    0%,
+    80%,
+    100% {
+        -webkit-transform: scale(0)
+    }
+    40% {
+        -webkit-transform: scale(1.0)
+    }
+}
+
+@keyframes sk-bouncedelay {
+    0%,
+    80%,
+    100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+    40% {
+        -webkit-transform: scale(1.0);
+        transform: scale(1.0);
+    }
+}
+
+.paytm-overlay {
+    width: 100%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    opacity: .3;
+    height: 100%;
+    background: #000;
+    z-index: 9999;
+}
+
+.paytm-woopg-loader p {
+    font-size: 10px !important;
+}
+
+.paytm-woopg-loader a {
+    font-size: 15px !important;
+}
+</style>

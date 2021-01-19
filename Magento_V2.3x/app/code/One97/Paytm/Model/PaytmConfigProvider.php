@@ -18,7 +18,10 @@
             return $this->method->isAvailable() ? [
                 'payment' => [
                     'paytm' => [
-                        'redirectUrl' => $this->urlBuilder->getUrl('paytm/Standard/Redirect', ['_secure' => true])
+                        'mid' => $this->method->getMID(),
+                        'checkout_url' => $this->method->getcheckoutjsurl(),
+                       // 'order' => $this->method->getOrder(),
+                        'redirecturl' => $this->urlBuilder->getUrl('paytm/Standard/Redirect', ['_secure' => true])
                     ]
                 ]
             ] : [];

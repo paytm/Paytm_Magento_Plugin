@@ -111,7 +111,9 @@
                 'CUST_ID' => $order->getCustomerEmail(),
                 'ORDER_ID' => $paytmOrderId,                     
                 'EMAIL' => $order->getCustomerEmail(),
-                'CALLBACK_URL' => trim($callBackUrl)
+                'CALLBACK_URL' => trim($callBackUrl),
+                "PAYMENT_MODE_ONLY" => "YES",
+                "PAYMENT_TYPE_ID" => "EMI"
             );    
             if(isset($order->paytmPromoCode)){
                 $params['PROMO_CAMP_ID']=$order->paytmPromoCode;

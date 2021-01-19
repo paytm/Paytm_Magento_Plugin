@@ -116,16 +116,53 @@
             if(isset($order->paytmPromoCode)){
                 $params['PROMO_CAMP_ID']=$order->paytmPromoCode;
             }
+            if($this->getConfigData("debug")){
+                $paytmDmain = 'https://securegw.paytm.in/';
+            }else{
+                $paytmDmain = 'https://securegw-stage.paytm.in/';
+            }
             $checksum = $this->helper->generateSignature($params, $this->getConfigData("merchant_key"));
             $params['CHECKSUMHASH'] = $checksum;
+                $paytmParams = array();
+                $paytmParams["body"] = array(
+                    "requestType" => "Payment",
+                    "mid" => $params["MID"],
+                    "websiteName" => $params["WEBSITE"],
+                    "orderId" => $params["ORDER_ID"],
+                    "callbackUrl" => $params["CALLBACK_URL"],
+                    "txnAmount" => array(
+                        "value" => $params["TXN_AMOUNT"],
+                        "currency" => "INR",
+                    ),
+                    "userInfo" => array(
+                        "custId" => $params["CUST_ID"],
+                    ),
+                );
+                $generateSignature = $this->helper->generateSignature(json_encode($paytmParams['body'], JSON_UNESCAPED_SLASHES), $this->getConfigData("merchant_key"));
 
-            $version = $this->getLastUpdate();
-            $params['X-REQUEST-ID']=$this->helper::X_REQUEST_ID.str_replace('|', '_', str_replace(' ', '-', $version));
-            $inputForm='';
-            foreach ($params as $key => $value) {
-                $inputForm.="<input type='hidden' name='".$key."' value='".$value."' />";
-            }
-            return $inputForm;
+                $paytmParams["head"] = array(
+                    "signature" => $generateSignature
+                );
+
+                $url = $this->helper::TRANSACTION_TOKEN_URL_STAGING.$params["MID"] . "&orderId=" . $params["ORDER_ID"];
+                $post_data_string = json_encode($paytmParams, JSON_UNESCAPED_SLASHES);
+                $headers = array("Content-Type: application/json");
+                $ch = curl_init($url);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_string);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+                $response = curl_exec($ch);
+                $response_array = json_decode($response, TRUE);
+                $txnToken = $response_array['body']['txnToken'];
+                $version = $this->getLastUpdate();
+                $params['X-REQUEST-ID']=$this->helper::X_REQUEST_ID.str_replace('|', '_', str_replace(' ', '-', $version));
+                $inputForm='<script type="application/javascript" crossorigin="anonymous" src="'.$paytmDmain.'"merchantpgpui/checkoutjs/merchants/'.$params['MID'].'.js"></script><input type="hidden" value="'.$txnToken.'"  name="txn_token" id="txn_token" /> <input id="OrderID" value="'.$params['ORDER_ID'].'"  type="hidden" /><input id="amount" value="'.$params['TXN_AMOUNT'].'"  type="hidden" />';
+                $datareturn['inputForm'] = $inputForm;
+                $datareturn['ORDER_ID'] = $params['ORDER_ID'];
+                $datareturn['txnToken'] = $txnToken;
+                $datareturn['TXN_AMOUNT'] = $params['TXN_AMOUNT'];
+                return $datareturn;
         }
 
         /* this function for checksum validation */
@@ -160,6 +197,13 @@
         public function getMID() {            
             return $this->getConfigData("MID");
         }
+
+
+         /* this function for return checkoutjs url */
+        public function getcheckoutjsurl() {  
+           return str_replace('MID', $this->getConfigData("MID"), $this->helper->getPaytmURL($this->helper::CHECKOUT_JS_URL,$this->getConfigData('environment')));
+        }
+
 
         public function autoInvoiceGen() {
             $result = $this->getConfigData("payment_action");            

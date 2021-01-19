@@ -1,5 +1,6 @@
 require(['jquery'],function($){
     $(document).ready(function(){
-        $('#paytmFormPost').submit();
+       $('#paytmFormPost').submit();
+
     });
 });

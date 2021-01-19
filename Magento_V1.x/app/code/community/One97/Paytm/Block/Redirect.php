@@ -1,10 +1,7 @@
 <?php
-
-
 class One97_paytm_Block_Redirect extends Mage_Core_Block_Template
 {
      //Return checkout session instance
-    
     protected function _getCheckout()
     {
         return Mage::getSingleton('checkout/session');

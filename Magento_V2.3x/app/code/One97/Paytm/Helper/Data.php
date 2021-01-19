@@ -12,8 +12,17 @@
 	    CONST TRANSACTION_URL_PRODUCTION			= "https://securegw.paytm.in/order/process";
 		CONST TRANSACTION_STATUS_URL_PRODUCTION		= "https://securegw.paytm.in/order/status";
 
+		CONST PRODUCTION_HOST						= "https://securegw.paytm.in/";
+		CONST STAGING_HOST							= "https://securegw-stage.paytm.in/";
+
 		CONST TRANSACTION_URL_STAGING				= "https://securegw-stage.paytm.in/order/process";
 		CONST TRANSACTION_STATUS_URL_STAGING		= "https://securegw-stage.paytm.in/order/status";
+
+
+	    CONST TRANSACTION_TOKEN_URL_PRODUCTION		= "https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=";
+
+		CONST TRANSACTION_TOKEN_URL_STAGING			= "https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=";
+		CONST CHECKOUT_JS_URL						= "merchantpgpui/checkoutjs/merchants/MID.js";
 
 		CONST SAVE_PAYTM_RESPONSE 					= true;
 		CONST CHANNEL_ID							= "WEB";
@@ -24,7 +33,7 @@
 		CONST CONNECT_TIMEOUT						= "10";
 		CONST TIMEOUT								= "10";
 
-		CONST LAST_UPDATED							= "20200120";
+		CONST LAST_UPDATED							= "20201111";
 		CONST PLUGIN_VERSION						= "2.0";
 
 		CONST CUSTOM_CALLBACK_URL					= "";
@@ -256,6 +265,20 @@
 	    		return false;
 	    	}
 	    }
+
+
+
+	    public static function getPaytmURL($url = false, $isProduction = 0){
+			if(!$url) return false; 
+			if($isProduction == 1){
+				return Data::PRODUCTION_HOST . $url;
+			}else{
+				return Data::STAGING_HOST . $url;			
+			}
+		}
+
+
+
 	    // PaytmHelper.php start
 	}
 ?>
