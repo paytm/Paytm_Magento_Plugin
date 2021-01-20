@@ -116,10 +116,12 @@
             if(isset($order->paytmPromoCode)){
                 $params['PROMO_CAMP_ID']=$order->paytmPromoCode;
             }
-            if($this->getConfigData("debug")){
+            if($this->getConfigData("environment") ==1){
                 $paytmDmain = 'https://securegw.paytm.in/';
+                $url = $this->helper::TRANSACTION_TOKEN_URL_PRODUCTION.$params["MID"] . "&orderId=" . $params["ORDER_ID"];
             }else{
                 $paytmDmain = 'https://securegw-stage.paytm.in/';
+                $url = $this->helper::TRANSACTION_TOKEN_URL_STAGING.$params["MID"] . "&orderId=" . $params["ORDER_ID"];
             }
             $checksum = $this->helper->generateSignature($params, $this->getConfigData("merchant_key"));
             $params['CHECKSUMHASH'] = $checksum;
@@ -144,7 +146,7 @@
                     "signature" => $generateSignature
                 );
 
-                $url = $this->helper::TRANSACTION_TOKEN_URL_STAGING.$params["MID"] . "&orderId=" . $params["ORDER_ID"];
+                
                 $post_data_string = json_encode($paytmParams, JSON_UNESCAPED_SLASHES);
                 $headers = array("Content-Type: application/json");
                 $ch = curl_init($url);
