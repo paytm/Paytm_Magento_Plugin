@@ -19,7 +19,7 @@
         </div>
         <div class="actions-toolbar">
             <div class="primary">
-                <button class="action primary checkout" type="submit" data-bind="click: placeOrder, attr: {title: $t('Place Order')}, css: {disabled: !isPlaceOrderActionAllowed()}, enable: (getCode() == isChecked())" disabled>
+                <button class="action primary checkout" id="paywithpaytm" type="submit" data-bind="click: placeOrder, attr: {title: $t('Place Order')},enable: (getCode() == isChecked())" disabled>
                     <span data-bind="i18n: 'Pay with Paytm'"></span>
                 </button>
             </div>
