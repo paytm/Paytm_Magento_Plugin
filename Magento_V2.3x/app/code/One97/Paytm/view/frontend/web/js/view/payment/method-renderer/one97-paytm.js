@@ -10,6 +10,7 @@ define(
     ],
     function ($, Component, placeOrderAction, selectPaymentMethodAction, customer, checkoutData, additionalValidators) {
         'use strict';
+        var togglepoup = false;
         return Component.extend({
             defaults: {
                 template: 'One97_Paytm/payment/one97',
@@ -44,10 +45,18 @@ define(
                 }
                 return self;
             },
-            placeOrder: function (data, event) {
+            placeOrder: function (data, event) {                
                 if (event) {
                     event.preventDefault();
+                    //$("#paywithpaytm").addClass('paytmtoggle');
+                    if ($("#paywithpaytm").hasClass('paytmtoggle')) {
+                        togglepoup = true;
+                        window.Paytm.CheckoutJS.invoke();
+                    }
                 }
+
+
+            if(!togglepoup){
 
             var loaderhtml = '<div id="paytm-pg-spinner" class="paytm-pg-loader">'+
             '<div class="bounce1"></div>'+
@@ -77,9 +86,13 @@ define(
                     }).done(this.afterPlaceOrder.bind(this));
                     return true;
                 }
+            }
                 return false;
+
             },
             afterPlaceOrder: function () {
+
+                if(!togglepoup){
 	
 		        var self = this;
                 $.ajax({
@@ -87,7 +100,7 @@ define(
                    // url: urlBuilder.build("Standard/Success"),
                     url: window.checkoutConfig.payment.paytm.redirecturl,
                     data: {
-                        email: 'test@gmail.com',
+                        email: '',
                     },
 
                     /**
@@ -106,14 +119,14 @@ define(
                         } 
                     },
                 });
-
+                }
 
 
             },
             renderCheckout: function(data) {
 
 
-
+            if(!togglepoup){
                 var config = {
                     "root": "",
                     "flow": "DEFAULT",
@@ -128,6 +141,11 @@ define(
                             if(eventName == 'SESSION_EXPIRED'){
                                 $('a[href="#collapse-payment-method"]').click();
                             }
+
+                            if(eventName == 'APP_CLOSED'){
+                                $("#paywithpaytm").addClass('paytmtoggle');
+                                $("#paywithpaytm").attr('type','button');
+                            } 
                         } 
                     }
                     };
@@ -143,6 +161,10 @@ define(
                                 console.log("error => ",error);
                             });
                     }  
+
+
+
+                }
             }
         });
     }
