@@ -59,7 +59,7 @@
             return $order_info;
         }
 
-        protected function getOrder() {
+        public function getOrder() {
             return $this->_orderFactory->create()->loadByIncrementId(
                 $this->_checkoutSession->getLastRealOrderId()
             );
