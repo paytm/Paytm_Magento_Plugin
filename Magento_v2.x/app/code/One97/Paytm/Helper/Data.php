@@ -8,12 +8,23 @@
 	class Data extends AbstractHelper {
 	    protected $session;
 	    
-	    // PaytmConstants.php start
-	    CONST TRANSACTION_URL_PRODUCTION			= "https://securegw.paytm.in/order/process";
-		CONST TRANSACTION_STATUS_URL_PRODUCTION		= "https://securegw.paytm.in/order/status";
+		// PaytmConstants.php start
+		CONST TRANSACTION_STATUS_URL_PRODUCTION	    = "https://securegw.paytm.in/order/status";
+		CONST TRANSACTION_STATUS_URL_STAGING		       = "https://securegw-stage.paytm.in/order/status";
+
+		CONST PRODUCTION_HOST					= "https://securegw.paytm.in/";
+		CONST STAGING_HOST					= "https://securegw-stage.paytm.in/";
+
+		CONST ORDER_PROCESS_URL					= "order/process";
+		CONST ORDER_STATUS_URL					= "order/status";
+		CONST INITIATE_TRANSACTION_URL				= "theia/api/v1/initiateTransaction";
+		CONST CHECKOUT_JS_URL					= "merchantpgpui/checkoutjs/merchants/MID.js";
+		
+		CONST TRANSACTION_URL_PRODUCTION			= "https://securegw.paytm.in/order/process";
+		
 
 		CONST TRANSACTION_URL_STAGING				= "https://securegw-stage.paytm.in/order/process";
-		CONST TRANSACTION_STATUS_URL_STAGING		= "https://securegw-stage.paytm.in/order/status";
+		
 
 		CONST SAVE_PAYTM_RESPONSE 					= true;
 		CONST CHANNEL_ID							= "WEB";
@@ -224,10 +235,8 @@
 		}
 
 	    public static function executecUrl($apiURL, $requestParamList) {
-	    	$responseParamList = array();
-	    	$JsonData = json_encode($requestParamList);
-	    	$postData = 'JsonData='.urlencode($JsonData);
-	    	$ch = curl_init($apiURL);
+	    	$postData = json_encode($requestParamList, JSON_UNESCAPED_SLASHES);
+		    $ch = curl_init($apiURL);
 	    	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 	    	curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
 	    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
@@ -255,7 +264,14 @@
 	    	} else {
 	    		return false;
 	    	}
-	    }
-	    // PaytmHelper.php start
+		}
+		public static function getPaytmURL($url = false, $isProduction = 0){
+			if(!$url) return false; 
+			if($isProduction == 1){
+				return Data::PRODUCTION_HOST . $url;
+			}else{
+				return Data::STAGING_HOST . $url;			
+			}
+		}
 	}
 ?>
