@@ -95,39 +95,16 @@
                 $connection->query($sql);
             }
 
-            $callBackUrl=$this->urlBuilder->getUrl('paytm/Standard/Response', ['_secure' => true]);
-            if($this->helper::CUSTOM_CALLBACK_URL!=''){
-                $callBackUrl=$this->helper::CUSTOM_CALLBACK_URL;
-            }
-            if($this->getConfigData("custom_callbackurl")=='1'){
-                $callBackUrl=$this->getConfigData("callback_url")!=''?$this->getConfigData("callback_url"):$callBackUrl;
-            }
-            $params = array(
-                'MID' => trim($this->getConfigData("MID")),               
-                'TXN_AMOUNT' => round($order->getGrandTotal(), 2),
-                'CHANNEL_ID' => $this->helper::CHANNEL_ID,
-                'INDUSTRY_TYPE_ID' => trim($this->getConfigData("Industry_id")),
-                'WEBSITE' => trim($this->getConfigData("Website")),
-                'CUST_ID' => $order->getCustomerEmail(),
-                'ORDER_ID' => $paytmOrderId,                     
-                'EMAIL' => $order->getCustomerEmail(),
-                'CALLBACK_URL' => trim($callBackUrl),
-                "PAYMENT_MODE_ONLY" => "YES",
-                "PAYMENT_TYPE_ID" => "EMI"
-            );    
-            if(isset($order->paytmPromoCode)){
-                $params['PROMO_CAMP_ID']=$order->paytmPromoCode;
-            }
-            $checksum = $this->helper->generateSignature($params, $this->getConfigData("merchant_key"));
-            $params['CHECKSUMHASH'] = $checksum;
+            $amount         = round($order->getGrandTotal(), 2);
 
-            $version = $this->getLastUpdate();
-            $params['X-REQUEST-ID']=$this->helper::X_REQUEST_ID.str_replace('|', '_', str_replace(' ', '-', $version));
-            $inputForm='';
-            foreach ($params as $key => $value) {
-                $inputForm.="<input type='hidden' name='".$key."' value='".$value."' />";
-            }
-            return $inputForm;
+            $paramData = array('amount' => $amount, 'order_id' => $paytmOrderId, 'cust_id' => $order->getCustomerEmail(), 'email' => $order->getCustomerEmail());
+            $checkout_url          = str_replace('MID',$this->getConfigData("MID"), $this->helper->getPaytmURL($this->getConfigData('CHECKOUT_JS_URL'), $this->getConfigData('environment')));
+            $data                  = $this->blinkCheckoutSend($paramData);
+            $txn_token             = $data['txnToken'];
+            return $data;
+            // $version = $this->getLastUpdate();
+            // $params['X-REQUEST-ID']=$this->helper::X_REQUEST_ID.str_replace('|', '_', str_replace(' ', '-', $version));
+            
         }
 
         /* this function for checksum validation */
@@ -161,6 +138,11 @@
         /* this function for return MID */
         public function getMID() {            
             return $this->getConfigData("MID");
+        }
+
+        /* this function for return checkoutjs url */
+        public function getcheckoutjsurl() {  
+           return str_replace('MID', $this->getConfigData("MID"), $this->helper->getPaytmURL($this->helper::CHECKOUT_JS_URL,$this->getConfigData('environment')));
         }
 
         public function autoInvoiceGen() {
@@ -197,5 +179,56 @@
             $lastUpdated=date('d M Y',strtotime($this->helper::LAST_UPDATED));
             return $version."|".$lastUpdated;
         }
+        public function blinkCheckoutSend($paramData = array()){
+            $apiURL = $this->helper->getPaytmURL($this->helper::INITIATE_TRANSACTION_URL, $this->getConfigData('environment')) . '?mid='.$this->getConfigData("MID").'&orderId='.$paramData['order_id'];
+           $paytmParams = array();
+    
+           $paytmParams["body"] = array(
+               "requestType"   => "Payment",
+               "mid"           => $this->getConfigData("MID"),
+               "websiteName"   => trim($this->getConfigData("Website")),
+               "orderId"       => $paramData['order_id'],
+               "callbackUrl"   => $this->getDefaultCallbackUrl(),
+               "txnAmount"     => array(
+                   "value"     => strval($paramData['amount']),
+                   "currency"  => "INR",
+               ),
+               "userInfo"      => array(
+                   "custId"    => $paramData['cust_id'],
+               ),
+           );
+    
+           /*
+           * Generate checksum by parameters we have in body
+           * Find your Merchant Key in your Paytm Dashboard at https://dashboard.paytm.com/next/apikeys 
+           */
+           $checksum = $this->helper->generateSignature(json_encode($paytmParams["body"], JSON_UNESCAPED_SLASHES),$this->getConfigData("merchant_key"));
+    
+           $paytmParams["head"] = array(
+               "signature"	=> $checksum
+           );
+           //print_r($paytmParams);
+    
+           $response = $this->helper->executecUrl($apiURL, $paytmParams);
+           $data = array('orderId' => $paramData['order_id'], 'amount' => $paramData['amount']);
+           if(!empty($response['body']['txnToken'])){
+               $data['txnToken'] = $response['body']['txnToken'];
+           }else{
+               $data['txnToken'] = '';
+           }
+           $data['apiurl'] = $apiURL;
+           return $data;
+       }
+       public function getDefaultCallbackUrl(){
+        $callBackUrl=$this->urlBuilder->getUrl('paytm/Standard/Response', ['_secure' => true]);
+        if($this->helper::CUSTOM_CALLBACK_URL!=''){
+            $callBackUrl=$this->helper::CUSTOM_CALLBACK_URL;
+        }
+        if($this->getConfigData("custom_callbackurl")=='1'){
+            $callBackUrl=$this->getConfigData("callback_url")!=''?$this->getConfigData("callback_url"):$callBackUrl;
+        }
+        return $callBackUrl;
+
+       }
     }
 ?>
