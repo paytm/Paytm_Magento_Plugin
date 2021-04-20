@@ -5,7 +5,7 @@
             <paytm>                
                 <model>One97\Paytm\Model\Paytm</model>                
                 <active>0</active>
-                <title>Paytm  Wallet</title>
+                <title>Paytm</title>
                 <payment_action>authorize_capture</payment_action>
                 <MID>MID</MID>
                 <merchant_key>merchant_key</merchant_key>

@@ -110,13 +110,13 @@
 		        		$errorMsg = 'It seems some issue in server to server communication. Kindly connect with administrator.';
 		        		$comment .=  "Fraud Detucted";
 		        		$order->setStatus($order::STATUS_FRAUD);
-		        		$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
+		        		$returnUrl = $this->getPaytmHelper()->getUrl('checkout/cart');
 		        		break;
 		        	case "FRAUD_CHECKSUM_MISMATCH":
     					$errorMsg = $globalErrMass." Reason: Checksum Mismatch.";
-    					$comment .=  "Fraud Detucted";
+    					$comment .=  "Fraud Detected";
     		            $order->setState("canceled")->setStatus($order::STATUS_FRAUD);
-    					$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
+    					$returnUrl = $this->getPaytmHelper()->getUrl('checkout/cart');
 		        		break;
 		        	case "CANCELED":
 		        		if($orderStatus == "PENDING"){
@@ -132,7 +132,7 @@
 		        			$comment .=  $globalErrMass;
 		        			$order->setState("canceled")->setStatus($this->_paytmModel->getFailOrderStatus());
 		        		}
-		        		$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
+		        		$returnUrl = $this->getPaytmHelper()->getUrl('checkout/cart');
 		        		break;
 		        	case "PROCESSING":
 		        		$resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
@@ -157,9 +157,10 @@
 		        		}
 		        		$successFlag = true;
 		        		$comment .=  "Success ";
-		        		$order->setState("processing");
+		        		$order->setState('processing');
 		        		$order->setStatus($this->_paytmModel->getSuccessOrderStatus());
 		        		$order->setExtOrderId($paytmOrderId);
+		        		$this->clearCart();
 		        		$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/success');
 		        		break;
 		        	case "PENDING":
@@ -169,11 +170,18 @@
 		        		}
 		        		$comment .=  "Pending";
 		        		$order->setState("pending_payment")->setStatus("pending_payment");
+		        		$this->clearCart();
 		        		$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
 		        		break;
 
 		        	default:
-		        		# code...
+		        		$errorMsg = 'Paytm Transaction Pending!';
+		        		if(trim($resMessage)==''){
+		        			$errorMsg.=" Reason: ".$resMessage;
+		        		}
+		        		$comment .=  "Pending" ;
+		        		$order->setState("pending_payment")->setStatus("pending_payment");
+		        		$returnUrl = $this->getPaytmHelper()->getUrl('checkout/cart');
 		        		break;
 		        }
 				$order->addStatusToHistory($order->getStatus(), $comment);
@@ -216,5 +224,42 @@
 			}
 			return $updateDone;
 		}
+
+	public function getClearCartUrl(){
+        $checkoutSession = $this->getCheckoutSession();
+        $quoteId = $checkoutSession->getQuote()->getId();
+        $quoteItem = $this->getQuoteModel()->load($quoteId);
+        $quoteItem->delete();
+        $checkoutSession->getQuote()->setIsActive(false)->save();
+    }
+
+    public function getCheckoutSession(){
+        $checkoutSession = $this->_objectManager->get('Magento\Checkout\Model\Session');//checkout session
+        return $checkoutSession;
+    }
+
+    public function getQuoteModel(){
+        $quoteModel = $this->_objectManager->create('Magento\Quote\Model\Quote');//Quote item model to load quote
+        return $quoteModel;
+    }
+
+
+
+	function clearCart(){
+
+
+			 $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); 
+             $cartObject = $objectManager->create('Magento\Checkout\Model\Cart')->truncate(); 
+             $checkoutSession = $this->_objectManager->get('Magento\Checkout\Model\Session');
+             $checkoutSession->getQuote()->setIsActive(false)->save();
+             $quoteId = $checkoutSession->getQuote()->getId();
+             $quoteItem = $this->getQuoteModel()->load($quoteId);
+             $quoteItem->delete();
+
+	}
+
+
+
+
 	}
 ?>

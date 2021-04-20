@@ -1,0 +1,29 @@
+
+
+
+<?php 
+$order = $block->getOrder();
+?>
+<div class="checkout-success">
+ <?php
+if ($order->getIncrementId()) {  
+	 
+	 if ($block->getCustomerId()){ ?>
+  <p><?= __('Your order number is: %1.', sprintf('<a href="%s" class="order-number"><strong># %s</strong></a>', $block->getViewUrl($order->getIncrementId()), $order->getIncrementId())); ?></p>
+	 <?php }else{ ?>
+	 	 <p><?php echo __('Your order # is: <span>%1</span>.',$order->getIncrementId()) ?></p>
+	<?php  }
+
+ }
+
+ ?>
+</div>
+<script>
+     require([
+         'Magento_Customer/js/customer-data'
+     ], function (customerData) {
+         var sections = ['cart'];
+         customerData.invalidate(sections);
+         customerData.reload(sections, true);
+     });
+ </script>

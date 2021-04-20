@@ -18,25 +18,49 @@
         
         /* this funtion redirect to Paytm with proper form post */
         public function execute() {
-           
+        
+
+
             $order = $this->getOrder();
             if ($order->getBillingAddress()) {
+                $this->restoreOrder();
                 $order->setState("pending_payment")->setStatus("pending_payment");
                 $order->addStatusToHistory($order->getStatus(), "Customer was redirected to paytm.");
                 $order->save();
                 $dataRaw=$this->_paytmModel->buildPaytmRequest($order);
-              //  $data['actionURL']=$this->_paytmModel->getRedirectUrl();
-               // $resultPage = $this->resultPageFactory->create();
-               // $resultPage->getLayout()->initMessages();
-               // $resultPage->getLayout()->getBlock('paytm_standard_redirect')->setName($data);
                 echo json_encode(array('response'=>$dataRaw));
             } else {
                 $this->_cancelPayment();
-                $this->_paytmSession->restoreQuote();
+                $this->restoreOrder();
                 $this->getResponse()->setRedirect(
                     $this->getPaytmHelper()->getUrl('checkout')
                 );
             }
         }
+
+
+
+    function restoreOrder(){
+
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $_checkoutSession = $objectManager->create('\Magento\Checkout\Model\Session');
+        $_quoteFactory = $objectManager->create('\Magento\Quote\Model\QuoteFactory');
+    
+        $order = $_checkoutSession->getLastRealOrder();
+        $quote = $_quoteFactory->create()->loadByIdWithoutStore($order->getQuoteId());
+        if ($quote->getId()) {
+        $quote->setIsActive(1)->setReservedOrderId(null)->save();
+        $_checkoutSession->replaceQuote($quote);
+        }
+
+
+
+        }
+
+
+
+
+
+
     }
 ?>

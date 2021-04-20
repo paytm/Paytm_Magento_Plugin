@@ -45,7 +45,8 @@ define(
                 }
                 return self;
             },
-            placeOrder: function (data, event) {                
+            placeOrder: function (data, event) {
+                
                 if (event) {
                     event.preventDefault();
                     //$("#paywithpaytm").addClass('paytmtoggle');
