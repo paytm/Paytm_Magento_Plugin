@@ -12,31 +12,31 @@
 	    CONST TRANSACTION_URL_PRODUCTION			= "https://securegw.paytm.in/order/process";
 		CONST TRANSACTION_STATUS_URL_PRODUCTION		= "https://securegw.paytm.in/order/status";
 
-		CONST PRODUCTION_HOST						= "https://securegw.paytm.in/";
-		CONST STAGING_HOST							= "https://securegw-stage.paytm.in/";
+		CONST PRODUCTION_HOST				= "https://securegw.paytm.in/";
+		CONST STAGING_HOST				= "https://securegw-stage.paytm.in/";
 
-		CONST TRANSACTION_URL_STAGING				= "https://securegw-stage.paytm.in/order/process";
+		CONST TRANSACTION_URL_STAGING			= "https://securegw-stage.paytm.in/order/process";
 		CONST TRANSACTION_STATUS_URL_STAGING		= "https://securegw-stage.paytm.in/order/status";
 
 
 	    CONST TRANSACTION_TOKEN_URL_PRODUCTION		= "https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=";
 
-		CONST TRANSACTION_TOKEN_URL_STAGING			= "https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=";
-		CONST CHECKOUT_JS_URL						= "merchantpgpui/checkoutjs/merchants/MID.js";
+		CONST TRANSACTION_TOKEN_URL_STAGING		= "https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=";
+		CONST CHECKOUT_JS_URL				= "merchantpgpui/checkoutjs/merchants/MID.js";
 
-		CONST SAVE_PAYTM_RESPONSE 					= true;
-		CONST CHANNEL_ID							= "WEB";
-		CONST APPEND_TIMESTAMP						= true;
-		CONST X_REQUEST_ID							= "PLUGIN_MAGENTO_";
+		CONST SAVE_PAYTM_RESPONSE 			= true;
+		CONST CHANNEL_ID				= "WEB";
+		CONST APPEND_TIMESTAMP				= false;
+		CONST X_REQUEST_ID				= "PLUGIN_MAGENTO_";
 
-		CONST MAX_RETRY_COUNT						= 3;
-		CONST CONNECT_TIMEOUT						= "10";
-		CONST TIMEOUT								= "10";
+		CONST MAX_RETRY_COUNT				= 3;
+		CONST CONNECT_TIMEOUT				= "10";
+		CONST TIMEOUT					= "10";
 
-		CONST LAST_UPDATED							= "20201111";
-		CONST PLUGIN_VERSION						= "2.0";
+		CONST LAST_UPDATED				= "20210421";
+		CONST PLUGIN_VERSION				= "2.5";
 
-		CONST CUSTOM_CALLBACK_URL					= "";
+		CONST CUSTOM_CALLBACK_URL			= "";
 	    // PaytmConstants.php end
 
 	    public function __construct(
