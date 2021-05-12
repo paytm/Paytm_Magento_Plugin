@@ -137,6 +137,10 @@ define(
                             "tokenType": "TXN_TOKEN",
                             "amount": data.TXN_AMOUNT,
                     },
+                    "integration": {
+                      "platform": "Magento",
+                      "version": data.MAGENTO_VERSION+"|"+data.PLUGIN_VERSION
+                    },
                     "handler": {
                         "notifyMerchant": function(eventName,data){
                             if(eventName == 'SESSION_EXPIRED'){

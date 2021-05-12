@@ -164,6 +164,8 @@
                 $datareturn['ORDER_ID'] = $params['ORDER_ID'];
                 $datareturn['txnToken'] = $txnToken;
                 $datareturn['TXN_AMOUNT'] = $params['TXN_AMOUNT'];
+                $datareturn['MAGENTO_VERSION'] = $this->getMagentoVerionInPlugin();
+                $datareturn['PLUGIN_VERSION'] = $this->getpluginversion();
                 return $datareturn;
         }
 
@@ -230,6 +232,14 @@
         /* this function return fail order status */
         public function getFailOrderStatus() {
             return $this->getConfigData("fail_order_status");
+        }
+
+
+        public function getMagentoVerionInPlugin() {
+            $objectManagerVs = \Magento\Framework\App\ObjectManager::getInstance();
+            $productMetadata = $objectManagerVs->get('Magento\Framework\App\ProductMetadataInterface');
+            return $productMetadata->getVersion();
+
         }
 
         /* this function return Magento version and last update date of plugin */
