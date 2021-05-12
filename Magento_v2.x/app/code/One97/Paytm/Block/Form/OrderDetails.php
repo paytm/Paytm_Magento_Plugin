@@ -5,8 +5,8 @@
 	    public $_template = 'One97_Paytm::success.phtml';
 	    public $objectPaytmCont='';
 	    protected $checkoutSession;
-    protected $customerSession;
-    protected $_orderFactory;
+            protected $customerSession;
+            protected $_orderFactory;
     
     public function __construct(
         \Magento\Checkout\Model\Session $checkoutSession,
