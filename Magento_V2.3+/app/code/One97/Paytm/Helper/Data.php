@@ -9,7 +9,7 @@
 	    protected $session;
 	    
 	    // PaytmConstants.php start
-	    CONST TRANSACTION_URL_PRODUCTION			= "https://securegw.paytm.in/order/process";
+	        CONST TRANSACTION_URL_PRODUCTION			= "https://securegw.paytm.in/order/process";
 		CONST TRANSACTION_STATUS_URL_PRODUCTION		= "https://securegw.paytm.in/order/status";
 
 		CONST PRODUCTION_HOST				= "https://securegw.paytm.in/";
@@ -19,7 +19,7 @@
 		CONST TRANSACTION_STATUS_URL_STAGING		= "https://securegw-stage.paytm.in/order/status";
 
 
-	    CONST TRANSACTION_TOKEN_URL_PRODUCTION		= "https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=";
+	        CONST TRANSACTION_TOKEN_URL_PRODUCTION		= "https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=";
 
 		CONST TRANSACTION_TOKEN_URL_STAGING		= "https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=";
 		CONST CHECKOUT_JS_URL				= "merchantpgpui/checkoutjs/merchants/MID.js";
@@ -33,8 +33,8 @@
 		CONST CONNECT_TIMEOUT				= "10";
 		CONST TIMEOUT					= "10";
 
-		CONST LAST_UPDATED				= "20210421";
-		CONST PLUGIN_VERSION				= "2.5";
+		CONST LAST_UPDATED				= "20210512";
+		CONST PLUGIN_VERSION				= "2.6.0";
 
 		CONST CUSTOM_CALLBACK_URL			= "";
 	    // PaytmConstants.php end
