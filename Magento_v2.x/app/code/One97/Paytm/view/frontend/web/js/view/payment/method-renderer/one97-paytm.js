@@ -10,6 +10,7 @@ define(
     ],
     function ($, Component, placeOrderAction, selectPaymentMethodAction, customer, checkoutData, additionalValidators) {
         'use strict';
+        var togglepoup = false;
         return Component.extend({
             defaults: {
                 template: 'One97_Paytm/payment/one97',
@@ -47,79 +48,114 @@ define(
             placeOrder: function (data, event) {
                 if (event) {
                     event.preventDefault();
+                    if ($("#paywithpaytm").hasClass('paytmtoggle')) {
+                        togglepoup = true;
+                        window.Paytm.CheckoutJS.invoke();
+                    }
                 }
-                var self = this,
-                    placeOrder,
-                    emailValidationResult = customer.isLoggedIn(),
-                    loginFormSelector = 'form[data-role=email-with-possible-login]';
-                if (!customer.isLoggedIn()) {
-                    $(loginFormSelector).validation();
-                    emailValidationResult = Boolean($(loginFormSelector + ' input[name=username]').valid());
-                }
-                if (emailValidationResult && this.validate() && additionalValidators.validate()) {
-                    this.isPlaceOrderActionAllowed(false);
-                    placeOrder = placeOrderAction(this.getData(), false, this.messageContainer);
 
-                    $.when(placeOrder).fail(function () {
-                        self.isPlaceOrderActionAllowed(true);
-                    }).done(this.afterPlaceOrder.bind(this));
-                    return true;
+                 if(!togglepoup){
+
+                    var loaderhtml = '<div id="paytm-pg-spinner" class="paytm-pg-loader">'+
+                    '<div class="bounce1"></div>'+
+                    '<div class="bounce2"></div>'+
+                    '<div class="bounce3"></div>'+
+                    '<div class="bounce4"></div>'+
+                    '<div class="bounce5"></div>'+
+                    '</div>'+
+                    '<div class="paytm-overlay paytm-pg-loader"></div>';
+                     $('body').append(loaderhtml);
+                     $('.paytm-pg-loader').show();
+                    var self = this,
+                        placeOrder,
+                        emailValidationResult = customer.isLoggedIn(),
+                        loginFormSelector = 'form[data-role=email-with-possible-login]';
+                    if (!customer.isLoggedIn()) {
+                        $(loginFormSelector).validation();
+                        emailValidationResult = Boolean($(loginFormSelector + ' input[name=username]').valid());
+                    }
+                    if (emailValidationResult && this.validate() && additionalValidators.validate()) {
+                        this.isPlaceOrderActionAllowed(false);
+                        placeOrder = placeOrderAction(this.getData(), false, this.messageContainer);
+
+                        $.when(placeOrder).fail(function () {
+                            self.isPlaceOrderActionAllowed(true);
+                        }).done(this.afterPlaceOrder.bind(this));
+                        return true;
+                    }
                 }
                 return false;
             },
             afterPlaceOrder: function () {
-                var self = this;
-                $.ajax({
-                    type: 'POST',
-                   // url: urlBuilder.build("Standard/Success"),
-                    url: window.checkoutConfig.payment.paytm.redirecturl,
-                    data: {
-                        email: 'test@gmail.com',
-                    },
 
-                    /**
-                     * Success callback
-                     * @param {Object} response
-                     */
-                    success: function (response) {
-                        if (response.txnToken) {
-                            self.renderCheckout(response);
-                           
-                        } 
-                    },
-                });
+                if(!togglepoup){
+                    var self = this;
+                    $.ajax({
+                        type: 'POST',
+                       // url: urlBuilder.build("Standard/Success"),
+                        url: window.checkoutConfig.payment.paytm.redirecturl,
+                        data: {
+                            email: '',
+                        },
+
+                        /**
+                         * Success callback
+                         * @param {Object} response
+                         */
+                        success: function (response) {
+                            //var response = JSON.parse(response);
+                            if (response.txnToken) {
+                                self.renderCheckout(response);
+                               
+                            } 
+                        },
+                    });
+                }
 				
             },
 
             renderCheckout: function(data) {
-                var config = {
-                    "root": "",
-                    "flow": "DEFAULT",
-                    "data": {
-                            "orderId": data.orderId,
-                            "token": data.txnToken,
-                            "tokenType": "TXN_TOKEN",
-                            "amount": data.amount,
-                    },
-                    "handler": {
-                        "notifyMerchant": function(eventName,data){
-                            if(eventName == 'SESSION_EXPIRED'){
-                                $('a[href="#collapse-payment-method"]').click();
-                            }
-                        } 
-                    }
-                    };
-                
+                if(!togglepoup){
+                    var config = {
+                        "root": "",
+                        "flow": "DEFAULT",
+                        "data": {
+                                "orderId": data.orderId,
+                                "token": data.txnToken,
+                                "tokenType": "TXN_TOKEN",
+                                "amount": data.amount,
+                        },
+                        "integration": {
+                            "platform": "Magento",
+                            "version": data.magentoVersion+"|"+data.pluginVersion+""
+                        },  
+                        "handler": {
+                            "notifyMerchant": function(eventName,data){
+                                if(eventName == 'SESSION_EXPIRED'){
+                                    $('a[href="#collapse-payment-method"]').click();
+                                }
+
+
+                                if(eventName == 'APP_CLOSED'){
+                                    $("#paywithpaytm").addClass('paytmtoggle');
+                                    $("#paywithpaytm").attr('type','button');
+                                } 
+                            } 
+                        }
+                        };
                     
-                    if(window.Paytm && window.Paytm.CheckoutJS){
-                            // initialze configuration using init method 
-                            window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
-                            // after successfully update configuration invoke checkoutjs
-                            window.Paytm.CheckoutJS.invoke();
-                            }).catch(function onError(error){
-                                console.log("error => ",error);
-                            });
-                    }  
+                        
+                        if(window.Paytm && window.Paytm.CheckoutJS){
+                                // initialze configuration using init method 
+                                window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
+                                // after successfully update configuration invoke checkoutjs
+                                $('.paytm-pg-loader').hide();
+                                window.Paytm.CheckoutJS.invoke();
+                                }).catch(function onError(error){
+                                    console.log("error => ",error);
+                                });
+                        }
+                }  
             }
         });
     }

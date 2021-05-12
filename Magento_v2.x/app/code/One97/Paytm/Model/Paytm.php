@@ -180,6 +180,15 @@
             return $version."|".$lastUpdated;
         }
         public function blinkCheckoutSend($paramData = array()){
+
+            $callBackUrl= $this->urlBuilder->getUrl('paytm/Standard/Response', ['_secure' => true]);
+            if($this->helper::CUSTOM_CALLBACK_URL!=''){
+                $callBackUrl=$this->helper::CUSTOM_CALLBACK_URL;
+            }
+            if($this->getConfigData("custom_callbackurl")=='1'){
+                $callBackUrl=$this->getConfigData("callback_url")!=''?$this->getConfigData("callback_url"):$callBackUrl;
+            }
+            
             $apiURL = $this->helper->getPaytmURL($this->helper::INITIATE_TRANSACTION_URL, $this->getConfigData('environment')) . '?mid='.$this->getConfigData("MID").'&orderId='.$paramData['order_id'];
            $paytmParams = array();
     
@@ -188,7 +197,7 @@
                "mid"           => $this->getConfigData("MID"),
                "websiteName"   => trim($this->getConfigData("Website")),
                "orderId"       => $paramData['order_id'],
-               "callbackUrl"   => $this->getDefaultCallbackUrl(),
+               "callbackUrl"   => $callBackUrl,
                "txnAmount"     => array(
                    "value"     => strval($paramData['amount']),
                    "currency"  => "INR",
@@ -211,6 +220,12 @@
     
            $response = $this->helper->executecUrl($apiURL, $paytmParams);
            $data = array('orderId' => $paramData['order_id'], 'amount' => $paramData['amount']);
+
+           $data['pluginVersion'] = $this->helper::PLUGIN_VERSION;
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+           $productMetadata = $objectManager->get('Magento\Framework\App\ProductMetadataInterface');
+           $version = $productMetadata->getVersion(); //will return the magento version
+            $data['magentoVersion'] = $version;
            if(!empty($response['body']['txnToken'])){
                $data['txnToken'] = $response['body']['txnToken'];
            }else{

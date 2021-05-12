@@ -28,7 +28,7 @@
 
 		CONST SAVE_PAYTM_RESPONSE 					= true;
 		CONST CHANNEL_ID							= "WEB";
-		CONST APPEND_TIMESTAMP						= false;
+		CONST APPEND_TIMESTAMP						= true;
 		CONST X_REQUEST_ID							= "PLUGIN_MAGENTO_";
 
 		CONST MAX_RETRY_COUNT						= 3;
@@ -39,6 +39,11 @@
 		CONST PLUGIN_VERSION						= "2.0";
 
 		CONST CUSTOM_CALLBACK_URL					= "";
+
+		CONST TRANSACTION_TOKEN_URL_PRODUCTION		= "https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=";
+
+		CONST TRANSACTION_TOKEN_URL_STAGING		= "https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=";
+
 	    // PaytmConstants.php end
 
 	    public function __construct(
