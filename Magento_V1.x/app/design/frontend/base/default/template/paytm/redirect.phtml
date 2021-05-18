@@ -24,6 +24,10 @@ $amount=$data['amount'];
          			"tokenType": "TXN_TOKEN",
          			"amount": amount 
 				 },
+			"integration": {
+                             "platform": "Magento",
+                             "version": 1.9|2.0
+                        },
          		"handler": {
          		"notifyMerchant": function(eventName,data){
          			/* console.log("notifyMerchant handler function called");
