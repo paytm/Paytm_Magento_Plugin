@@ -166,7 +166,7 @@
                 $datareturn['TXN_AMOUNT'] = $params['TXN_AMOUNT'];
                 $datareturn['MAGENTO_VERSION'] = $this->getMagentoVerionInPlugin();
                 $datareturn['PLUGIN_VERSION'] = $this->getpluginversion();
-                return $datareturn;
+                return array('response'=>$datareturn);
         }
 
         /* this function for checksum validation */

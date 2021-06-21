@@ -3,6 +3,8 @@
     use Magento\Framework\App\CsrfAwareActionInterface;
     use Magento\Framework\App\Request\InvalidRequestException;
     use Magento\Framework\App\RequestInterface;
+    use Magento\Framework\Controller\ResultFactory;
+
 
     class Redirect extends \One97\Paytm\Controller\Paytm  implements CsrfAwareActionInterface{
 
@@ -28,7 +30,9 @@
                 $order->addStatusToHistory($order->getStatus(), "Customer was redirected to paytm.");
                 $order->save();
                 $dataRaw=$this->_paytmModel->buildPaytmRequest($order);
-                echo json_encode(array('response'=>$dataRaw));
+                $resultJson = $this->resultFactory->create(ResultFactory::TYPE_JSON);
+                $resultJson->setData($dataRaw);
+                return $resultJson;
             } else {
                 $this->_cancelPayment();
                 $this->restoreOrder();

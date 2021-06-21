@@ -110,13 +110,9 @@ define(
                      */
                     success: function (response) {
 
-
-                       var response = JSON.parse(response);
-
-                      
-                        if (response.response.txnToken) {
-                            self.renderCheckout(response.response);
-                           
+                       var respons = JSON.parse(JSON.stringify(response));
+                       if (respons.response.txnToken) {
+                            self.renderCheckout(respons.response);
                         } 
                     },
                 });
