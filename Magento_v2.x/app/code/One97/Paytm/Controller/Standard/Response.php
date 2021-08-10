@@ -144,7 +144,7 @@
 		        		}
 		        		$successFlag = true;
 		        		$comment .=  "Success ";
-		        		$order->setState("complete");
+		        		$order->setState("processing");
 		        		$order->setStatus($this->_paytmModel->getSuccessOrderStatus());
 		        		$order->setExtOrderId($paytmOrderId);
 		        		$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/success');
