@@ -78,6 +78,19 @@
                     <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                     <config_path>payment/paytm/specificcountry</config_path>
                 </field>
+                <field id="iswebhook" translate="label" type="select" sortOrder="16" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable Webhook</label>
+                    <source_model>One97\Paytm\Model\WebhookAction</source_model>
+                    <comment> <![CDATA[
+                        Enable Paytm Webhook <a href="https://dashboard.paytm.com/next/webhook-url" target="_blank">here </a> with the URL listed below.
+                        <br>
+                        <span id="callBackUrl"></span>
+                        <br>
+                        Instructions and guide to <a href="https://developer.paytm.com/docs/payment-status/" target="_blank">Paytm webhooks</a>
+                    ]]>
+                        </comment>
+                    <config_path>payment/paytm/iswebhook</config_path>
+                </field>
             </group>
         </section>
     </system>

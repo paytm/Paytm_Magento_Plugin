@@ -11,6 +11,7 @@ require(['jquery'],function($){
             $("#magentoVersion").text("Magento Version: "+data.version);
             $("#paytmPluginVersion").text("Paytm Plugin Version: "+data.paytmPluginVersion);
             $("#paytmLastUpdate").text("Last Updated: "+data.lastupdate);
+            $("#callBackUrl").text(data.callBackUrl+"?webhook=yes");
         });
         $("#"+formId).submit(function(e){
             var paytmEnable=$(".paytmEnbDrpDwn").val();

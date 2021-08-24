@@ -19,7 +19,7 @@
 		/* this funtion handle Paytm response */
 	    public function execute() {
 	    	$comment = "";
-	        $request = $_POST;
+	    	$request = $_POST;
 			if(!empty($_POST)){
 				foreach($_POST as $key => $val){
 					if($key != "CHECKSUMHASH"){
@@ -192,7 +192,12 @@
 					$this->messageManager->addError( __($errorMsg) );
 				}
 	        }
-			$this->getResponse()->setRedirect($returnUrl);        
+	        if(isset($_GET['webhook']) && $_GET['webhook'] == "yes"){
+	        	echo "webhook received";
+	        	exit;
+	        }else{
+				$this->getResponse()->setRedirect($returnUrl);   
+			}     
 		}
 
 		/* Paytm transaction status S2S call */

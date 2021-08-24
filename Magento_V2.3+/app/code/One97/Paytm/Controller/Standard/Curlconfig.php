@@ -3,8 +3,10 @@
     use Magento\Framework\App\CsrfAwareActionInterface;
     use Magento\Framework\App\Request\InvalidRequestException;
     use Magento\Framework\App\RequestInterface;
+  
 
     class Curlconfig extends \One97\Paytm\Controller\Paytm  implements CsrfAwareActionInterface{
+
 
         public function createCsrfValidationException(
             RequestInterface $request
@@ -26,7 +28,8 @@
             if(isset($reqData['getlastUpdate'])){
                 $getLastUpdate=$this->getPaytmModel()->getLastUpdate();
                 $getLastUpdateArr=explode('|',$getLastUpdate);
-                return $resultJson->setData(['version' => $getLastUpdateArr[0], 'lastupdate' => $getLastUpdateArr[1], 'phpCurlVersion' => $this->getPaytmModel()->getcURLversion(), 'paytmPluginVersion' => $this->getPaytmModel()->getpluginversion()]);
+                $callBackUrl = $this->_url->getUrl('paytm/Standard/Response');
+                return $resultJson->setData(['version' => $getLastUpdateArr[0], 'lastupdate' => $getLastUpdateArr[1], 'phpCurlVersion' => $this->getPaytmModel()->getcURLversion(), 'paytmPluginVersion' => $this->getPaytmModel()->getpluginversion(),'callBackUrl' => $callBackUrl]);
             }else{
                 $responseTableBody='';
                 $response=false;
