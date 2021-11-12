@@ -140,6 +140,21 @@
                         "custId" => $params["CUST_ID"],
                     ),
                 );
+                // for bank offers
+                if($this->getConfigData('bankoffer') ==1){
+                    $paytmParams["body"]["simplifiedPaymentOffers"]["applyAvailablePromo"]= "true";
+                }
+                // for emi subvention
+                if($this->getConfigData('emisubvention') ==1){
+                    $paytmParams["body"]["simplifiedSubvention"]["customerId"]= $params['CUST_ID'];
+                    $paytmParams["body"]["simplifiedSubvention"]["subventionAmount"]= $params['TXN_AMOUNT'];
+                    $paytmParams["body"]["simplifiedSubvention"]["selectPlanOnCashierPage"]= "true";
+                    //$paytmParams["body"]["simplifiedSubvention"]["offerDetails"]["offerId"]= 1;
+                }
+                // for dc emi
+                if($this->getConfigData('dcemi') ==1){
+                    $paytmParams["body"]["userInfo"]["mobile"]= $order->getShippingAddress()->getTelephone();
+                }
                 $generateSignature = $this->helper->generateSignature(json_encode($paytmParams['body'], JSON_UNESCAPED_SLASHES), $this->getConfigData("merchant_key"));
 
                 $paytmParams["head"] = array(

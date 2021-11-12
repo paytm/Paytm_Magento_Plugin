@@ -91,6 +91,23 @@
                         </comment>
                     <config_path>payment/paytm/iswebhook</config_path>
                 </field>
+                <field id="emisubvention" translate="label" type="select" sortOrder="17" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable EMI Subvention</label>
+                    <source_model>One97\Paytm\Model\EmisubventionAction</source_model>
+                    <config_path>payment/paytm/emisubvention</config_path>
+                </field>
+
+                <field id="bankoffer" translate="label" type="select" sortOrder="18" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable Bank Offer</label>
+                    <source_model>One97\Paytm\Model\BankofferAction</source_model>
+                    <config_path>payment/paytm/bankoffer</config_path>
+                </field>
+
+                <field id="dcemi" translate="label" type="select" sortOrder="19" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable DC EMI</label>
+                    <source_model>One97\Paytm\Model\DcemiAction</source_model>
+                    <config_path>payment/paytm/dcemi</config_path>
+                </field>
             </group>
         </section>
     </system>
