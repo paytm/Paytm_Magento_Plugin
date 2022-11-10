@@ -26,8 +26,12 @@ define(
             getCheckoutUrl: function() {
                 return window.checkoutConfig.payment.paytm.checkout_url;
             },
+
             getRedirecturl: function() {
                 return window.checkoutConfig.payment.paytm.redirecturl;
+            },
+            getPaytmLogo: function() {
+                return window.checkoutConfig.payment.paytm.get_logo;
             },
             //  getordrid: function() {
             //      alert(window.checkoutConfig.payment.paytm.order);

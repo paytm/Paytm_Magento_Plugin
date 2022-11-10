@@ -21,7 +21,8 @@
                         'mid' => $this->method->getMID(),
                         'checkout_url' => $this->method->getcheckoutjsurl(),
                        // 'order' => $this->method->getOrder(),
-                        'redirecturl' => $this->urlBuilder->getUrl('paytm/Standard/Redirect', ['_secure' => true])
+                        'redirecturl' => $this->urlBuilder->getUrl('paytm/Standard/Redirect', ['_secure' => true]),
+                        'get_logo' => $this->method->getLogo(),
                     ]
                 ]
             ] : [];

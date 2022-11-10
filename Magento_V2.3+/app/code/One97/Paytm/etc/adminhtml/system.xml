@@ -19,42 +19,38 @@
                     <config_path>payment/paytm/active</config_path>
                     <frontend_class>paytmEnbDrpDwn</frontend_class>
                 </field>
-                <field id="title" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                <!-- <field id="title" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Title</label>
                     <config_path>payment/paytm/title</config_path>
-                </field>
+                </field> -->
                 <field id="payment_action" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Generate Invoice Automatically</label>
                     <source_model>One97\Paytm\Model\PaymentAction</source_model>
                     <config_path>payment/paytm/payment_action</config_path>
                 </field>
-                <field id="debug" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="environment" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Environment Mode</label>
                     <source_model>One97\Paytm\Model\EnvAction</source_model>
                     <comment> <![CDATA[
-                        Select "Staging" for test/integration environment & "Production" once you move to production environment
+                        Select "Test/Staging" to setup test transactions & "Production" once you are ready to go live
                     ]]>
                     </comment>
                     <config_path>payment/paytm/environment</config_path>
                 </field>
                 <field id="MID" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Merchant Id</label>
-                    <comment><![CDATA[ Based on the selected Environment Mode, copy the relevant Merchant ID for test or production environment available on <a href="https://dashboard.paytm.com/next/apikeys" target="_blank"> Paytm dashboard </a>.]]></comment>
+                    <label>Test/Production Merchant Id</label>
+                    <comment><![CDATA[ Based on the selected Environment Mode, copy the relevant Merchant ID for test or production environment available on <a href="https://dashboard.paytm.com/next/apikeys" target="_blank">Paytm dashboard</a>.]]></comment>
                     <config_path>payment/paytm/MID</config_path>
                 </field>
                 <field id="merchant_key" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Merchant Key</label>
-                    <comment><![CDATA[ Based on the selected Environment Mode, copy the Merchant Key for test or production environment available on <a href="https://dashboard.paytm.com/next/apikeys" target="_blank"> Paytm dashboard </a>.]]></comment>
+                    <label>Test/Production Merchant Key</label>
+                    <comment><![CDATA[ Based on the selected Environment Mode, copy the Merchant Key for test or production environment available on <a href="https://dashboard.paytm.com/next/apikeys" target="_blank">Paytm dashboard</a>.]]></comment>
                     <config_path>payment/paytm/merchant_key</config_path>
                 </field>
-                <field id="Industry_id" translate="label" type="text" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Industry Type Id</label>
-                    <comment><![CDATA[Login to <a href="https://dashboard.paytm.com/next/apikeys" target="_blank">Paytm dashboard </a> & copy paste the industry type available there ]]></comment>
-                    <config_path>payment/paytm/Industry_id</config_path>
-                </field>
-                <field id="Website" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Website</label>
-                    <comment><![CDATA[ Enter "WEBSTAGING" for test/integration environment & "DEFAULT" for production environment ]]></comment>
+                <field id="Website" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Website (Provided by Paytm)</label>
+                    <source_model>One97\Paytm\Model\WebsitenameAction</source_model>
+                    <comment><![CDATA[ Select "WEBSTAGING" for test/integration environment & "DEFAULT" for production environment ]]></comment>
                     <config_path>payment/paytm/Website</config_path>
                 </field>
                 <field id="success_order_status" translate="label" type="select" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="0">
@@ -90,7 +86,7 @@
                         <br>
                         <span id="callBackUrl" style="color:#00b9f5"></span>
                         <br>
-                        Refer to instructions and guide to <a href="https://developer.paytm.com/docs/payment-status/" target="_blank">Paytm webhooks</a>
+                        To know more about Webhooks please click <a href="https://developer.paytm.com/docs/payment-status/" target="_blank">here</a>
                     ]]>
                         </comment>
                     <config_path>payment/paytm/iswebhook</config_path>
@@ -125,6 +121,17 @@
                         </comment>
                     <config_path>payment/paytm/dcemi</config_path>
                 </field>
+
+                <field id="invertlogo" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable Invert Logo</label>
+                    <source_model>One97\Paytm\Model\InvertlogoAction</source_model>
+                    <comment> <![CDATA[
+                        Paytm PG logo colour can be changed on your Magento Checkout Page.
+                    ]]>
+                        </comment>
+                    <config_path>payment/paytm/invertlogo</config_path>
+                </field>
+
             </group>
         </section>
     </system>

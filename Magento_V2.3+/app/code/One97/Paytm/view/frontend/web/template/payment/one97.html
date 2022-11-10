@@ -4,8 +4,11 @@
                name="payment[method]"
                class="radio"
                data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()"/>
-        <label data-bind="attr: {'for': getCode()}" class="label"><span data-bind="text: getTitle()"></span></label>  
-        <img alt = "Paytm" src="https://raw.githubusercontent.com/paytm/Paytm_Magento_Plugin/master/paytm_logo.png" style="margin-left: 10px;vertical-align: bottom;">
+        <label data-bind="attr: {'for': getCode()}" class="label" style="flex:auto !important">
+            <!-- <span data-bind="text: getTitle()"></span> disabled title from frontend-->  
+        </label>  
+        <img data-bind="attr: {src: getPaytmLogo()}" class="payment-icon" style="vertical-align: middle;height:35px;flex:auto" alt = "Paytm"/>
+
     </div>
     <div class="payment-method-content">
         <div class="payment-method-billing-address">

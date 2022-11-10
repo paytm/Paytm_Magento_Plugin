@@ -1,9 +1,9 @@
 <?php
     namespace One97\Paytm\Model;
 
-    class EnvAction implements \Magento\Framework\Option\ArrayInterface {
+    class InvertlogoAction implements \Magento\Framework\Option\ArrayInterface {
         public function toOptionArray() {
-            return [['value' => '0', 'label' => __('Test/Staging')], ['value' => '1', 'label' => __('Production')]];
+            return [['value' => '0', 'label' => __('No')], ['value' => '1', 'label' => __('Yes')]];
         }
 
         public function toArray() {

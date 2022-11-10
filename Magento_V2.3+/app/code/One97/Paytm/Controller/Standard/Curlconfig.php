@@ -30,7 +30,54 @@
                 $getLastUpdateArr=explode('|',$getLastUpdate);
                 $callBackUrl = $this->_url->getUrl('paytm/Standard/Response');
                 return $resultJson->setData(['version' => $getLastUpdateArr[0], 'lastupdate' => $getLastUpdateArr[1], 'phpCurlVersion' => $this->getPaytmModel()->getcURLversion(), 'paytmPluginVersion' => $this->getPaytmModel()->getpluginversion(),'callBackUrl' => $callBackUrl]);
-            }else{
+            }
+            else if(isset($reqData['setPaymentNotificationUrl'])){
+                if($reqData['environment'] == 0){
+                    $url = "https://boss-stage.paytm.in/";
+                    $clientId = "54b88dbc-fdd0-4f6f-af09-4ee76e90135a";
+            $key = base64_decode("DSqy6pGOhBR9CUhUFQygzlkG1+x66C6zV+M8bnGiwpEH+MvNsWmaJLirjxMVpRH+9c9XjZxse+wSYuNYmkG4uA==");
+                }else{
+                    $url = "https://boss-ext.paytm.in/";
+                    $clientId = "f7484d06-f307-4e10-b661-0191f5efe031";
+                    $key = base64_decode("jF5tDDCJ8/bRot8X5DAGVHiC+KwW9SQuckYya12NZ2/EWVBhU7Cj45A4lOSvo797uJ4M3LB5mTjiC0nhDYKZGg==");
+                }
+                $environment = $reqData['environment'];
+                $jwtToken = $this->getPaytmModel()->createJWTToken($key,$clientId,$environment);
+                $mid = $reqData['mid'];
+                if($reqData['is_webhook']==1){
+                    $webhookUrl = $reqData['webhookUrl'];
+                }else{
+                    $webhookUrl = "https://www.dummyUrl.com"; //set this when unchecked
+                }
+
+                $curl = curl_init();
+
+                curl_setopt_array($curl, array(
+                CURLOPT_URL => $url.'api/v1/merchant/putMerchantInfo', 
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'PUT',
+                CURLOPT_POSTFIELDS =>'{
+                        "mid": "'.$mid.'",
+                        "queryParam": "notificationUrls",
+                        "paymentNotificationUrl": "'.$webhookUrl.'"
+                    }',
+                CURLOPT_HTTPHEADER => array(
+                        'x-client-token: '.$jwtToken.'',
+                        'Content-Type: application/json',
+                        'x-client-id: '.$clientId.''
+                    ),
+                ));
+
+                $response = curl_exec($curl);
+                $res = json_decode($response);
+                return $resultJson->setData(['response'=>$res]);
+            }
+            else{
                 $responseTableBody='';
                 $response=false;
                 $transactionURL=$this->getPaytmModel()->getNewStatusQueryUrl();

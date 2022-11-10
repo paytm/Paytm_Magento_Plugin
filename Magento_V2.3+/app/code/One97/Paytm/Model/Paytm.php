@@ -106,7 +106,7 @@
                 'MID' => trim($this->getConfigData("MID")),               
                 'TXN_AMOUNT' => round($order->getGrandTotal(), 2),
                 'CHANNEL_ID' => $this->helper::CHANNEL_ID,
-                'INDUSTRY_TYPE_ID' => trim($this->getConfigData("Industry_id")),
+                //'INDUSTRY_TYPE_ID' => trim($this->getConfigData("Industry_id")),
                 'WEBSITE' => trim($this->getConfigData("Website")),
                 'CUST_ID' => $order->getCustomerEmail(),
                 'ORDER_ID' => $paytmOrderId,                     
@@ -266,5 +266,42 @@
             $lastUpdated=date('d M Y',strtotime($this->helper::LAST_UPDATED));
             return $version."|".$lastUpdated;
         }
+
+        /* this function for return Invert Logo Option */
+        public function getLogo() {      
+            if($this->getConfigData("invertlogo") == 1){
+                return "https://raw.githubusercontent.com/paytm/Paytm_Magento_Plugin/master/paytm_logo_invert.svg";
+            }      
+            return "https://raw.githubusercontent.com/paytm/Paytm_Magento_Plugin/master/paytm_logo_paymodes.svg";
+        }
+
+        public function createJWTToken($key,$clientId,$environment){
+        
+            // Create token header as a JSON string
+            $header = json_encode(['alg' => 'HS512','typ' => 'JWT']);
+
+            // Create token payload as a JSON string
+            date_default_timezone_set("Asia/Kolkata");  
+            $time = time();
+            $payload = json_encode(['client-id' => $clientId,'iat'=>$time]);
+
+            // Encode Header to Base64Url String
+            $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
+
+            // Encode Payload to Base64Url String
+            $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
+
+            // Create Signature Hash
+            $signature = hash_hmac('SHA512', $base64UrlHeader . "." . $base64UrlPayload, $key, true);
+
+            // Encode Signature to Base64Url String
+            $base64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
+
+            // Create JWT
+            $jwt = $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
+
+            return $jwt;
+        }
+    
     }
 ?>
