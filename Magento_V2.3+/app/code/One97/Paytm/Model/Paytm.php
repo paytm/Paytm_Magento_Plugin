@@ -270,9 +270,9 @@
         /* this function for return Invert Logo Option */
         public function getLogo() {      
             if($this->getConfigData("invertlogo") == 1){
-                return "https://raw.githubusercontent.com/paytm/Paytm_Magento_Plugin/master/paytm_logo_invert.svg";
+                return "https://staticpg.paytm.in/pg_plugins_logo/paytm_logo_invert.svg";
             }      
-            return "https://raw.githubusercontent.com/paytm/Paytm_Magento_Plugin/master/paytm_logo_paymodes.svg";
+            return "https://staticpg.paytm.in/pg_plugins_logo/paytm_logo_paymodes.svg";
         }
 
         public function createJWTToken($key,$clientId,$environment){

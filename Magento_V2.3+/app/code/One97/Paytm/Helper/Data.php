@@ -33,8 +33,8 @@
 		CONST CONNECT_TIMEOUT				= "10";
 		CONST TIMEOUT					= "10";
 
-		CONST LAST_UPDATED				= "20220810";
-		CONST PLUGIN_VERSION				= "2.6.4";
+		CONST LAST_UPDATED				= "20230123";
+		CONST PLUGIN_VERSION				= "2.6.5";
 
 		CONST CUSTOM_CALLBACK_URL			= "";
 	    // PaytmConstants.php end
