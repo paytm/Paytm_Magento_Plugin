@@ -170,8 +170,12 @@
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
                 $response = curl_exec($ch);
-                $response_array = json_decode($response, TRUE);
-                $txnToken = $response_array['body']['txnToken'];
+                $response_array = json_decode($response, TRUE); 
+                if(!empty($response_array['body']['txnToken'])){
+                     $txnToken = $response_array['body']['txnToken'];
+                }else{
+                     $txnToken = " ";
+                }
                 $version = $this->getLastUpdate();
                 $params['X-REQUEST-ID']=$this->helper::X_REQUEST_ID.str_replace('|', '_', str_replace(' ', '-', $version));
                 $inputForm='<script type="application/javascript" crossorigin="anonymous" src="'.$paytmDmain.'"merchantpgpui/checkoutjs/merchants/'.$params['MID'].'.js"></script><input type="hidden" value="'.$txnToken.'"  name="txn_token" id="txn_token" /> <input id="OrderID" value="'.$params['ORDER_ID'].'"  type="hidden" /><input id="amount" value="'.$params['TXN_AMOUNT'].'"  type="hidden" />';
