@@ -1,8 +1,8 @@
 require(['jquery'],function($){
-    $(document).ready(function(){
+    jQuery(document).ready(function(){
         var baseURL = $("#baseURLForPaytm").val();
         var formId=$("#paytmLastUpdate").parents("form").attr("id");
-        //alert(formId);
+        var dynamicId = document.forms['config-edit-form'].querySelector('span').id.split('_')[1];
         var reqURL=baseURL+"paytm/Standard/Curlconfig?getlastUpdate=1";
         $.ajax({
             showLoader: true,
@@ -42,13 +42,15 @@ require(['jquery'],function($){
         });
 
         //webhook configuration
-        jQuery('#payment_us_paytm_iswebhook').change(function(){
+        jQuery('#payment_'+dynamicId+'_paytm_iswebhook').change(function(){
+
             var is_webhook = ''; 
-            var environment  =jQuery('#payment_us_paytm_environment').val();
-            var mid  =jQuery('#payment_us_paytm_MID').val();   
+            var environment  =jQuery('#payment_'+dynamicId+'_paytm_environment').val();
+            var mid  =jQuery('#payment_'+dynamicId+'_paytm_MID').val();   
+            var merchant_key  =jQuery('#payment_'+dynamicId+'_paytm_merchant_key').val();   
             var webhookUrl  =baseURL+"paytm/Standard/Response/?webhook=yes";
           
-            if (jQuery('#payment_us_paytm_iswebhook').val()==1) {
+            if (jQuery('#payment_'+dynamicId+'_paytm_iswebhook').val()==1) {
                 is_webhook = 1;
             }else{
                 is_webhook = 0;
@@ -57,7 +59,7 @@ require(['jquery'],function($){
             jQuery.ajax({
                 type:"POST",
                 dataType: 'json',
-                data:{is_webhook:is_webhook,mid:mid,environment:environment,webhookUrl:webhookUrl},
+                data:{is_webhook:is_webhook,mid:mid,merchant_key:merchant_key,environment:environment,webhookUrl:webhookUrl},
                 url: reqURLWebhook,
                 async:false,
                 success: function(data) {

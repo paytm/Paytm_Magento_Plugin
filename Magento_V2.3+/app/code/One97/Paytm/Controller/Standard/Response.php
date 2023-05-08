@@ -55,11 +55,8 @@
 				$paytmJsonResponseOnPending='';
 			    if($this->getPaytmModel()->validateResponse($request, $magentoOrderId)) {
 			        if($this->getPaytmHelper()::SAVE_PAYTM_RESPONSE){
-				        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-				        $objDate = $objectManager->create('Magento\Framework\Stdlib\DateTime\DateTime');
-				        $date = $objDate->gmtDate();
-				        $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
-				        $tableName = $resource->getTableName('paytm_order_data');
+				        $date = $this->getPaytmModel()->getDate(); 
+				        $tableName = $this->getPaytmModel()->paytmTable();
 				        $sql = "UPDATE ".$tableName." SET transaction_id='".$orderTXNID."', paytm_response='".$paytmJsonResponse."', date_modified='".$date."' WHERE order_id='".$magentoOrderId."' AND paytm_order_id='".$paytmOrderId."'";
 				        $this->updateTable($sql);
 				    }
@@ -135,8 +132,7 @@
 		        		$returnUrl = $this->getPaytmHelper()->getUrl('checkout/cart');
 		        		break;
 		        	case "PROCESSING":
-		        		$resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
-		        		$tableName = $resource->getTableName('paytm_order_data');
+		        		$tableName = $this->getPaytmModel()->paytmTable();
 		        		$paytmJsonResponseOnPending==''?$sql="UPDATE ".$tableName." SET status='1' WHERE order_id='".$magentoOrderId."' AND paytm_order_id='".$paytmOrderId."'":$sql = "UPDATE ".$tableName." SET status='1', paytm_response='".$paytmJsonResponseOnPending."' WHERE order_id='".$magentoOrderId."' AND paytm_order_id='".$paytmOrderId."'";
 		        		if($this->getPaytmHelper()::SAVE_PAYTM_RESPONSE){
 		        			$this->updateTable($sql);

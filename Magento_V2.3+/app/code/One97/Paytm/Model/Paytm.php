@@ -69,6 +69,30 @@
             return true;
         }
 
+        public function getResource(){
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
+            return $resource;
+        }
+
+        public function dbConnection(){ 
+            $resource = $this->getResource();
+            $connection = $resource->getConnection();
+            return $connection;
+
+        }
+        public function paytmTable(){
+            $resource = $this->getResource();
+            $paytmTable = $resource->getTableName('paytm_order_data');
+            return $paytmTable;
+        }
+        public function getDate(){
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            $objDate = $objectManager->create('Magento\Framework\Stdlib\DateTime\DateTime');
+            $date = $objDate->gmtDate(); 
+            return $date;
+        }
+
         /* this function return Paytm redirect form post */
         public function buildPaytmRequest($order) {
             $paytmOrderId=$magentoOrderId=$order->getRealOrderId();
@@ -77,20 +101,14 @@
             }
             
             if($this->helper::SAVE_PAYTM_RESPONSE){
-                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $date = $this->getDate(); 
+                $connection = $this->dbConnection(); 
+                $tableName = $this->paytmTable();
                 
-                $objDate = $objectManager->create('Magento\Framework\Stdlib\DateTime\DateTime');
-                $date = $objDate->gmtDate();
-
-                $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
-                $connection = $resource->getConnection();
-
-                $tableName = $resource->getTableName('paytm_order_data');
                 if(!$connection->isTableExists($tableName)){
                     $sql = "CREATE TABLE ".$tableName."(id INT(11) PRIMARY KEY AUTO_INCREMENT, order_id TEXT NOT NULL, paytm_order_id TEXT NOT NULL, transaction_id TEXT, status TINYINT(1)  DEFAULT '0', paytm_response TEXT, date_added DATETIME, date_modified DATETIME )";
                     $connection->query($sql);
-                }
-                $tableName = $resource->getTableName('paytm_order_data');
+                } 
                 $sql = "INSERT INTO ".$tableName."(order_id, paytm_order_id, date_added, date_modified) VALUES ('".$magentoOrderId."', '".$paytmOrderId."', '".$date."', '".$date."')";
                 $connection->query($sql);
             }
@@ -277,34 +295,6 @@
                 return "https://staticpg.paytm.in/pg_plugins_logo/paytm_logo_invert.svg";
             }      
             return "https://staticpg.paytm.in/pg_plugins_logo/paytm_logo_paymodes.svg";
-        }
-
-        public function createJWTToken($key,$clientId,$environment){
-        
-            // Create token header as a JSON string
-            $header = json_encode(['alg' => 'HS512','typ' => 'JWT']);
-
-            // Create token payload as a JSON string
-            date_default_timezone_set("Asia/Kolkata");  
-            $time = time();
-            $payload = json_encode(['client-id' => $clientId,'iat'=>$time]);
-
-            // Encode Header to Base64Url String
-            $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
-
-            // Encode Payload to Base64Url String
-            $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
-
-            // Create Signature Hash
-            $signature = hash_hmac('SHA512', $base64UrlHeader . "." . $base64UrlPayload, $key, true);
-
-            // Encode Signature to Base64Url String
-            $base64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
-
-            // Create JWT
-            $jwt = $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
-
-            return $jwt;
         }
     
     }
