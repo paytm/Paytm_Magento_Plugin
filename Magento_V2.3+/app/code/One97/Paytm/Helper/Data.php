@@ -7,6 +7,7 @@
 	/* Paytm lib file */
 	class Data extends AbstractHelper {
 	    protected $session;
+		protected $stockRegistry;
 	    
 	    // PaytmConstants.php start
 	    CONST TRANSACTION_URL_PRODUCTION			= "https://securegw.paytm.in/order/process";
@@ -157,7 +158,7 @@
 
 	    static private function generateRandomString($length) {
 	    	$random = "";
-	    	srand((double) microtime() * 1000000);
+	    	//srand((double) microtime() * 1000000);
 
 	    	$data = "9876543210ZYXWVUTSRQPONMLKJIHGFEDCBAabcdefghijklmnopqrstuvwxyz!@#$&_";	
 
