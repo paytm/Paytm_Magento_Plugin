@@ -15,6 +15,9 @@
 
 		CONST PRODUCTION_HOST				= "https://securegw.paytm.in/";
 		CONST STAGING_HOST				= "https://securegw-stage.paytm.in/";
+		CONST PRODUCTION_PPBL_HOST				= "https://securepg.paytm.in/";
+
+    	CONST PPBL = false;		
 
 		CONST TRANSACTION_URL_STAGING			= "https://securegw-stage.paytm.in/order/process";
 		CONST TRANSACTION_STATUS_URL_STAGING		= "https://securegw-stage.paytm.in/order/status";
@@ -35,7 +38,7 @@
 		CONST TIMEOUT					= "10";
 
 		CONST LAST_UPDATED				= "20230823";
-		CONST PLUGIN_VERSION				= "2.6.7";
+		CONST PLUGIN_VERSION				= "2.6.8";
 
 		CONST CUSTOM_CALLBACK_URL			= "";
 	    // PaytmConstants.php end
@@ -269,10 +272,19 @@
 
 
 
-	    public static function getPaytmURL($url = false, $isProduction = 0){
+	    public static function getPaytmURL($url = false, $isProduction = 0, $mid=''){
 			if(!$url) return false; 
 			if($isProduction == 1){
-				return Data::PRODUCTION_HOST . $url;
+                if(Data::PPBL==false){
+                    return Data::PRODUCTION_HOST . $url;
+                }    				
+            $midLength = strlen(preg_replace("/[^A-Za-z]/", "", $mid));
+	            if($midLength == 6){
+	                return Data::PRODUCTION_HOST . $url;
+	            }
+	            if($midLength == 7){
+	                return Data::PRODUCTION_PPBL_HOST . $url;
+	            }  
 			}else{
 				return Data::STAGING_HOST . $url;			
 			}

@@ -242,7 +242,7 @@
 
          /* this function for return checkoutjs url */
         public function getcheckoutjsurl() {  
-           return str_replace('MID', $this->getConfigData("MID"), $this->helper->getPaytmURL($this->helper::CHECKOUT_JS_URL,$this->getConfigData('environment')));
+           return str_replace('MID', $this->getConfigData("MID"), $this->helper->getPaytmURL($this->helper::CHECKOUT_JS_URL,$this->getConfigData('environment'),$this->getConfigData("MID")));
         }
 
 
