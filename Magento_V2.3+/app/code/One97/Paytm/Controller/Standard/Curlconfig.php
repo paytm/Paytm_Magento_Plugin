@@ -27,7 +27,7 @@
             $resultJson = $this->resultJsonFactory->create();
             if(isset($reqData['getlastUpdate'])){
                 $getLastUpdate=$this->getPaytmModel()->getLastUpdate();
-                $getLastUpdateArr=explode('|',$getLastUpdate);
+                $getLastUpdateArr=explode('|',$getLastUpdate ?? '');
                 $callBackUrl = $this->_url->getUrl('paytm/Standard/Response');
                 return $resultJson->setData(['version' => $getLastUpdateArr[0], 'lastupdate' => $getLastUpdateArr[1], 'phpCurlVersion' => $this->getPaytmModel()->getcURLversion(), 'paytmPluginVersion' => $this->getPaytmModel()->getpluginversion(),'callBackUrl' => $callBackUrl]);
             }

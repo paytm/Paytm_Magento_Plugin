@@ -15,9 +15,8 @@
 		public function validateForCsrf(RequestInterface $request): ?bool {
 		    return true;
 		}
-	    
 		/* this funtion handle Paytm response */
-	    public function execute() {
+	    public function execute() { 
 	    	$comment = "";
 	    	$request = $_POST;
 			if(!empty($_POST)){
@@ -27,42 +26,45 @@
 					}
 				}
 			}
-
-			// var_dump($this->getPaytmHelper()::SAVE_PAYTM_RESPONSE);die;
+			
 			$errorMsg = '';
 			$successFlag = false;
 			$resMessage=$this->getRequest()->getParam('RESPMSG');
 			$globalErrMass="Your payment has been failed!";
-			if(trim($resMessage)!=''){
+			if(trim((string) $resMessage)!=''){
 				$globalErrMass.=" Reason: ".$resMessage;
 			}
 			$returnUrl = $this->getPaytmHelper()->getUrl('/');
 		    $orderMID = $this->getRequest()->getParam('MID');        
 	        $paytmOrderId = $this->getRequest()->getParam('ORDERID');
-	        $magentoOrderIdArr=explode('_', $paytmOrderId);
+	        $magentoOrderIdArr=explode('_', $paytmOrderId ?? '');
 	        $magentoOrderId=$magentoOrderIdArr[0];
 	        $orderTXNID = $this->getRequest()->getParam('TXNID');
 	        $paytmResponse=$this->getRequest()->getParams();
 	        $paytmJsonResponse=json_encode($paytmResponse);
 	        
-	        if(trim($paytmOrderId)!='' && trim($orderMID)!=''){
+	        if(trim((string) $paytmOrderId)!='' && trim((string) $orderMID)!=''){
 		        $order = $this->getOrderById($magentoOrderId);
-		        $orderTotal = round($order->getGrandTotal(), 2);
-		        $orderStatus = $this->getRequest()->getParam('STATUS');
+		        $orderTotal = round((float) $order->getGrandTotal(), 2);
+				$orderStatus = $this->getRequest()->getParam('STATUS'); 
 				$resCode = $this->getRequest()->getParam('RESPCODE');
 		        $orderTxnAmount = $this->getRequest()->getParam('TXNAMOUNT');
 				$transactionResponse="";
 				$paytmJsonResponseOnPending='';
-			    if($this->getPaytmModel()->validateResponse($request, $magentoOrderId)) {
+			  	$success_order_status = $this->getPaytmModel()->getSuccessOrderStatus(); 
+			  	$failure_order_status = $this->getPaytmModel()->getFailOrderStatus(); 
+			 
+			if($success_order_status != $order->getStatus() && $failure_order_status != $order->getStatus()){
+			    if($this->getPaytmModel()->validateResponse($request, $magentoOrderId)) { 
 			        if($this->getPaytmHelper()::SAVE_PAYTM_RESPONSE){
 				        $date = $this->getPaytmModel()->getDate(); 
 				        $tableName = $this->getPaytmModel()->paytmTable();
 				        $sql = "UPDATE ".$tableName." SET transaction_id='".$orderTXNID."', paytm_response='".$paytmJsonResponse."', date_modified='".$date."' WHERE order_id='".$magentoOrderId."' AND paytm_order_id='".$paytmOrderId."'";
 				        $this->updateTable($sql);
-				    }
-					if($orderStatus == "TXN_SUCCESS"){
+				    } 
+					if($orderStatus == "TXN_SUCCESS"){ 
 						$requestParamList = array("MID" => $orderMID , "ORDERID" => $paytmOrderId);
-						$responseParamList=$this->checkStatusCall($requestParamList);
+						$responseParamList=$this->checkStatusCall($requestParamList);  
 						if(isset($responseParamList['STATUS'])){
 							if($responseParamList['STATUS'] == "PENDING"){
 								$transactionResponse="PENDING";
@@ -98,14 +100,13 @@
 							$transactionResponse="CANCELED";
 						}
 					}            
-		        } else {
+		        } else { 
 					$transactionResponse="FRAUD_CHECKSUM_MISMATCH";
-		        }
-
+		        } 
 		        switch ($transactionResponse) {
 		        	case 'FRAUD':
 		        		$errorMsg = 'It seems some issue in server to server communication. Kindly connect with administrator.';
-		        		$comment .=  "Fraud Detucted";
+		        		$comment .=  "Fraud Detected";
 		        		$order->setStatus($order::STATUS_FRAUD);
 		        		$returnUrl = $this->getPaytmHelper()->getUrl('checkout/cart');
 		        		break;
@@ -118,13 +119,13 @@
 		        	case "CANCELED":
 		        		if($orderStatus == "PENDING"){
 		        			$errorMsg = 'Paytm Transaction Pending!';
-		        			if(trim($resMessage)==''){
+		        			if(trim((string) $resMessage)==''){
 		        				$errorMsg.=" Reason: ".$resMessage;
 		        			}
 		        			$comment .=  "Pending";
 		        			$order->setState("pending_payment")->setStatus("pending_payment");
-		        		}else{
-		        			$this->getPaytmHelper()->updateStockQty($order);
+		        		}else{ 
+							$order->cancel()->save();
 		        			$errorMsg = $globalErrMass;
 		        			$comment .=  $globalErrMass;
 		        			$order->setState("canceled")->setStatus($this->_paytmModel->getFailOrderStatus());
@@ -156,12 +157,12 @@
 		        		$order->setState('processing');
 		        		$order->setStatus($this->_paytmModel->getSuccessOrderStatus());
 		        		$order->setExtOrderId($paytmOrderId);
-		        		$this->clearCart();
+		        		$this->clearCart();  
 		        		$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/success');
 		        		break;
 		        	case "PENDING":
 		        		$errorMsg = 'Paytm Transaction Pending!';
-		        		if(trim($resMessage)==''){
+		        		if(trim((string) $resMessage)==''){
 		        			$errorMsg.=" Reason: ".$resMessage;
 		        		}
 		        		$comment .=  "Pending";
@@ -172,7 +173,7 @@
 
 		        	default:
 		        		$errorMsg = 'Paytm Transaction Pending!';
-		        		if(trim($resMessage)==''){
+		        		if(trim((string) $resMessage)==''){
 		        			$errorMsg.=" Reason: ".$resMessage;
 		        		}
 		        		$comment .=  "Pending" ;
@@ -187,14 +188,33 @@
 				}else{
 					$this->messageManager->addError( __($errorMsg) );
 				}
-	        }
-	        if(isset($_GET['webhook']) && $_GET['webhook'] == "yes"){
-	        	echo "webhook received";
-	        	exit;
-	        }else{
-				$this->getResponse()->setRedirect($returnUrl);   
-			}     
+				if(isset($_GET['webhook']) && $_GET['webhook'] == "yes"){ 
+					exit;
+				}else{
+					$this->getResponse()->setRedirect($returnUrl);
+				}
+				
+	        }else{ 
+				if(isset($_GET['webhook']) && $_GET['webhook'] == "yes"){ 
+					exit;
+				}  
+				if($success_order_status == $order->getStatus()){
+					 
+					$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/success');
+					 
+				}elseif($failure_order_status == $order->getStatus()){
+					 
+					$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
+					 
+				}else{
+					$returnUrl = $this->getPaytmHelper()->getUrl('checkout/cart');
+				 
+				}
+				$this->getResponse()->setRedirect($returnUrl);
+			  
+		 }  
 		}
+	}
 
 		/* Paytm transaction status S2S call */
 		public function checkStatusCall($requestParamList){
@@ -215,7 +235,7 @@
 
 		public function updateTable($sql){
 			$updateDone=false;
-			if(trim($sql)!=''){
+			if(trim((string) $sql)!=''){
 				$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 				$resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
 				$connection = $resource->getConnection();
@@ -243,12 +263,7 @@
         $quoteModel = $this->_objectManager->create('Magento\Quote\Model\Quote');//Quote item model to load quote
         return $quoteModel;
     }
-
-
-
 	function clearCart(){
-
-
 			 $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); 
              $cartObject = $objectManager->create('Magento\Checkout\Model\Cart')->truncate(); 
              $checkoutSession = $this->_objectManager->get('Magento\Checkout\Model\Session');
@@ -258,9 +273,5 @@
              $quoteItem->delete();
 
 	}
-
-
-
-
 	}
 ?>

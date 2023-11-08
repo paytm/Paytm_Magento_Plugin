@@ -81,7 +81,7 @@
             $button='';
             if(!empty($result)){
                 $fetchStatusURL.='?fetchId='.$result[0]['id'];
-                if(trim($result[0]['paytm_response'])!=''){
+                if(trim((string) $result[0]['paytm_response'])!=''){
                     $resArr=$this->jsonHelper->jsonDecode($result[0]['paytm_response']);
                     $response='';
                     ksort($resArr);

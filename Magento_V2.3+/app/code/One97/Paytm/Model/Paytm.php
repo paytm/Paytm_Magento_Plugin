@@ -121,15 +121,15 @@
                 $callBackUrl=$this->getConfigData("callback_url")!=''?$this->getConfigData("callback_url"):$callBackUrl;
             }
             $params = array(
-                'MID' => trim($this->getConfigData("MID")),               
+                'MID' => trim((string) $this->getConfigData("MID")),               
                 'TXN_AMOUNT' => round($order->getGrandTotal(), 2),
                 'CHANNEL_ID' => $this->helper::CHANNEL_ID,
                 //'INDUSTRY_TYPE_ID' => trim($this->getConfigData("Industry_id")),
-                'WEBSITE' => trim($this->getConfigData("Website")),
+                'WEBSITE' => trim((string) $this->getConfigData("Website")),
                 'CUST_ID' => $order->getCustomerEmail(),
                 'ORDER_ID' => $paytmOrderId,                     
                 'EMAIL' => $order->getCustomerEmail(),
-                'CALLBACK_URL' => trim($callBackUrl)
+                'CALLBACK_URL' => trim((string) $callBackUrl)
             );    
             if(isset($order->paytmPromoCode)){
                 $params['PROMO_CAMP_ID']=$order->paytmPromoCode;

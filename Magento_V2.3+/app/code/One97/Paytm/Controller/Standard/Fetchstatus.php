@@ -26,7 +26,7 @@
             $response=false;
             // echo "test";
             if(isset($reqData['fetchId'])){
-                if(trim($reqData['fetchId'])!='' && $this->getPaytmHelper()::SAVE_PAYTM_RESPONSE){
+                if(trim((string) $reqData['fetchId'])!='' && $this->getPaytmHelper()::SAVE_PAYTM_RESPONSE){
                     $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                     $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
                     $connection = $resource->getConnection();

@@ -3,11 +3,13 @@
 	use Magento\Framework\App\Helper\Context;
 	use Magento\Sales\Model\Order;
 	use Magento\Framework\App\Helper\AbstractHelper;
+	use Magento\CatalogInventory\Model\Stock\StockItemRepository;
 
 	/* Paytm lib file */
 	class Data extends AbstractHelper {
 	    protected $session;
 		protected $stockRegistry;
+		private $stockItemRepository;
 	    
 	    // PaytmConstants.php start
 	    CONST TRANSACTION_URL_PRODUCTION			= "https://securegw.paytm.in/order/process";
@@ -37,8 +39,8 @@
 		CONST CONNECT_TIMEOUT				= "10";
 		CONST TIMEOUT					= "10";
 
-		CONST LAST_UPDATED				= "20230823";
-		CONST PLUGIN_VERSION				= "2.6.8";
+		CONST LAST_UPDATED				= "20231107";
+		CONST PLUGIN_VERSION				= "2.6.9";
 
 		CONST CUSTOM_CALLBACK_URL			= "";
 	    // PaytmConstants.php end
@@ -46,32 +48,15 @@
 	    public function __construct(
 	    	Context $context, 
 	    	\Magento\Checkout\Model\Session $session,
-	    	\Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry
+	    	\Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry,			 
+			StockItemRepository $stockItemRepository
 	    ) {
 	        $this->session = $session;
 	        $this->stockRegistry = $stockRegistry;
+			$this->stockItemRepository = $stockItemRepository;
 	        parent::__construct($context);
-	    }
-
-        public function updateStockQty($order) {
-    		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-    		$stockItem = $objectManager->create('\Magento\CatalogInventory\Model\Stock\StockItemRepository');
-    		$orderItems = $order->getAllItems();
-    		foreach ($orderItems as $item) {
-    			$product_id = $item->getProductId();
-
-    			$sku = $item->getSku();
-    			$current_qty = $this->stockRegistry->getStockItemBySku($sku)->getQty();
-    			$order_qty = (int)$item->getQtyOrdered();
-    			$update_stock_qty = $current_qty + $order_qty;
-
-    			$stockItem = $this->stockRegistry->getStockItemBySku($sku);
-    			$stockItem->setQty($update_stock_qty);
-    			$stockItem->setIsInStock((bool)$update_stock_qty); // this line
-    			$this->stockRegistry->updateStockItemBySku($sku, $stockItem);
-    		}
-    	}
-
+			 
+	    } 
 	    public function cancelCurrentOrder($comment) {
 	        $order = $this->session->getLastRealOrder();
 	        if ($order->getId() && $order->getState() != Order::STATE_CANCELED) {
@@ -123,7 +108,7 @@
 	    		mcrypt_generic_deinit($td);
 	    		mcrypt_module_close($td);
 	    		$data = self::pkcs5Unpad($data);
-	    		$data = rtrim($data);
+	    		$data = rtrim((string) $data);
 	    	}
 	    	return $data;
 	    }
