@@ -43,7 +43,7 @@
             $connection = $resource->getConnection();
             $tableName = $resource->getTableName('paytm_order_data');
             if($connection->isTableExists($tableName)){
-                $sql = "Select * FROM ".$tableName." WHERE order_id=".$magentoOrderId." ORDER BY id DESC";
+                $sql = "Select * FROM ".$tableName." WHERE order_id='".$magentoOrderId."' ORDER BY id DESC";
                 $result = $connection->fetchAll($sql);
                 if(!empty($result)){
                     if(isset($result[0]['paytm_response']) || trim($result[0]['paytm_response'])==''){
@@ -75,7 +75,7 @@
             $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
             $connection = $resource->getConnection();
             $tableName = $resource->getTableName('paytm_order_data');
-            $sql = "Select * FROM ".$tableName." WHERE order_id=".$magentoOrderId." ORDER BY id DESC"; //take always letest response
+            $sql = "Select * FROM ".$tableName." WHERE order_id='".$magentoOrderId."' ORDER BY id DESC"; //take always letest response
             $result = $connection->fetchAll($sql);
             $resArr=array();
             $button='';
