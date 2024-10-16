@@ -9,21 +9,21 @@
 	    protected $session;
 	    
 		// PaytmConstants.php start
-		CONST TRANSACTION_STATUS_URL_PRODUCTION	    = "https://securegw.paytm.in/order/status";
-		CONST TRANSACTION_STATUS_URL_STAGING		       = "https://securegw-stage.paytm.in/order/status";
+		CONST TRANSACTION_STATUS_URL_PRODUCTION	    = "https://secure.paytmpayments.com/order/status";
+		CONST TRANSACTION_STATUS_URL_STAGING		       = "https://securestage.paytmpayments.com/order/status";
 
-		CONST PRODUCTION_HOST					= "https://securegw.paytm.in/";
-		CONST STAGING_HOST					= "https://securegw-stage.paytm.in/";
+		CONST PRODUCTION_HOST					= "https://secure.paytmpayments.com/";
+		CONST STAGING_HOST					= "https://securestage.paytmpayments.com/";
 
 		CONST ORDER_PROCESS_URL					= "order/process";
 		CONST ORDER_STATUS_URL					= "order/status";
 		CONST INITIATE_TRANSACTION_URL				= "theia/api/v1/initiateTransaction";
 		CONST CHECKOUT_JS_URL					= "merchantpgpui/checkoutjs/merchants/MID.js";
 		
-		CONST TRANSACTION_URL_PRODUCTION			= "https://securegw.paytm.in/order/process";
+		CONST TRANSACTION_URL_PRODUCTION			= "https://secure.paytmpayments.com/order/process";
 		
 
-		CONST TRANSACTION_URL_STAGING				= "https://securegw-stage.paytm.in/order/process";
+		CONST TRANSACTION_URL_STAGING				= "https://securestage.paytmpayments.com/order/process";
 		
 
 		CONST SAVE_PAYTM_RESPONSE 					= true;
@@ -35,14 +35,14 @@
 		CONST CONNECT_TIMEOUT						= "10";
 		CONST TIMEOUT								= "10";
 
-		CONST LAST_UPDATED							= "20200120";
-		CONST PLUGIN_VERSION						= "2.0";
+		CONST LAST_UPDATED							= "20241015";
+		CONST PLUGIN_VERSION						= "2.1";
 
 		CONST CUSTOM_CALLBACK_URL					= "";
 
-		CONST TRANSACTION_TOKEN_URL_PRODUCTION		= "https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=";
+		CONST TRANSACTION_TOKEN_URL_PRODUCTION		= "https://secure.paytmpayments.com/theia/api/v1/initiateTransaction?mid=";
 
-		CONST TRANSACTION_TOKEN_URL_STAGING		= "https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=";
+		CONST TRANSACTION_TOKEN_URL_STAGING		= "https://securestage.paytmpayments.com/theia/api/v1/initiateTransaction?mid=";
 
 	    // PaytmConstants.php end
 
@@ -200,7 +200,7 @@
 	    }
 
 	    static private function pkcs5Unpad($text) {
-	    	$pad = ord($text{strlen($text) - 1});
+	    	$pad = ord($text[strlen($text) - 1]);
 	    	if ($pad > strlen($text))
 	    		return false;
 	    	return substr($text, 0, -1 * $pad);

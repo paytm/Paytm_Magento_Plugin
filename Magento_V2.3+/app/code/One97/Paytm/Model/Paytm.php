@@ -135,10 +135,10 @@
                 $params['PROMO_CAMP_ID']=$order->paytmPromoCode;
             }
             if($this->getConfigData("environment") ==1){
-                $paytmDmain = 'https://securegw.paytm.in/';
+                $paytmDmain = $this->helper::PRODUCTION_HOST;
                 $url = $this->helper::TRANSACTION_TOKEN_URL_PRODUCTION.$params["MID"] . "&orderId=" . $params["ORDER_ID"];
             }else{
-                $paytmDmain = 'https://securegw-stage.paytm.in/';
+                $paytmDmain = $this->helper::STAGING_HOST;
                 $url = $this->helper::TRANSACTION_TOKEN_URL_STAGING.$params["MID"] . "&orderId=" . $params["ORDER_ID"];
             }
             $checksum = $this->helper->generateSignature($params, $this->getConfigData("merchant_key"));
@@ -292,9 +292,9 @@
         /* this function for return Invert Logo Option */
         public function getLogo() {      
             if($this->getConfigData("invertlogo") == 1){
-                return "https://staticpg.paytm.in/pg_plugins_logo/paytm_logo_invert.svg";
+                return "https://staticpg.paytmpayments.com/pg_plugins_logo/paytm_logo_invert.svg";
             }      
-            return "https://staticpg.paytm.in/pg_plugins_logo/paytm_logo_paymodes.svg";
+            return "https://staticpg.paytmpayments.com/pg_plugins_logo/paytm_logo_paymodes.svg";
         }
     
     }

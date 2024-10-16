@@ -3,14 +3,14 @@
 
 class One97_paytm_Helper_Data extends Mage_Payment_Helper_Data {
 	// PaytmConstants.php start
-	CONST TRANSACTION_URL_PRODUCTION			= "https://securegw.paytm.in/order/process";
-	CONST TRANSACTION_STATUS_URL_PRODUCTION		= "https://securegw.paytm.in/order/status";
+	CONST TRANSACTION_URL_PRODUCTION			= "https://secure.paytmpayments.com/order/process";
+	CONST TRANSACTION_STATUS_URL_PRODUCTION		= "https://secure.paytmpayments.com/order/status";
 
-	CONST TRANSACTION_URL_STAGING 				="https://securegw-stage.paytm.in/order/process";
-	CONST TRANSACTION_STATUS_URL_STAGING		= "https://securegw-stage.paytm.in/order/status";
+	CONST TRANSACTION_URL_STAGING 				="https://securestage.paytmpayments.com/order/process";
+	CONST TRANSACTION_STATUS_URL_STAGING		= "https://securestage.paytmpayments.com/order/status";
 
-	CONST STAGING_HOST 							= "https://securegw-stage.paytm.in/";
-	CONST PRODUCTION_HOST						= "https://securegw.paytm.in/";
+	CONST STAGING_HOST 							= "https://securestage.paytmpayments.com/";
+	CONST PRODUCTION_HOST						= "https://secure.paytmpayments.com/";
 
 	CONST INITIATE_TRANSACTION_URL				= "theia/api/v1/initiateTransaction";
 	CONST CHECKOUT_JS_URL						= "merchantpgpui/checkoutjs/merchants/MID.js";
@@ -24,8 +24,8 @@ class One97_paytm_Helper_Data extends Mage_Payment_Helper_Data {
 	CONST CONNECT_TIMEOUT						= "10";
 	CONST TIMEOUT								= "10";
 
-	CONST LAST_UPDATED							= "20200120";
-	CONST PLUGIN_VERSION						= "2.0";
+	CONST LAST_UPDATED							= "20241015";
+	CONST PLUGIN_VERSION						= "2.1";
 
 	CONST CUSTOM_CALLBACK_URL					= "";
 	// PaytmConstants.php end
@@ -145,7 +145,7 @@ class One97_paytm_Helper_Data extends Mage_Payment_Helper_Data {
 	}
 
 	static private function pkcs5Unpad($text) {
-		$pad = ord($text{strlen($text) - 1});
+		$pad = ord($text[strlen($text) - 1]);
 		if ($pad > strlen($text))
 			return false;
 		return substr($text, 0, -1 * $pad);

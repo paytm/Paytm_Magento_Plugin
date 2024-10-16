@@ -54,10 +54,10 @@ define(
                 if (event) {
                     event.preventDefault();
                     //$("#paywithpaytm").addClass('paytmtoggle');
-                    if ($("#paywithpaytm").hasClass('paytmtoggle')) {
+                   /*  if ($("#paywithpaytm").hasClass('paytmtoggle')) {
                         togglepoup = true;
                         window.Paytm.CheckoutJS.invoke();
-                    }
+                    } */
                 }
 
 

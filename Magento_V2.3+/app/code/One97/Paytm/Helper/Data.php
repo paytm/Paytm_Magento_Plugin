@@ -12,22 +12,22 @@
 		private $stockItemRepository;
 	    
 	    // PaytmConstants.php start
-	    CONST TRANSACTION_URL_PRODUCTION			= "https://securegw.paytm.in/order/process";
-		CONST TRANSACTION_STATUS_URL_PRODUCTION		= "https://securegw.paytm.in/order/status";
+	    CONST TRANSACTION_URL_PRODUCTION			= "https://secure.paytmpayments.com/order/process";
+		CONST TRANSACTION_STATUS_URL_PRODUCTION		= "https://secure.paytmpayments.com/order/status";
 
-		CONST PRODUCTION_HOST				= "https://securegw.paytm.in/";
-		CONST STAGING_HOST				= "https://securegw-stage.paytm.in/";
+		CONST PRODUCTION_HOST				= "https://secure.paytmpayments.com/";
+		CONST STAGING_HOST				= "https://securestage.paytmpayments.com/";
 		CONST PRODUCTION_PPBL_HOST				= "https://securepg.paytm.in/";
 
     	CONST PPBL = false;		
 
-		CONST TRANSACTION_URL_STAGING			= "https://securegw-stage.paytm.in/order/process";
-		CONST TRANSACTION_STATUS_URL_STAGING		= "https://securegw-stage.paytm.in/order/status";
+		CONST TRANSACTION_URL_STAGING			= "https://securestage.paytmpayments.com/order/process";
+		CONST TRANSACTION_STATUS_URL_STAGING		= "https://securestage.paytmpayments.com/order/status";
 
 
-	    CONST TRANSACTION_TOKEN_URL_PRODUCTION		= "https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=";
+	    CONST TRANSACTION_TOKEN_URL_PRODUCTION		= "https://secure.paytmpayments.com/theia/api/v1/initiateTransaction?mid=";
 
-		CONST TRANSACTION_TOKEN_URL_STAGING		= "https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=";
+		CONST TRANSACTION_TOKEN_URL_STAGING		= "https://securestage.paytmpayments.com/theia/api/v1/initiateTransaction?mid=";
 		CONST CHECKOUT_JS_URL				= "merchantpgpui/checkoutjs/merchants/MID.js";
 
 		CONST SAVE_PAYTM_RESPONSE 			= true;
@@ -39,8 +39,8 @@
 		CONST CONNECT_TIMEOUT				= "10";
 		CONST TIMEOUT					= "10";
 
-		CONST LAST_UPDATED				= "20231107";
-		CONST PLUGIN_VERSION				= "2.6.9";
+		CONST LAST_UPDATED				= "20241015";
+		CONST PLUGIN_VERSION				= "2.7.0";
 
 		CONST CUSTOM_CALLBACK_URL			= "";
 	    // PaytmConstants.php end
@@ -77,41 +77,27 @@
 	    // PaytmChecksum.php start
 	    private static $iv = "@@@@&&&&####$$$$";
 
-	    static public function encrypt($input, $key) {
-	    	$key = html_entity_decode($key);
-
-	    	if(function_exists('openssl_encrypt')){
-	    		$data = openssl_encrypt ( $input , "AES-128-CBC" , $key, 0, self::$iv );
-	    	} else {
-	    		$size = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, 'cbc');
-	    		$input = self::pkcs5Pad($input, $size);
-	    		$td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', 'cbc', '');
-	    		mcrypt_generic_init($td, $key, self::$iv);
-	    		$data = mcrypt_generic($td, $input);
-	    		mcrypt_generic_deinit($td);
-	    		mcrypt_module_close($td);
-	    		$data = base64_encode($data);
-	    	}
-	    	return $data;
-	    }
-
-	    static public function decrypt($encrypted, $key) {
-	    	$key = html_entity_decode($key);
-	    	
-	    	if(function_exists('openssl_decrypt')){
-	    		$data = openssl_decrypt ( $encrypted , "AES-128-CBC" , $key, 0, self::$iv );
-	    	} else {
-	    		$encrypted = base64_decode($encrypted);
-	    		$td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', 'cbc', '');
-	    		mcrypt_generic_init($td, $key, self::$iv);
-	    		$data = mdecrypt_generic($td, $encrypted);
-	    		mcrypt_generic_deinit($td);
-	    		mcrypt_module_close($td);
-	    		$data = self::pkcs5Unpad($data);
-	    		$data = rtrim((string) $data);
-	    	}
-	    	return $data;
-	    }
+		static public function encrypt($input, $key) {
+			$key = html_entity_decode($key);
+	
+			if (function_exists('openssl_encrypt')) {
+				$data = openssl_encrypt($input, "AES-128-CBC", $key, 0, self::$iv);
+			} else {
+				throw new Exception('OpenSSL extension is not available. Please install the OpenSSL extension.');
+			}
+			return $data;
+		}
+	
+		static public function decrypt($encrypted, $key) {
+			$key = html_entity_decode($key);
+			
+			if(function_exists('openssl_decrypt')){
+				$data = openssl_decrypt ( $encrypted , "AES-128-CBC" , $key, 0, self::$iv );
+			} else {
+				throw new Exception('OpenSSL extension is not available. Please install the OpenSSL extension.');
+			}
+			return $data;
+		}
 
 	    static public function generateSignature($params, $key) {
 	    	if(!is_array($params) && !is_string($params)){

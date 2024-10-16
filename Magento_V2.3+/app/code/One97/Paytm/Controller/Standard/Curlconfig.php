@@ -33,9 +33,9 @@
             }
             else if(isset($reqData['setPaymentNotificationUrl'])){
                 if($reqData['environment'] == 0){
-                    $url = "https://boss-stage.paytm.in/";
+                    $url = "https://boss-stage.paytmpayments.com/";
                 }else{
-                    $url = "https://boss-ext.paytm.in/";
+                    $url = "https://boss-ext.paytmpayments.com/";
                 }
                 $environment = $reqData['environment'];
                 $mid = $reqData['mid'];

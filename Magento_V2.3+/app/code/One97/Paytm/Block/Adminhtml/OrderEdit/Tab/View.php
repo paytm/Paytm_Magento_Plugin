@@ -82,6 +82,7 @@
             if(!empty($result)){
                 $fetchStatusURL.='?fetchId='.$result[0]['id'];
                 if(trim((string) $result[0]['paytm_response'])!=''){
+                    $result[0]['paytm_response'] = preg_replace('/"({.*?})"/', '$1', $result[0]['paytm_response']);
                     $resArr=$this->jsonHelper->jsonDecode($result[0]['paytm_response']);
                     $response='';
                     ksort($resArr);
@@ -95,6 +96,7 @@
                                 break;
                             
                             default:
+                                $val= is_array($val)?json_encode($val):$val;
                                 $response.=' <tr> <th>'.$k.'</th> <td>'.$val.'</td> </tr> ';
                                 break;
                         }
