@@ -14,12 +14,23 @@
             // echo "test";
             if(isset($reqData['fetchId'])){
                 if(trim($reqData['fetchId'])!='' && $this->getPaytmHelper()::SAVE_PAYTM_RESPONSE){
+                    $fetchId = filter_var($reqData['fetchId'], FILTER_VALIDATE_INT);
+                    if ($fetchId === false || $fetchId < 1) {
+                        $resultJson = $this->resultJsonFactory->create();
+                        return $resultJson->setData(['response' => $response,'responseTableBody' => $responseTableBody]);
+                    }
                     $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                     $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
                     $connection = $resource->getConnection();
                     $tableName = $resource->getTableName('paytm_order_data');
-                    $sql = "Select * FROM ".$tableName." WHERE id=".$reqData['fetchId'];
-                    $result = $connection->fetchAll($sql);
+                    $select = $connection->select()
+                        ->from($tableName)
+                        ->where('id = ?', $fetchId);
+                    $result = $connection->fetchAll($select);
+                    if (empty($result)) {
+                        $resultJson = $this->resultJsonFactory->create();
+                        return $resultJson->setData(['response' => $response,'responseTableBody' => $responseTableBody]);
+                    }
                     $requestParamList = array("MID" => $this->getPaytmModel()->getMID() , "ORDERID" => $result[0]['paytm_order_id']);
                     $StatusCheckSum  =  $this->getPaytmModel()->generateStatusChecksum($requestParamList);
                     $requestParamList['CHECKSUMHASH'] = $StatusCheckSum;
@@ -30,8 +41,16 @@
                         $date = $objDate->gmtDate();
 
                         $paytmRes=$this->jsonHelper->jsonEncode($responseParamList);
-                        $sql = "UPDATE ".$tableName." SET transaction_id='".$responseParamList['TXNID']."', paytm_response='".$paytmRes."', status='1', date_modified='".$date."' where id=".$reqData['fetchId'];
-                        $connection->query($sql);
+                        $connection->update(
+                            $tableName,
+                            [
+                                'transaction_id' => isset($responseParamList['TXNID']) ? (string)$responseParamList['TXNID'] : '',
+                                'paytm_response' => $paytmRes,
+                                'status' => 1,
+                                'date_modified' => $date,
+                            ],
+                            ['id = ?' => $fetchId]
+                        );
                         ksort($responseParamList);
                         foreach ($responseParamList as $k => $val) {
                             switch ($k) {

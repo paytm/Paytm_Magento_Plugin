@@ -47,8 +47,8 @@
 				        $date = $objDate->gmtDate();
 				        $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
 				        $tableName = $resource->getTableName('paytm_order_data');
-				        $sql = "UPDATE ".$tableName." SET transaction_id='".$orderTXNID."', paytm_response='".$paytmJsonResponse."', date_modified='".$date."' WHERE order_id='".$magentoOrderId."' AND paytm_order_id='".$paytmOrderId."'";
-				        $this->updateTable($sql);
+				        $sql = "UPDATE " . $tableName . " SET transaction_id = ?, paytm_response = ?, date_modified = ? WHERE order_id = ? AND paytm_order_id = ?";
+				        $this->updateTable($sql, [$orderTXNID, $paytmJsonResponse, $date, $magentoOrderId, $paytmOrderId]);
 				    }
 					if($orderStatus == "TXN_SUCCESS"){
 						$requestParamList = array("MID" => $orderMID , "ORDERID" => $paytmOrderId);
@@ -122,11 +122,17 @@
 		        		$returnUrl = $this->getPaytmHelper()->getUrl('checkout/onepage/failure');
 		        		break;
 		        	case "PROCESSING":
-		        		$resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
-		        		$tableName = $resource->getTableName('paytm_order_data');
-		        		$paytmJsonResponseOnPending==''?$sql="UPDATE ".$tableName." SET status='1' WHERE order_id='".$magentoOrderId."' AND paytm_order_id='".$paytmOrderId."'":$sql = "UPDATE ".$tableName." SET status='1', paytm_response='".$paytmJsonResponseOnPending."' WHERE order_id='".$magentoOrderId."' AND paytm_order_id='".$paytmOrderId."'";
 		        		if($this->getPaytmHelper()::SAVE_PAYTM_RESPONSE){
-		        			$this->updateTable($sql);
+		        			$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+		        			$resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
+		        			$tableName = $resource->getTableName('paytm_order_data');
+		        			if ($paytmJsonResponseOnPending === '') {
+		        				$sql = "UPDATE " . $tableName . " SET status = ? WHERE order_id = ? AND paytm_order_id = ?";
+		        				$this->updateTable($sql, [1, $magentoOrderId, $paytmOrderId]);
+		        			} else {
+		        				$sql = "UPDATE " . $tableName . " SET status = ?, paytm_response = ? WHERE order_id = ? AND paytm_order_id = ?";
+		        				$this->updateTable($sql, [1, $paytmJsonResponseOnPending, $magentoOrderId, $paytmOrderId]);
+		        			}
 		        		}
 	        			$autoInvoice =  $this->getPaytmModel()->autoInvoiceGen();
 		        		if($autoInvoice=='authorize_capture'){
@@ -191,15 +197,15 @@
 			return $response;
 		}
 
-		public function updateTable($sql){
-			$updateDone=false;
-			if(trim($sql)!=''){
+		public function updateTable($sql, array $bind = [])
+		{
+			$updateDone = false;
+			if (trim($sql) !== '') {
 				$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 				$resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
 				$connection = $resource->getConnection();
-				$sql = $sql;
-				$connection->query($sql);
-				$updateDone=true;
+				$connection->query($sql, $bind);
+				$updateDone = true;
 			}
 			return $updateDone;
 		}

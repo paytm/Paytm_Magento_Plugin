@@ -66,7 +66,7 @@
                         'date_modified',
                         Table::TYPE_DATETIME,
                         null,
-                        ['nullbale'=>false,'default'=>'0000-00-00 00:00:00'],
+                        ['nullable'=>false,'default'=>'0000-00-00 00:00:00'],
                         'Modified Date'
                     )
                     ->setOption('charset','utf8');

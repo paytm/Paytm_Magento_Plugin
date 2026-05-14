@@ -90,9 +90,15 @@
                     $sql = "CREATE TABLE ".$tableName."(id INT(11) PRIMARY KEY AUTO_INCREMENT, order_id TEXT NOT NULL, paytm_order_id TEXT NOT NULL, transaction_id TEXT, status TINYINT(1)  DEFAULT '0', paytm_response TEXT, date_added DATETIME, date_modified DATETIME )";
                     $connection->query($sql);
                 }
-                $tableName = $resource->getTableName('paytm_order_data');
-                $sql = "INSERT INTO ".$tableName."(order_id, paytm_order_id, date_added, date_modified) VALUES ('".$magentoOrderId."', '".$paytmOrderId."', '".$date."', '".$date."')";
-                $connection->query($sql);
+                $connection->insert(
+                    $tableName,
+                    [
+                        'order_id' => (string)$magentoOrderId,
+                        'paytm_order_id' => (string)$paytmOrderId,
+                        'date_added' => $date,
+                        'date_modified' => $date,
+                    ]
+                );
             }
 
             $amount         = round($order->getGrandTotal(), 2);

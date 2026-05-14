@@ -38,13 +38,19 @@
 
         public function canShowTab() {
             $magentoOrderId=$this->getOrderIncrementId();
+            if ($magentoOrderId === null || $magentoOrderId === '') {
+                return false;
+            }
             $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
             $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
             $connection = $resource->getConnection();
             $tableName = $resource->getTableName('paytm_order_data');
             if($connection->isTableExists($tableName)){
-                $sql = "Select * FROM ".$tableName." WHERE order_id=".$magentoOrderId." ORDER BY id DESC";
-                $result = $connection->fetchAll($sql);
+                $select = $connection->select()
+                    ->from($tableName)
+                    ->where('order_id = ?', (string)$magentoOrderId)
+                    ->order('id DESC');
+                $result = $connection->fetchAll($select);
                 if(!empty($result)){
                     if(isset($result[0]['paytm_response']) || trim($result[0]['paytm_response'])==''){
                         return true;
@@ -66,7 +72,12 @@
         public function getPaytmResponseHtml($viewButton=false) {
             $response='<tr> <th colspan="2" style="text-align: center;">No Record</th> </tr>';
             $magentoOrderId=$this->getOrderIncrementId();
-            
+            if ($magentoOrderId === null || $magentoOrderId === '') {
+                if($viewButton){
+                    return '';
+                }
+                return $response;
+            }
             $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
             $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
             $fetchStatusURL=$storeManager->getStore()->getBaseUrl().'paytm/Standard/Fetchstatus/';
@@ -75,8 +86,11 @@
             $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
             $connection = $resource->getConnection();
             $tableName = $resource->getTableName('paytm_order_data');
-            $sql = "Select * FROM ".$tableName." WHERE order_id=".$magentoOrderId." ORDER BY id DESC"; //take always letest response
-            $result = $connection->fetchAll($sql);
+            $select = $connection->select()
+                ->from($tableName)
+                ->where('order_id = ?', (string)$magentoOrderId)
+                ->order('id DESC');
+            $result = $connection->fetchAll($select);
             $resArr=array();
             $button='';
             if(!empty($result)){
