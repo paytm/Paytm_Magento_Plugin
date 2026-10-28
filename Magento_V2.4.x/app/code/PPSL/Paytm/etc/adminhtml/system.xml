@@ -1,0 +1,148 @@
+<!--
+/**
+ * Paytm Payment Gateway for Magento 2.4.x
+ *
+ * @author    PPSL
+ * @copyright Copyright (c) 2026-10-26 PPSL. All rights reserved.
+ * @category  PPSL
+ * @package   PPSL_Paytm
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="payment">
+            <group id="paytm" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Paytm </label>
+                <comment>
+                    <![CDATA[
+                        <a href="https://www.paytmpayments.com/docs/magento/" target="_blank">Developer Docs</a>
+                        <br>
+                        <span id="phpCurlVersion" style="margin-bottom: 0;"></span>| 
+                        <span id="magentoVersion" style="margin-bottom: 0;"></span>| 
+                        <span id="paytmPluginVersion" style="margin-bottom: 0;"></span>| 
+                        <span id="paytmLastUpdate"></span>
+                    ]]>
+                </comment>
+                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" >
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>payment/paytm/active</config_path>
+                    <frontend_class>paytmEnbDrpDwn</frontend_class>
+                </field>
+                <!-- <field id="title" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title</label>
+                    <config_path>payment/paytm/title</config_path>
+                </field> -->
+                <field id="payment_action" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Generate Invoice Automatically</label>
+                    <source_model>PPSL\Paytm\Model\PaymentAction</source_model>
+                    <config_path>payment/paytm/payment_action</config_path>
+                </field>
+                <field id="environment" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Environment Mode</label>
+                    <source_model>PPSL\Paytm\Model\EnvAction</source_model>
+                    <comment> <![CDATA[
+                        Select "Test/Staging" to setup test transactions & "Production" once you are ready to go live
+                    ]]>
+                    </comment>
+                    <config_path>payment/paytm/environment</config_path>
+                </field>
+                <field id="MID" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Test/Production Merchant Id</label>
+                    <comment><![CDATA[ Based on the selected Environment Mode, copy the relevant Merchant ID for test or production environment available on <a href="https://dashboard.paytm.com/next/apikeys" target="_blank">Paytm dashboard</a>.]]></comment>
+                    <config_path>payment/paytm/MID</config_path>
+                </field>
+                <field id="merchant_key" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Test/Production Merchant Key</label>
+                    <comment><![CDATA[ Based on the selected Environment Mode, copy the Merchant Key for test or production environment available on <a href="https://dashboard.paytm.com/next/apikeys" target="_blank">Paytm dashboard</a>.]]></comment>
+                    <config_path>payment/paytm/merchant_key</config_path>
+                </field>
+                <field id="Website" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Website (Provided by Paytm)</label>
+                    <source_model>PPSL\Paytm\Model\WebsitenameAction</source_model>
+                    <comment><![CDATA[ Select "WEBSTAGING" for test/integration environment & "DEFAULT" for production environment ]]></comment>
+                    <config_path>payment/paytm/Website</config_path>
+                </field>
+                <field id="success_order_status" translate="label" type="select" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Success Order Status</label>
+                    <source_model>PPSL\Paytm\Model\SuccessFailStatus</source_model>
+                    <config_path>payment/paytm/success_order_status</config_path>
+                </field>
+                <field id="fail_order_status" translate="label" type="select" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Fail Order Status</label>
+                    <source_model>PPSL\Paytm\Model\SuccessFailStatus</source_model>
+                    <config_path>payment/paytm/fail_order_status</config_path>
+                </field>
+                <field id="sort_order" translate="label" type="text" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Sort Order</label>
+                    <frontend_class>validate-number</frontend_class>
+                    <config_path>payment/paytm/sort_order</config_path>
+                </field>
+                <field id="allowspecific" translate="label" type="allowspecific" sortOrder="14" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Payment from Applicable Countries</label>
+                    <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                    <config_path>payment/paytm/allowspecific</config_path>
+                </field>
+                <field id="specificcountry" translate="label" type="multiselect" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Payment from Specific Countries</label>
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                    <config_path>payment/paytm/specificcountry</config_path>
+                </field>
+                <field id="iswebhook" translate="label" type="select" sortOrder="16" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable Webhook</label>
+                    <source_model>PPSL\Paytm\Model\WebhookAction</source_model>
+                    <comment> <![CDATA[
+                        Enable Paytm Webhook <a href="https://dashboard.paytm.com/next/webhook-url" target="_blank">here </a> with the URL listed below.
+                        <br>
+                        <span id="callBackUrl" style="color:#00b9f5"></span>
+                        <br>
+                        To know more about Webhooks please click <a href="https://developer.paytm.com/docs/payment-status/" target="_blank">here</a>
+                    ]]>
+                        </comment>
+                    <config_path>payment/paytm/iswebhook</config_path>
+                </field>
+
+                <field id="emisubvention" translate="label" type="select" sortOrder="17" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable EMI Subvention</label>
+                    <source_model>PPSL\Paytm\Model\EmisubventionAction</source_model>
+                    <comment> <![CDATA[
+                        Get your EMI Subvention plans configured at Paytm & then Select "Yes" to offer EMI Subvention to your customers
+                    ]]>
+                        </comment>
+                    <config_path>payment/paytm/emisubvention</config_path>
+                </field>
+
+                <field id="bankoffer" translate="label" type="select" sortOrder="18" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable Bank Offer</label>
+                    <source_model>PPSL\Paytm\Model\BankofferAction</source_model>
+                    <comment> <![CDATA[
+                        Get your Bank Offer plans configured at Paytm & then Select "Yes" to provide Bank Offer to your customers
+                    ]]>
+                        </comment>
+                    <config_path>payment/paytm/bankoffer</config_path>
+                </field>
+
+                <field id="dcemi" translate="label" type="select" sortOrder="19" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable DC EMI</label>
+                    <source_model>PPSL\Paytm\Model\DcemiAction</source_model>
+                    <comment> <![CDATA[
+                        Get DC EMI enabled for your MID and then select "Yes" to offer DC EMI to your customer. Customer mobile number is mandatory for DC EMI
+                    ]]>
+                        </comment>
+                    <config_path>payment/paytm/dcemi</config_path>
+                </field>
+
+                <field id="invertlogo" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable Invert Logo</label>
+                    <source_model>PPSL\Paytm\Model\InvertlogoAction</source_model>
+                    <comment> <![CDATA[
+                        Paytm PG logo colour can be changed on your Magento Checkout Page.
+                    ]]>
+                        </comment>
+                    <config_path>payment/paytm/invertlogo</config_path>
+                </field>
+
+            </group>
+        </section>
+    </system>
+</config>

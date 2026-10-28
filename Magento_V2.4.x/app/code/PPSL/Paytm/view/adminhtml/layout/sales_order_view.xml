@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Paytm Payment Gateway for Magento 2.4.x
+ *
+ * @author    PPSL
+ * @copyright Copyright (c) 2026-10-26 PPSL. All rights reserved.
+ * @category  PPSL
+ * @package   PPSL_Paytm
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <script src="PPSL_Paytm::js/tab/view/fetchstatus.js"/>
+    </head>
+    <body>
+        <referenceBlock name="sales_order_tabs">
+            <action method="addTab">
+                <argument name="name" xsi:type="string">custom_tabs</argument>
+                <argument name="block" xsi:type="string">
+                	PPSL\Paytm\Block\Adminhtml\OrderEdit\Tab\View
+                </argument>
+            </action>
+        </referenceBlock>
+    </body>
+</page>

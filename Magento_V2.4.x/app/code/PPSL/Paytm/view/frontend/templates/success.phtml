@@ -1,0 +1,39 @@
+<?php
+/**
+ * Paytm Payment Gateway for Magento 2.4.x
+ *
+ * @author    PPSL
+ * @copyright Copyright (c) 2026-10-26 PPSL. All rights reserved.
+ * @category  PPSL
+ * @package   PPSL_Paytm
+ */
+?>
+
+
+
+<?php 
+$order = $block->getOrder();
+?>
+<div class="checkout-success">
+ <?php
+if ($order->getIncrementId()) {  
+	 
+	 if ($block->getCustomerId()){ ?>
+  <p><?= __('Your order number is: %1.', sprintf('<a href="%s" class="order-number"><strong># %s</strong></a>', $block->getViewUrl($order->getIncrementId()), $order->getIncrementId())); ?></p>
+	 <?php }else{ ?>
+	 	 <p><?php echo __('Your order # is: <span>%1</span>.',$order->getIncrementId()) ?></p>
+	<?php  }
+
+ }
+
+ ?>
+</div>
+<script>
+     require([
+         'Magento_Customer/js/customer-data'
+     ], function (customerData) {
+         var sections = ['cart'];
+         customerData.invalidate(sections);
+         customerData.reload(sections, true);
+     });
+ </script>

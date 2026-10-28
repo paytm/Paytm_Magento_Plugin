@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Paytm Payment Gateway for Magento 2.4.x
+ *
+ * @author    PPSL
+ * @copyright Copyright (c) 2026-10-26 PPSL. All rights reserved.
+ * @category  PPSL
+ * @package   PPSL_Paytm
+ */
+-->
+<body>
+    <referenceContainer name="content">
+        <block class="PPSL\Paytm\Block\Form\OrderDetails" name="order.details.success" template="success.phtml" after="-">           
+        </block>
+    </referenceContainer>
+    <referenceBlock name="checkout.success" remove="true"/>
+</body>

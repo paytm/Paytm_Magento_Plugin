@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Paytm Payment Gateway for Magento 2.4.x
+ *
+ * @author    PPSL
+ * @copyright Copyright (c) 2026-10-26 PPSL. All rights reserved.
+ * @category  PPSL
+ * @package   PPSL_Paytm
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Customer:etc/sections.xsd">
+    <action name="test/process/observer">
+        <section name="cart"/>
+    </action>
+    <action name="extension/controller/action">
+        <section name="cart"/>
+    </action>
+</config>

@@ -1,0 +1,26 @@
+{
+    "name": "ppsl/module-paytm",
+    "description": "Paytm Payment Gateway for Magento 2.4.x",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "PPSL",
+            "homepage": "https://www.paytmpayments.com/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.0",
+        "magento/framework": "103.0.*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "PPSL\\Paytm\\": ""
+        }
+    }
+}

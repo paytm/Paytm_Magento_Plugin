@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Paytm Payment Gateway for Magento 2.4.x
+ *
+ * @author    PPSL
+ * @copyright Copyright (c) 2026-10-26 PPSL. All rights reserved.
+ * @category  PPSL
+ * @package   PPSL_Paytm
+ */
+-->
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp/etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="paytm_js_domain" type="host">*.paytmpayments.com</value>
+            </values>
+        </policy>
+        <policy id="style-src">
+            <values>
+                <value id="paytm_css_domain" type="host">*.paytmpayments.com</value>
+            </values>
+        </policy>
+        <policy id="frame-src">
+            <values>
+                <value id="paytm_iframe_domain" type="host">*.paytmpayments.com</value>
+            </values>
+        </policy>
+        <policy id="img-src">
+            <values>
+                <value id="paytm_img_domain" type="host">*.paytmpayments.com</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <value id="paytm_api_host" type="host">*.paytmpayments.com</value>
+                <value id="paytm_auth_host" type="host">*.paytm.in</value>
+                <value id="paytm_wss_host" type="host">wss://*.paytmpayments.com</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>
