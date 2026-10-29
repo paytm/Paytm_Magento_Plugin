@@ -82,6 +82,9 @@
 	
 			if (function_exists('openssl_encrypt')) {
 				$data = openssl_encrypt($input, "AES-128-CBC", $key, 0, self::$iv);
+				if ($data === false) {
+					throw new \Exception('openssl_encrypt failed.');
+				}
 			} else {
 				throw new \Exception('OpenSSL extension is not available. Please install the OpenSSL extension.');
 			}
@@ -90,13 +93,17 @@
 	
 		static public function decrypt($encrypted, $key) {
 			$key = html_entity_decode($key);
-			
-			if(function_exists('openssl_decrypt')){
-				$data = openssl_decrypt ( $encrypted , "AES-128-CBC" , $key, 0, self::$iv );
-			} else {
+
+			if (!function_exists('openssl_decrypt')) {
 				throw new \Exception('OpenSSL extension is not available. Please install the OpenSSL extension.');
 			}
-			return $data;
+
+			$decrypted = openssl_decrypt($encrypted, 'AES-128-CBC', $key, 0, self::$iv);
+			if ($decrypted === false) {
+				return false;
+			}
+
+			return $decrypted;
 		}
 
 	    static public function generateSignature($params, $key) {
@@ -126,6 +133,12 @@
 
 	    static private function verifySignatureByString($params, $key, $checksum){
 	    	$paytm_hash = self::decrypt($checksum, $key);
+	    	if ($paytm_hash === false) {
+	    		return false;
+	    	}
+	    	if (strlen($paytm_hash) < 4) {
+	    		return false;
+	    	}
 	    	$salt = substr($paytm_hash, -4);
 	    	return $paytm_hash == self::calculateHash($params, $salt) ? true : false;
 	    }
